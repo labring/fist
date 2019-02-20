@@ -197,6 +197,7 @@ func signPayload(key *jose.JSONWebKey, alg jose.SignatureAlgorithm, payload []by
 func handlerToken(request *restful.Request, response *restful.Response) {
 	signingAlg, err := signatureAlgorithm(&Priv)
 	if err != nil {
+		fmt.Println("failed to sign payload", err)
 		return
 	}
 
@@ -225,6 +226,8 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 		fmt.Println("failed to sign payload", err)
 		return
 	}
+
+	fmt.Println("token: ", idToken)
 
 	response.WriteEntity(&idToken)
 }
