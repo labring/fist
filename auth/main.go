@@ -268,9 +268,10 @@ func CreateKeyPair() (pub, priv jose.JSONWebKey) {
 
 func handlePublicKeys(request *restful.Request, response *restful.Response) {
 	jwks := jose.JSONWebKeySet{
-		Keys: make([]jose.JSONWebKey, 1),
+		Keys: make([]jose.JSONWebKey, 2),
 	}
 	jwks.Keys[0] = Pub
+	jwks.Keys[1] = Pub
 	//TODO VerificationKeys
 
 	response.WriteEntity(&jwks)
