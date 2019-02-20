@@ -245,7 +245,7 @@ func newUUID() string {
 }
 
 //CreateKeyPair is
-func CreateKeyPair() (priv, pub jose.JSONWebKey) {
+func CreateKeyPair() (pub, priv jose.JSONWebKey) {
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		log.Fatalf("gen rsa key: %v", err)
