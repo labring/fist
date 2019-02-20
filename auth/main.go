@@ -41,6 +41,7 @@ type User struct {
 var (
 	Pub  jose.JSONWebKey
 	Priv jose.JSONWebKey
+	Ver  jose.JSONWebKey
 )
 
 //UserResource is
@@ -263,6 +264,13 @@ func CreateKeyPair() (pub, priv jose.JSONWebKey) {
 		Use:       "sig",
 	}
 
+	Ver = jose.JSONWebKey{
+		Key:       key.Public(),
+		KeyID:     newUUID(),
+		Algorithm: "RS256",
+		Use:       "sig",
+	}
+
 	return pub, priv
 }
 
@@ -271,7 +279,7 @@ func handlePublicKeys(request *restful.Request, response *restful.Response) {
 		Keys: make([]jose.JSONWebKey, 2),
 	}
 	jwks.Keys[0] = Pub
-	jwks.Keys[1] = Pub
+	jwks.Keys[1] = Ver
 	//TODO VerificationKeys
 
 	response.WriteEntity(&jwks)
