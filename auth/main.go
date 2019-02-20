@@ -263,7 +263,7 @@ func CreateKeyPair() (pub, priv jose.JSONWebKey) {
 		Use:       "sig",
 	}
 
-	return priv, pub
+	return pub, priv
 }
 
 func handlePublicKeys(request *restful.Request, response *restful.Response) {
