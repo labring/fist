@@ -180,8 +180,22 @@ type federatedIDClaims struct {
 	UserID      string `json:"user_id,omitempty"`
 }
 
+func signPayload(key *jose.JSONWebKey, alg jose.SignatureAlgorithm, payload []byte) (jws string, err error) {
+	signingKey := jose.SigningKey{Key: key, Algorithm: alg}
+
+	signer, err := jose.NewSigner(signingKey, &jose.SignerOptions{})
+	if err != nil {
+		return "", fmt.Errorf("new signier: %v", err)
+	}
+	signature, err := signer.Sign(payload)
+	if err != nil {
+		return "", fmt.Errorf("signing payload: %v", err)
+	}
+	return signature.CompactSerialize()
+}
+
 func handlerToken(request *restful.Request, response *restful.Response) {
-	signingAlg, err := signatureAlgorithm(Priv)
+	signingAlg, err := signatureAlgorithm(&Priv)
 	if err != nil {
 		return
 	}
@@ -206,7 +220,7 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 		return
 	}
 
-	if idToken, err = signPayload(signingKey, signingAlg, payload); err != nil {
+	if idToken, err := signPayload(&Priv, signingAlg, payload); err != nil {
 		fmt.Println("failed to sign payload", err)
 		return
 	}
