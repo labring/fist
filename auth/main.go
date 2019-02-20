@@ -220,12 +220,13 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 		return
 	}
 
-	if idToken, err := signPayload(&Priv, signingAlg, payload); err != nil {
+	var idToken string
+	if idToken, err = signPayload(&Priv, signingAlg, payload); err != nil {
 		fmt.Println("failed to sign payload", err)
 		return
 	}
 
-	response.WriteEntity(idToken)
+	response.WriteEntity(&idToken)
 }
 
 func newUUID() string {
