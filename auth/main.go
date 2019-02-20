@@ -3,6 +3,8 @@ package main
 import (
 	"crypto/rand"
 	"crypto/rsa"
+	"encoding/hex"
+	"io"
 	"log"
 	"net/http"
 
@@ -115,19 +117,31 @@ func discoveryHandler(request *restful.Request, response *restful.Response) {
 func handlerToken(request *restful.Request, response *restful.Response) {
 }
 
+func newUUID() string {
+	u := make([]byte, 16)
+	if _, err := io.ReadFull(rand.Reader, u); err != nil {
+		panic(err)
+	}
+
+	u[8] = (u[8] | 0x80) & 0xBF
+	u[6] = (u[6] | 0x40) & 0x4F
+
+	return hex.EncodeToString(u)
+}
+
 //CreateKeyPair is
 func CreateKeyPair() (priv, pub jose.JSONWebKey) {
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		log.Fatalf("gen rsa key: %v", err)
 	}
-	priv := jose.JSONWebKey{
+	priv = jose.JSONWebKey{
 		Key:       key,
 		KeyID:     newUUID(),
 		Algorithm: "RS256",
 		Use:       "sig",
 	}
-	pub := jose.JSONWebKey{
+	pub = jose.JSONWebKey{
 		Key:       key.Public(),
 		KeyID:     newUUID(),
 		Algorithm: "RS256",
@@ -144,7 +158,7 @@ func handlePublicKeys(request *restful.Request, response *restful.Response) {
 	jwks.Keys[0] = Pub
 	//TODO VerificationKeys
 
-	response.WriteEntity{&jwks}
+	response.WriteEntity(&jwks)
 }
 
 // GET http://localhost:8080/users/1
