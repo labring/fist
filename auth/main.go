@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
 	"log"
 	"net/http"
 
@@ -27,6 +29,12 @@ type User struct {
 	ID, Name string
 }
 
+//key paires
+var (
+	Pub  jose.JSONWebKey
+	Priv jose.JSONWebKey
+)
+
 //UserResource is
 type UserResource struct {
 	// normally one would use DAO (data access object)
@@ -47,6 +55,8 @@ func (u UserResource) Register(container *restful.Container) {
 	ws.Route(ws.DELETE("/{user-id}").To(u.removeUser))
 
 	container.Add(ws)
+
+	Pub, Priv = CreateKeyPair()
 
 	auth := new(restful.WebService)
 	auth.
@@ -101,9 +111,40 @@ func discoveryHandler(request *restful.Request, response *restful.Response) {
 
 	response.WriteEntity(dis)
 }
+
 func handlerToken(request *restful.Request, response *restful.Response) {
 }
+
+//CreateKeyPair is
+func CreateKeyPair() (priv, pub jose.JSONWebKey) {
+	key, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		log.Fatalf("gen rsa key: %v", err)
+	}
+	priv := jose.JSONWebKey{
+		Key:       key,
+		KeyID:     newUUID(),
+		Algorithm: "RS256",
+		Use:       "sig",
+	}
+	pub := jose.JSONWebKey{
+		Key:       key.Public(),
+		KeyID:     newUUID(),
+		Algorithm: "RS256",
+		Use:       "sig",
+	}
+
+	return priv, pub
+}
+
 func handlePublicKeys(request *restful.Request, response *restful.Response) {
+	jwks := jose.JSONWebKeySet{
+		Keys: make([]jose.JSONWebKey, 1),
+	}
+	jwks.Keys[0] = Pub
+	//TODO VerificationKeys
+
+	response.WriteEntity{&jwks}
 }
 
 // GET http://localhost:8080/users/1
