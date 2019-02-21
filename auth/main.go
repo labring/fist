@@ -233,6 +233,23 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 
 	fmt.Println("token: ", idToken)
 
+	fmt.Println("=========veriry========\n\n")
+	object, err = jose.ParseSigned(idToken)
+	if err != nil {
+		fmt.Printf("parse signed failed: %s", err)
+	}
+
+	// Now we can verify the signature on the payload. An error here would
+	// indicate the the message failed to verify, e.g. because the signature was
+	// broken or the message was tampered with.
+	output, err := object.Verify(&Pub.Key)
+	if err != nil {
+		fmt.Printf("Verify failed: %s", err)
+	}
+
+	fmt.Printf(string(output))
+	fmt.Println("=========veriry========\n\n")
+
 	response.WriteEntity(&idToken)
 }
 
@@ -282,10 +299,9 @@ func handlePublicKeys(request *restful.Request, response *restful.Response) {
 		Keys: make([]jose.JSONWebKey, 2),
 	}
 	jwks.Keys[0] = Pub
-	jwks.Keys[1] = Ver
 	//TODO VerificationKeys
 
-	fmt.Printf("public keys: %v", &jwks)
+	fmt.Printf("public keys: %v", jwks)
 
 	response.WriteEntity(&jwks)
 }
