@@ -242,7 +242,7 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 	// Now we can verify the signature on the payload. An error here would
 	// indicate the the message failed to verify, e.g. because the signature was
 	// broken or the message was tampered with.
-	output, err := object.Verify(&Pub.Key)
+	output, err := object.Verify(&Priv.Key.PublicKey)
 	if err != nil {
 		fmt.Printf("Verify failed: %s", err)
 	}
