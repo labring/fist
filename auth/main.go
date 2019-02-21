@@ -242,7 +242,7 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 	// Now we can verify the signature on the payload. An error here would
 	// indicate the the message failed to verify, e.g. because the signature was
 	// broken or the message was tampered with.
-	priv, ok := Priv.Key.(rsa.PrivateKey)
+	priv, ok := Priv.Key.(*rsa.PrivateKey)
 	if !ok {
 		fmt.Println("to rsa private key failed")
 	}
