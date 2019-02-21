@@ -246,7 +246,7 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 	if !ok {
 		fmt.Println("to rsa private key failed")
 	}
-	output, err := object.Verify(&(priv.Public()))
+	output, err := object.Verify(priv.Public())
 	if err != nil {
 		fmt.Printf("Verify failed: %s", err)
 	}
