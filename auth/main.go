@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
@@ -14,6 +15,7 @@ import (
 	"net/http"
 	"time"
 
+	oidc "github.com/coreos/go-oidc"
 	"github.com/emicklei/go-restful"
 	jose "gopkg.in/square/go-jose.v2"
 )
@@ -253,6 +255,23 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 
 	fmt.Printf(string(output))
 	fmt.Println("=========veriry========\n\n")
+
+	fmt.Println("=========oidc verify========\n\n")
+	ctx := context.Background()
+	provider, err := oidc.NewProvider(ctx, "https://dex.example.com:8080")
+	if err != nil {
+		fmt.Println("new provider failed: ", err)
+	}
+	oidcConfig := &oidc.Config{
+		ClientID: "example-app",
+	}
+	verifier := provider.Verifier(oidcConfig)
+	token, err := verifier.Verify(ctx, idToken)
+	if err != nil {
+		fmt.Println("valify failed: ", err)
+	}
+	fmt.Println("token: ", token)
+	fmt.Println("=========oidc verify========\n\n")
 
 	response.WriteEntity(&idToken)
 }
