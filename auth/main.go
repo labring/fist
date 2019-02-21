@@ -234,7 +234,7 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 	fmt.Println("token: ", idToken)
 
 	fmt.Println("=========veriry========\n\n")
-	object, err = jose.ParseSigned(idToken)
+	object, err := jose.ParseSigned(idToken)
 	if err != nil {
 		fmt.Printf("parse signed failed: %s", err)
 	}
