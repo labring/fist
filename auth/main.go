@@ -296,20 +296,20 @@ func CreateKeyPair() (pub, priv jose.JSONWebKey) {
 	}
 	priv = jose.JSONWebKey{
 		Key:       key,
-		KeyID:     newUUID(),
+		KeyID:     "Cgc4OTEyNTU3EgZnaXRodWI",
 		Algorithm: "RS256",
 		Use:       "sig",
 	}
 	pub = jose.JSONWebKey{
 		Key:       key.Public(),
-		KeyID:     newUUID(),
+		KeyID:     "Cgc4OTEyNTU3EgZnaXRodWI",
 		Algorithm: "RS256",
 		Use:       "sig",
 	}
 
 	Ver = jose.JSONWebKey{
 		Key:       key.Public(),
-		KeyID:     newUUID(),
+		KeyID:     "Cgc4OTEyNTU3EgZnaXRodWI",
 		Algorithm: "RS256",
 		Use:       "sig",
 	}
