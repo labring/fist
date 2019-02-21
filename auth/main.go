@@ -106,7 +106,7 @@ func discoveryHandler(request *restful.Request, response *restful.Response) {
 		AuthMethods: []string{"client_secret_basic"},
 		Claims: []string{
 			"aud", "email", "email_verified", "exp",
-			"iat", "iss", "locale", "name", "sub",
+			"iat", "iss", "locale", "name", "sub", "groups",
 		},
 		ResponseTypes: []string{"code",
 			"token",
@@ -117,6 +117,8 @@ func discoveryHandler(request *restful.Request, response *restful.Response) {
 			"code token id_token",
 			"none"},
 	}
+
+	fmt.Printf("discovery: %v", dis)
 
 	response.WriteEntity(dis)
 }
@@ -208,7 +210,7 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 		Issuer:        "https://dex.example.com:8080",
 		Subject:       "Cgc4OTEyNTU3EgZnaXRodWI",
 		Audience:      "example-app",
-		Expiry:        time.Now().Add(time.Minute * 10).Unix(),
+		Expiry:        time.Now().Add(time.Hour * 100).Unix(),
 		IssuedAt:      time.Now().Unix(),
 		Email:         "fhtjob@hotmail.com",
 		EmailVerified: &ev,
@@ -216,7 +218,8 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 		Name:          "fanux",
 	}
 
-	payload, err := json.Marshal(tok)
+	payload, err := json.Marshal(&tok)
+	fmt.Printf("token claims: %s", payload)
 	if err != nil {
 		fmt.Println("could not serialize claims", err)
 		return
@@ -281,6 +284,8 @@ func handlePublicKeys(request *restful.Request, response *restful.Response) {
 	jwks.Keys[0] = Pub
 	jwks.Keys[1] = Ver
 	//TODO VerificationKeys
+
+	fmt.Printf("public keys: %v", &jwks)
 
 	response.WriteEntity(&jwks)
 }
