@@ -19,9 +19,8 @@ spec:
     spec:
       containers:
       - name: fist
-        image: fanux/fist:latest
+        image: fanux/fist-auth:latest
         imagePullPolicy: Always
-        command: ["start.sh"]
         ports:
         - containerPort: 8080
         volumeMounts:
