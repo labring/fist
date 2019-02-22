@@ -2,6 +2,7 @@
 ![](./fist.png)
 
 # auth
+For create a kubernetes user jwt token
 
 > create jwt bare token
 
