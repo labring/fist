@@ -78,7 +78,7 @@ func discoveryHandler(request *restful.Request, response *restful.Response) {
 
 func handlerToken(request *restful.Request, response *restful.Response) {
 	groups := request.QueryParameters("group")
-	user := request.QueryParameters("user")
+	user := request.QueryParameter("user")
 
 	signingAlg, err := signatureAlgorithm(&Priv)
 	if err != nil {
