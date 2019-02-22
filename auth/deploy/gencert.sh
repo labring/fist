@@ -16,8 +16,8 @@ subjectAltName = @alt_names
 
 [alt_names]
 DNS.1 = dex.example.com
-IP.1 = 47.52.202.240 
-IP.2 = 172.31.12.61
+DNS.2 = fist.sealyun.svc.cluster.local
+IP.1 = 172.31.12.61
 EOF
 
 openssl genrsa -out ssl/ca-key.pem 2048

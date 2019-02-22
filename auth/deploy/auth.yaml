@@ -1,8 +1,8 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: sealyun
----
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: sealyun
+#---
 apiVersion: apps/v1
 metadata:
   name: fist
@@ -24,6 +24,18 @@ spec:
         command: ["start.sh"]
         ports:
         - containerPort: 8080
+        volumeMounts:
+        - name: fist
+          mountPath: /etc/fist
+      volumes:
+       - name: fist
+         secret:
+           secretName: fist
+           items:
+           - key: cert.pem
+             path: cert.pem
+           - key: key.pem
+             path: key.pem
 #       resources:
 #         limits:
 #           memory: "128Mi"
