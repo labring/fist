@@ -3,13 +3,13 @@ name: default
 
 workspace:
    base: /go
-   path: src/github.com/fanux/fist/auth
+   path: src/github.com/fanux/fist/
 
 steps:
 - name: build-backend
   image: golang:1.10.8
   commands:
-     - go build -o auth
+     - cd auth && go build -o auth
 
 - name: publish-back
   image: plugins/docker
