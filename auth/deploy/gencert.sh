@@ -15,7 +15,7 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = dex.example.com
+DNS.1 = fist.sealyun.cluster.local
 DNS.2 = fist.sealyun.svc.cluster.local
 IP.1 = 172.31.12.61
 EOF

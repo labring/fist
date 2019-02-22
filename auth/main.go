@@ -50,10 +50,10 @@ func discoveryHandler(request *restful.Request, response *restful.Response) {
 	}
 
 	dis := &discovery{
-		Issuer:      "https://dex.example.com:8080",
-		Auth:        "https://dex.example.com:8080/auth",
-		Token:       "https://dex.example.com:8080/token",
-		Keys:        "https://dex.example.com:8080/keys",
+		Issuer:      "https://fist.sealyun.svc.cluster.local:8080",
+		Auth:        "https://fist.sealyun.svc.cluster.local:8080/auth",
+		Token:       "https://fist.sealyun.svc.cluster.local:8080/token",
+		Keys:        "https://fist.sealyun.svc.cluster.local:8080/keys",
 		Subjects:    []string{"public"},
 		IDTokenAlgs: []string{string(jose.RS256)},
 		Scopes:      []string{"openid", "email", "groups", "profile", "offline_access"},
@@ -88,9 +88,9 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 
 	ev := true
 	tok := idTokenClaims{
-		Issuer:        "https://dex.example.com:8080",
+		Issuer:        "https://fist.sealyun.svc.cluster.local:8080",
 		Subject:       "Cgc4OTEyNTU3EgZnaXRodWI",
-		Audience:      "example-app",
+		Audience:      "sealyun-fist",
 		Expiry:        time.Now().Add(time.Hour * 100).Unix(),
 		IssuedAt:      time.Now().Unix(),
 		Email:         "fhtjob@hotmail.com",

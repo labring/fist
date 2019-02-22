@@ -24,12 +24,12 @@ package main
 
 	fmt.Println("=========oidc verify========\n\n")
 	ctx := context.Background()
-	provider, err := oidc.NewProvider(ctx, "https://dex.example.com:8080")
+	provider, err := oidc.NewProvider(ctx, "https://fist.sealyun.svc.cluster.local:8080")
 	if err != nil {
 		fmt.Println("new provider failed: ", err)
 	}
 	oidcConfig := &oidc.Config{
-		ClientID: "example-app",
+		ClientID: "sealyun-fist",
 	}
 	verifier := provider.Verifier(oidcConfig)
 	token, err := verifier.Verify(ctx, idToken)
