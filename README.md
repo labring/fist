@@ -33,6 +33,12 @@ For create a kubernetes user jwt token
     - --oidc-groups-claim=groups
 ```
 
+> clean 
+
+```
+kubectl delete ns sealyun
+```
+
 ## using token
 
 > create jwt bare token
