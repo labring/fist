@@ -18,7 +18,7 @@ var (
 )
 
 //Register is
-func (u UserResource) Register(container *restful.Container) {
+func Register(container *restful.Container) {
 	Pub, Priv = CreateKeyPair()
 
 	auth := new(restful.WebService)
@@ -131,8 +131,7 @@ func handlePublicKeys(request *restful.Request, response *restful.Response) {
 func main() {
 	wsContainer := restful.NewContainer()
 	wsContainer.Router(restful.CurlyRouter{})
-	u := UserResource{map[string]User{}}
-	u.Register(wsContainer)
+	Register(wsContainer)
 
 	log.Print("start listening on localhost:8080")
 	server := &http.Server{Addr: ":8080", Handler: wsContainer}
