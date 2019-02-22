@@ -73,7 +73,6 @@ func discoveryHandler(request *restful.Request, response *restful.Response) {
 	}
 
 	fmt.Printf("discovery: %v", dis)
-
 	response.WriteEntity(dis)
 }
 
