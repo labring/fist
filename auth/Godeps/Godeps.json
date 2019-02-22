@@ -1,0 +1,84 @@
+{
+	"ImportPath": "auth",
+	"GoVersion": "go1.11",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/coreos/go-oidc",
+			"Comment": "v2.0.0-9-g66476e0",
+			"Rev": "66476e0267012774b2f9767d2d37a317d1f1aac3"
+		},
+		{
+			"ImportPath": "github.com/emicklei/go-restful",
+			"Comment": "v2.8.0-4-gcac44bf",
+			"Rev": "cac44bf12ecf627c1cc74a69ebda014fcb029890"
+		},
+		{
+			"ImportPath": "github.com/emicklei/go-restful/log",
+			"Comment": "v2.8.0-4-gcac44bf",
+			"Rev": "cac44bf12ecf627c1cc74a69ebda014fcb029890"
+		},
+		{
+			"ImportPath": "github.com/json-iterator/go",
+			"Comment": "1.1.5-19-g5bc9320",
+			"Rev": "5bc93205020f6311d7e4a34f82c5616a18ec35e5"
+		},
+		{
+			"ImportPath": "github.com/modern-go/concurrent",
+			"Comment": "1.0.3",
+			"Rev": "bacd9c7ef1dd9b15be4a9909b8ac7a4e313eec94"
+		},
+		{
+			"ImportPath": "github.com/modern-go/reflect2",
+			"Comment": "v1.0.1",
+			"Rev": "94122c33edd36123c84d5368cfb2b69df93a0ec8"
+		},
+		{
+			"ImportPath": "github.com/pquerna/cachecontrol",
+			"Rev": "1555304b9b35fdd2b425bccf1a5613677705e7d0"
+		},
+		{
+			"ImportPath": "github.com/pquerna/cachecontrol/cacheobject",
+			"Rev": "1555304b9b35fdd2b425bccf1a5613677705e7d0"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ed25519",
+			"Rev": "a4c6cb3142f211c99e4bf4cd769535b29a9b616f"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ed25519/internal/edwards25519",
+			"Rev": "a4c6cb3142f211c99e4bf4cd769535b29a9b616f"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/pbkdf2",
+			"Rev": "a4c6cb3142f211c99e4bf4cd769535b29a9b616f"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context/ctxhttp",
+			"Rev": "3a22650c66bd7f4fb6d1e8072ffd7b75c8a27898"
+		},
+		{
+			"ImportPath": "golang.org/x/oauth2",
+			"Rev": "9b3c75971fc92dd27c6436a37c05c831498658f1"
+		},
+		{
+			"ImportPath": "golang.org/x/oauth2/internal",
+			"Rev": "9b3c75971fc92dd27c6436a37c05c831498658f1"
+		},
+		{
+			"ImportPath": "gopkg.in/square/go-jose.v2",
+			"Comment": "v2.2.2",
+			"Rev": "e94fb177d3668d35ab39c61cbb2f311550557e83"
+		},
+		{
+			"ImportPath": "gopkg.in/square/go-jose.v2/cipher",
+			"Comment": "v2.2.2",
+			"Rev": "e94fb177d3668d35ab39c61cbb2f311550557e83"
+		},
+		{
+			"ImportPath": "gopkg.in/square/go-jose.v2/json",
+			"Comment": "v2.2.2",
+			"Rev": "e94fb177d3668d35ab39c61cbb2f311550557e83"
+		}
+	]
+}
