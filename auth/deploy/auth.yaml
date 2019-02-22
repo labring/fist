@@ -4,6 +4,7 @@
 #  name: sealyun
 #---
 apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: fist
   namespace: sealyun
