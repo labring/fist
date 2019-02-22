@@ -1,6 +1,5 @@
 # fist = (One punch to solve everything)
 ![](./fist.png)
-kubernetes user manager RBAC PSP a web terminal and a app store.
 
 # auth
 
