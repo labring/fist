@@ -33,10 +33,11 @@ For create a kubernetes user jwt token
     - --oidc-groups-claim=groups
 ```
 
-> clean 
+> clean & uninstall
 
 ```
 kubectl delete ns sealyun
+rm -rf /etc/kubernetes/pki/fist
 ```
 
 ## using token

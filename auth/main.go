@@ -77,7 +77,7 @@ func discoveryHandler(request *restful.Request, response *restful.Response) {
 }
 
 func handlerToken(request *restful.Request, response *restful.Response) {
-	groups := request.QueryParameters("group")
+	groups := request.Request.URL.Query()["group"]
 	user := request.QueryParameter("user")
 	fmt.Printf("user: %s, groups: %v", user, groups)
 
