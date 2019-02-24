@@ -6,7 +6,7 @@ kubectl config set-cluster kubernetes --server=${APISERVER} --insecure-skip-tls-
 kubectl config set-context kubernetes \
 --cluster=kubernetes \
 --user=${USER_NAME} \
---namespace=${NAMESPACE} \
+--namespace=${NAMESPACE} 
 kubectl config use-context kubernetes
 
 cat ~/.kube/config
