@@ -35,3 +35,12 @@ clent                     terminal                        terminal-pod
   |                          | and service                    |           
 ```
 
+# Quick start
+```
+docker run -d --net=host -e APISERVER="https://172.31.12.61:6443" -e USER_TOKEN="XX" -e NAMESPACE="default" -e USER_NAME=fanux -e TERMINAL_ID="uuid" fanux/kube-ttyd:latest
+```
+Access to :
+
+```
+http://yourip:8080
+```
