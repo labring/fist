@@ -1,6 +1,7 @@
 package main
 
 import (
+	"apimachinery/pkg/util/intstr"
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
@@ -64,13 +65,16 @@ func CreateTTYcontainer(t *Terminal) error {
 		return err
 	}
 
+	var re int32
+	re = 1
+
 	client := clientset.AppsV1().Deployments(TTYnameapace)
 	result, err := client.Create(&appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: t.TerminalID,
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: int32Ptr(1),
+			Replicas: &re,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
 					"TerminalID": t.TerminalID,
@@ -109,14 +113,12 @@ func CreateTTYcontainer(t *Terminal) error {
 			Name: t.TerminalID,
 		},
 		Spec: apiv1.ServiceSpec{
-			Selector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					"TerminalID": t.TerminalID,
-				},
+			Selector: map[string]string{
+				"TerminalID": t.TerminalID,
 			},
 			Type: "NodePort",
 			Ports: []apiv1.ServicePort{
-				{Name: "tty", Port: 8080, TargetPort: 8080, Protocol: apiv1.Protocol{"TCP"}},
+				{Name: "tty", Port: 8080, TargetPort: intstr.IntOrString.FromInt(8080), Protocol: apiv1.Protocol{"TCP"}},
 			},
 		},
 	})
@@ -124,9 +126,11 @@ func CreateTTYcontainer(t *Terminal) error {
 		return err
 	}
 	t.EndPoint = fmt.Sprintf("%d", service.Spec.Ports[0].NodePort)
+	return nil
 }
 
 //LoadTerminalID is
 func LoadTerminalID() error {
 	//TODO
+	return nil
 }

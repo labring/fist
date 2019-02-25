@@ -9,8 +9,6 @@ import (
 
 //Register is
 func Register(container *restful.Container) {
-	Pub, Priv = CreateKeyPair()
-
 	terminal := new(restful.WebService)
 	terminal.
 		Path("/").
