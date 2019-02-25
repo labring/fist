@@ -70,7 +70,7 @@ func CreateTTYcontainer(t *Terminal) error {
 	re = 1
 
 	client := clientset.AppsV1().Deployments(TTYnameapace)
-	result, err := client.Create(&appsv1.Deployment{
+	_, err = client.Create(&appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: t.TerminalID,
 		},
@@ -119,7 +119,7 @@ func CreateTTYcontainer(t *Terminal) error {
 			},
 			Type: "NodePort",
 			Ports: []apiv1.ServicePort{
-				{Name: "tty", Port: 8080, TargetPort: intstr.FromInt(8080), Protocol: apiv1.Protocol{"TCP"}},
+				{Name: "tty", Port: 8080, TargetPort: intstr.FromInt(8080), Protocol: apiv1.Protocol("TCP")},
 			},
 		},
 	})
