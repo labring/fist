@@ -119,7 +119,7 @@ func CreateTTYcontainer(t *Terminal) error {
 			},
 			Type: "NodePort",
 			Ports: []apiv1.ServicePort{
-				{Name: "tty", Port: 8080, TargetPort: intstr.IntOrString.FromInt(8080), Protocol: apiv1.Protocol{"TCP"}},
+				{Name: "tty", Port: 8080, TargetPort: intstr.FromInt(8080), Protocol: apiv1.Protocol{"TCP"}},
 			},
 		},
 	})
