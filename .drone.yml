@@ -1,0 +1,22 @@
+kind: pipeline
+name: default
+
+workspace:
+   base: /go
+   path: src/github.com/fanux/fist/
+
+steps:
+- name: build-backend
+  image: golang:1.10.8
+  commands:
+     - cd auth && go build -o auth
+
+- name: publish-back
+  image: plugins/docker
+  settings:
+    repo: fanux/fist-auth
+    tags: ${DRONE_TAG=latest}
+    username: fanux
+    dockerfile: auth/deploy/Dockerfile
+    password:
+      from_secret: docker-hub-pass
