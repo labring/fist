@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"fmt"
 	"io"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -122,6 +123,7 @@ func CreateTTYcontainer(t *Terminal) error {
 	if err != nil {
 		return err
 	}
+	t.EndPoint = fmt.Sprintf("%d", service.Spec.Ports[0].NodePort)
 }
 
 //LoadTerminalID is

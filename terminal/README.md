@@ -44,3 +44,9 @@ Access to :
 ```
 http://yourip:8080
 ```
+
+OR if you want mount the kubeconfig file instead to use user token:
+
+```
+docker run -d --net=host -v /root/.kube/config:/root/.kube/config fanux/kube-ttyd:latest ttyd -p 8080 bash
+```
