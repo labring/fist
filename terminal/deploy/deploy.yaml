@@ -18,6 +18,7 @@ spec:
       labels:
         name: fist-terminal
     spec:
+      serviceAccountName: admin
       containers:
       - name: fist-terminal
         image: fanux/fist-terminal:latest
