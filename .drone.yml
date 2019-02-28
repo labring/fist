@@ -24,7 +24,7 @@ steps:
 - name: build-terminal
   image: golang:1.10.8
   commands:
-     - cd terminal && go build -o terminal
+     - cd terminal && go get && go build -o terminal
 
 - name: publish-terminal
   image: plugins/docker
