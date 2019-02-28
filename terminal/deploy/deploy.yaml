@@ -1,0 +1,42 @@
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: sealyun
+#---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fist-terminal
+  namespace: sealyun
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: fist-terminal
+  template:
+    metadata:
+      labels:
+        name: fist-terminal
+    spec:
+      containers:
+      - name: fist-terminal
+        image: fanux/fist-terminal:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: fist-terminal
+  namespace: sealyun
+spec:
+  type: NodePort
+  ports:
+  - name: fist-terminal
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    name: fist-terminal

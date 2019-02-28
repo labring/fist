@@ -6,17 +6,32 @@ workspace:
    path: src/github.com/fanux/fist/
 
 steps:
-- name: build-backend
+- name: build-auth
   image: golang:1.10.8
   commands:
      - cd auth && go build -o auth
 
-- name: publish-back
+- name: publish-auth
   image: plugins/docker
   settings:
     repo: fanux/fist-auth
     tags: ${DRONE_TAG=latest}
     username: fanux
     dockerfile: auth/deploy/Dockerfile
+    password:
+      from_secret: docker-hub-pass
+
+- name: build-terminal
+  image: golang:1.10.8
+  commands:
+     - cd terminal && go build -o terminal
+
+- name: publish-terminal
+  image: plugins/docker
+  settings:
+    repo: fanux/fist-terminal
+    tags: ${DRONE_TAG=latest}
+    username: fanux
+    dockerfile: terminal/deploy/Dockerfile
     password:
       from_secret: docker-hub-pass
