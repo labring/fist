@@ -27,7 +27,7 @@ type Terminal struct {
 	User         string
 	Apiserver    string // just using default apiserver
 	UserToken    string
-	Namespace    string
+	Namespace    string // the kubeconfig default context namespace
 	TerminalID   string
 	EndPoint     string
 	WithoutToken bool // if true, mount the kubeconfig file, using ttyd instead the start-terminal.sh
@@ -90,6 +90,13 @@ func CreateTTYcontainer(t *Terminal) error {
 				Spec: apiv1.PodSpec{
 					Containers: []apiv1.Container{
 						{
+							Env: []apiv1.EnvVar{
+								{Name: "APISERVER", Value: DefaultApiserver},
+								{Name: "USER_TOKEN", Value: t.UserToken},
+								{Name: "NAMESPACE", Value: "default"},
+								{Name: "USER_NAME", Value: t.User},
+								{Name: "TERMINAL_ID", Value: t.TerminalID},
+							},
 							Name:  "tty",
 							Image: kubeTTYimage,
 							Ports: []apiv1.ContainerPort{
