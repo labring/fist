@@ -3,6 +3,12 @@
 # fist = (One punch to solve everything)
 ![](./fist.png)
 
+- [x] A lightweight JWT User token creater. RBAC and PSP manager.
+- [x] A powerful webterminal
+- [ ] Muti tencent namespace manager
+- [ ] Web yaml render
+- [ ] kubernets job based pipeline
+
 # auth
 For create a kubernetes user jwt token
 
