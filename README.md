@@ -115,3 +115,6 @@ clusterrolebinding.rbac.authorization.k8s.io/read-secrets-global created
 [root@iZj6cegflzze2l7fpcqoerZ ~]# kubectl get pod 
 No resources found.
 ```
+
+# Webterminal
+[README](./terminal/README.md)
