@@ -6,6 +6,8 @@ import (
 
 //Heartbeater is
 type Heartbeater interface {
+	//terminal deployment is in sealyun-tty namespace
 	UpdateTimestamp(clientSet *kubernetes.Clientset, terminalID string)
+	//need delete deployment and service in sealyun-tty if it timeout
 	CleanTerminalJob(clientSet *kubernetes.Clientset)
 }
