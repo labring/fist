@@ -68,6 +68,14 @@ func CreateTTYcontainer(t *Terminal) error {
 
 	var re int32
 	re = 1
+	_, err = clientset.CoreV1().Namespaces().Get(TTYnameapace, metav1.GetOptions{})
+	if err != nil {
+		clientset.CoreV1().Namespaces().Create(&apiv1.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: TTYnameapace,
+			},
+		})
+	}
 
 	client := clientset.AppsV1().Deployments(TTYnameapace)
 	_, err = client.Create(&appsv1.Deployment{
