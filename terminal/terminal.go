@@ -72,7 +72,7 @@ func CreateTTYcontainer(t *Terminal) error {
 	client := clientset.AppsV1().Deployments(TTYnameapace)
 	_, err = client.Create(&appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: t.TerminalID,
+			Name: "deploy-" + t.TerminalID,
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: &re,
@@ -118,7 +118,7 @@ func CreateTTYcontainer(t *Terminal) error {
 
 	service, err := clientset.CoreV1().Services(TTYnameapace).Create(&apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: t.TerminalID,
+			Name: "svc-" + t.TerminalID,
 		},
 		Spec: apiv1.ServiceSpec{
 			Selector: map[string]string{
