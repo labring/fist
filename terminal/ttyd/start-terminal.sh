@@ -11,4 +11,5 @@ kubectl config use-context kubernetes
 
 cat ~/.kube/config
 
-ttyd -p 8080 bash
+# ttyd -p 8080 bash
+ttyd -p 8080 zsh
