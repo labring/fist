@@ -66,6 +66,21 @@ bc5aaf70741d41c0b4011ebfe7a70f52   NodePort   10.98.60.90   <none>        8080:3
 
 Using http://IP:32219
 
+###  classpath of terminal
+
+| name | type | defaults | Description|
+| :--- | :---  | :---| :---|
+| User | string | "" |  user name of k8s cluster , when WithoutToken is false |
+| UserToken | string | "" |  user token of k8s cluster , when WithoutToken is false|
+| Apiserver | string | "https://kubernetes.default.svc.cluster.local:443" | web-termianl controll k8s cluster,k8s apiserver address |
+| Namespace | string | "default" | default controller k8s cluster namespace |
+| WithoutToken | bool | false | without user token access k8s |
+| KubeConfigPath | string | "" | terminal used config of k8s , when WithoutToken is true |
+| TTYKubeNameapace | string | "sealyun-tty" | default of tty namespace |
+| TTYKubeImage | string | "fanux/fist-tty-tools:v1.0.0" | default of tty images  |
+
+
+
 ## Using bare docker image
 imageList:
 
