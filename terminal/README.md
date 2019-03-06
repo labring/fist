@@ -67,6 +67,11 @@ bc5aaf70741d41c0b4011ebfe7a70f52   NodePort   10.98.60.90   <none>        8080:3
 Using http://IP:32219
 
 ## Using bare docker image
+imageList:
+
+* fanux/kube-ttyd:latest : only has kubectl and tty
+* fanux/fist-tty-tools:v1.0.0 : include golang dev environment, full vim plugins, and vim kubernetes plugins
+
 ```
 docker run -d --net=host -e APISERVER="https://172.31.12.61:6443" -e USER_TOKEN="XX" -e NAMESPACE="default" -e USER_NAME=fanux -e TERMINAL_ID="uuid" fanux/kube-ttyd:latest
 ```
