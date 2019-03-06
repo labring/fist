@@ -19,7 +19,7 @@ import (
 const (
 	TTYnameapace     = "sealyun-tty"
 	DefaultApiserver = "https://kubernetes.default.svc.cluster.local:443" //or https://10.96.0.1:443
-	kubeTTYimage     = "fanux/kube-ttyd:latest"
+	kubeTTYimage     = "fanux/fist-tty-tools:v1.0.0"
 )
 
 //Terminal is
