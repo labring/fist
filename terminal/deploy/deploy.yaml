@@ -25,7 +25,14 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-
+        volumeMounts:
+          - mountPath: /root/.kube
+            name: kube-config
+            readOnly: true
+      volumes:
+        - name: kube-config
+          secret:
+            secretName: kube-config
 ---
 kind: Service
 apiVersion: v1

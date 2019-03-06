@@ -40,6 +40,8 @@ clent                     terminal                        terminal-pod
 ### Install
 ```
 cd terminal/deploy
+kubectl create ns sealyun
+kubectl create secret generic kube-config -n sealyun --from-file=/root/.kube/config 
 kubectl create -f rbac.yaml
 kubectl create -f deploy.yaml
 ```
