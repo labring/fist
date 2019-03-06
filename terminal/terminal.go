@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
+	"k8s.io/client-go/tools/clientcmd"
 
 	"k8s.io/apimachinery/pkg/util/intstr"
 
@@ -17,20 +18,37 @@ import (
 
 //consts
 const (
-	TTYnameapace     = "sealyun-tty"
-	DefaultApiserver = "https://kubernetes.default.svc.cluster.local:443" //or https://10.96.0.1:443
-	kubeTTYimage     = "fanux/fist-tty-tools:v1.0.0"
+	DefaultTTYnameapace = "sealyun-tty"
+	DefaultApiserver    = "https://kubernetes.default.svc.cluster.local:443" //or https://10.96.0.1:443
+	DefaultKubeTTYimage = "fanux/fist-tty-tools:v1.0.0"
+	DefaultKubeConfig   = "/root/.kube/config"
 )
 
 //Terminal is
 type Terminal struct {
-	User         string
+	User       string
+	UserToken  string
+	TerminalID string
+	EndPoint   string
+
 	Apiserver    string // just using default apiserver
-	UserToken    string
 	Namespace    string // the kubeconfig default context namespace
-	TerminalID   string
-	EndPoint     string
-	WithoutToken bool // if true, mount the kubeconfig file, using ttyd instead the start-terminal.sh
+	WithoutToken bool   // if true, mount the kubeconfig file, using ttyd instead the start-terminal.sh
+
+	TTYKubeNameapace  string // default is "sealyun-tty"
+	TTYKubeImage      string //default is  "fanux/fist-tty-tools:v1.0.0"
+	TTYKubeConfigPath string //default is  "/root/.kube/config"
+}
+
+func newTerminal() *Terminal {
+	return &Terminal{
+		Namespace:         "default",
+		WithoutToken:      false,
+		Apiserver:         DefaultApiserver,
+		TTYKubeNameapace:  DefaultTTYnameapace,
+		TTYKubeImage:      DefaultKubeTTYimage,
+		TTYKubeConfigPath: DefaultKubeConfig,
+	}
 }
 
 func newUUID() string {
@@ -47,16 +65,39 @@ func newUUID() string {
 
 //Create a terminal
 func (t *Terminal) Create() error {
-	t.Apiserver = DefaultApiserver
 	t.TerminalID = newUUID()
 
 	//create tty deployment and service
 	return CreateTTYcontainer(t)
 }
 
+//CreateTTYnamespace
+func CreateTTYnamespace(t *Terminal, clientset *kubernetes.Clientset) error {
+	_, err := clientset.CoreV1().Namespaces().Get(t.TTYKubeNameapace, metav1.GetOptions{})
+	if err != nil {
+		_, err = clientset.CoreV1().Namespaces().Create(&apiv1.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: t.TTYKubeNameapace,
+			},
+		})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 //CreateTTYcontainer is
 func CreateTTYcontainer(t *Terminal) error {
-	config, err := rest.InClusterConfig()
+	var (
+		config *rest.Config
+		err    error
+	)
+	if t.WithoutToken {
+		config, err = clientcmd.BuildConfigFromFlags("", t.TTYKubeConfigPath)
+	} else {
+		config, err = rest.InClusterConfig()
+	}
 	if err != nil {
 		return err
 	}
@@ -68,19 +109,10 @@ func CreateTTYcontainer(t *Terminal) error {
 
 	var re int32
 	re = 1
-	_, err = clientset.CoreV1().Namespaces().Get(TTYnameapace, metav1.GetOptions{})
-	if err != nil {
-		_, err = clientset.CoreV1().Namespaces().Create(&apiv1.Namespace{
-			ObjectMeta: metav1.ObjectMeta{
-				Name: TTYnameapace,
-			},
-		})
-		if err != nil {
-			return err
-		}
-	}
+	//create namespace
+	CreateTTYnamespace(t, clientset)
 
-	client := clientset.AppsV1().Deployments(TTYnameapace)
+	client := clientset.AppsV1().Deployments(t.TTYKubeNameapace)
 	_, err = client.Create(&appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "deploy-" + t.TerminalID,
@@ -102,14 +134,14 @@ func CreateTTYcontainer(t *Terminal) error {
 					Containers: []apiv1.Container{
 						{
 							Env: []apiv1.EnvVar{
-								{Name: "APISERVER", Value: DefaultApiserver},
+								{Name: "APISERVER", Value: t.Apiserver},
 								{Name: "USER_TOKEN", Value: t.UserToken},
-								{Name: "NAMESPACE", Value: "default"},
+								{Name: "NAMESPACE", Value: t.Namespace},
 								{Name: "USER_NAME", Value: t.User},
 								{Name: "TERMINAL_ID", Value: t.TerminalID},
 							},
 							Name:  "tty",
-							Image: kubeTTYimage,
+							Image: t.TTYKubeImage,
 							Ports: []apiv1.ContainerPort{
 								{
 									Name:          "http",
@@ -127,7 +159,7 @@ func CreateTTYcontainer(t *Terminal) error {
 		return err
 	}
 
-	service, err := clientset.CoreV1().Services(TTYnameapace).Create(&apiv1.Service{
+	service, err := clientset.CoreV1().Services(t.TTYKubeNameapace).Create(&apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "svc-" + t.TerminalID,
 		},
