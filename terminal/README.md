@@ -76,7 +76,6 @@ Using http://IP:32219
 | Namespace | string | "default" | default controller k8s cluster namespace |
 | WithoutToken | bool | false | without user token access k8s |
 | KubeConfigPath | string | "" | terminal used config of k8s , when WithoutToken is true |
-| TTYKubeNameapace | string | "sealyun-tty" | default of tty namespace |
 | TTYKubeImage | string | "fanux/fist-tty-tools:v1.0.0" | default of tty images  |
 
 
