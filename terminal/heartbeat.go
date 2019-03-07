@@ -17,9 +17,8 @@ type Heartbeater interface {
 }
 
 type terHeartbeater struct {
-	terminalID   string
-	namespace    string
-	WithoutToken bool
+	terminalID string
+	namespace  string
 }
 
 func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset) {
