@@ -22,7 +22,7 @@ func Register(container *restful.Container) {
 }
 
 func createTerminal(request *restful.Request, response *restful.Response) {
-	t := newTerminal()
+	t := &Terminal{}
 	err := request.ReadEntity(t)
 	if err != nil {
 		response.WriteError(http.StatusInternalServerError, err)
