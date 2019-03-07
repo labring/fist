@@ -21,6 +21,9 @@ const (
 	DefaultTTYnameapace = "sealyun-tty"
 	DefaultApiserver    = "https://kubernetes.default.svc.cluster.local:443" //or https://10.96.0.1:443
 	DefaultKubeTTYimage = "fanux/fist-tty-tools:v1.0.0"
+	PrefixDeploy        = "deploy-"
+	PrefixSvc           = "svc-"
+	PrefixSecret        = "secret-"
 )
 
 //Terminal is
@@ -100,7 +103,7 @@ func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset, re int32) err
 	)
 	//init
 	objMeta = metav1.ObjectMeta{
-		Name: "deploy-" + t.TerminalID,
+		Name: PrefixDeploy + t.TerminalID,
 	}
 	selector = &metav1.LabelSelector{
 		MatchLabels: map[string]string{
@@ -125,21 +128,24 @@ func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset, re int32) err
 		}
 		secretsClient := clientset.CoreV1().Secrets(DefaultTTYnameapace)
 		secretsData, _ := ioutil.ReadFile(t.KubeConfigPath)
-		secretsClient.Create(&apiv1.Secret{
+		_, err := secretsClient.Create(&apiv1.Secret{
 			Type: apiv1.SecretTypeOpaque,
 			ObjectMeta: metav1.ObjectMeta{
-				Name: "secret-" + t.TerminalID,
+				Name: PrefixSecret + t.TerminalID,
 			},
 			Data: map[string][]byte{
 				"config": secretsData,
 			},
 		})
+		if err != nil {
+			return err
+		}
 		volume = []apiv1.Volume{
 			{
 				Name: "kube-config",
 				VolumeSource: apiv1.VolumeSource{
 					Secret: &apiv1.SecretVolumeSource{
-						SecretName: "secret-" + t.TerminalID,
+						SecretName: PrefixSecret + t.TerminalID,
 					},
 				},
 			},
@@ -194,7 +200,7 @@ func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset, re int32) err
 func CreateTTYservice(t *Terminal, clientset *kubernetes.Clientset) error {
 	service, err := clientset.CoreV1().Services(DefaultTTYnameapace).Create(&apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "svc-" + t.TerminalID,
+			Name: PrefixDeploy + t.TerminalID,
 		},
 		Spec: apiv1.ServiceSpec{
 			Selector: map[string]string{
@@ -241,11 +247,20 @@ func CreateTTYcontainer(t *Terminal) error {
 	// deploy  Replicas number
 	re = 1
 	//create namespace
-	CreateTTYnamespace(clientset)
+	err := CreateTTYnamespace(clientset)
+	if err != nil {
+		return err
+	}
 	//create deploy
-	CreateTTYdeploy(t, clientset, re)
+	err = CreateTTYdeploy(t, clientset, re)
+	if err != nil {
+		return err
+	}
 	//create service
-	CreateTTYservice(t, clientset)
+	err = CreateTTYservice(t, clientset)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
