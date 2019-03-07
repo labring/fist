@@ -20,6 +20,8 @@ const (
 	TTYnameapace     = "sealyun-tty"
 	DefaultApiserver = "https://kubernetes.default.svc.cluster.local:443" //or https://10.96.0.1:443
 	kubeTTYimage     = "fanux/fist-tty-tools:v1.0.0"
+	PrefixDeploy     = "deploy-"
+	PrefixSvc        = "svc-"
 )
 
 //Terminal is
@@ -83,7 +85,7 @@ func CreateTTYcontainer(t *Terminal) error {
 	client := clientset.AppsV1().Deployments(TTYnameapace)
 	_, err = client.Create(&appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "deploy-" + t.TerminalID,
+			Name: PrefixDeploy + t.TerminalID,
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: &re,
@@ -129,7 +131,7 @@ func CreateTTYcontainer(t *Terminal) error {
 
 	service, err := clientset.CoreV1().Services(TTYnameapace).Create(&apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "svc-" + t.TerminalID,
+			Name: PrefixSvc + t.TerminalID,
 		},
 		Spec: apiv1.ServiceSpec{
 			Selector: map[string]string{
