@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -38,6 +39,23 @@ func createTerminal(request *restful.Request, response *restful.Response) {
 }
 
 func handleHeartbeat(request *restful.Request, response *restful.Response) {
+	//get client of k8s
+	clientset, err := GetK8sClient(&Terminal{WithoutToken: true})
+	if err != nil {
+		response.WriteError(http.StatusInternalServerError, err)
+		return
+	}
+	tid := request.QueryParameter("tid")
+	if tid == "" {
+		response.WriteError(http.StatusInternalServerError, errors.New("the param tid is empty."))
+		return
+	}
+	namespace := request.QueryParameter("namespace")
+	if namespace == "" {
+		namespace = DefaultTTYnameapace
+	}
+	hb := &terHeartbeater{namespace: namespace, terminalID: tid}
+	hb.UpdateTimestamp(clientset)
 }
 
 func main() {
