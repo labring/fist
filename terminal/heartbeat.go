@@ -51,15 +51,6 @@ func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset) {
 		}); err != nil {
 			panic(err)
 		}
-		//without token need clean secrets
-		if t.WithoutToken {
-			secretsClient := clientSet.CoreV1().Secrets(t.namespace)
-			if err := secretsClient.Delete("secret-"+t.terminalID, &metav1.DeleteOptions{
-				PropagationPolicy: &deletePolicy,
-			}); err != nil {
-				panic(err)
-			}
-		}
 	}
 }
 
