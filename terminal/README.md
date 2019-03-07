@@ -50,8 +50,8 @@ env of deploy
 
 | name | type | defaults | Description|
 | :--- | :---  | :---| :---|
-| MY_NAMESPACE | string | "" |  the deployment of k8s namespace |
-| MY_SA_NAME | string | "" |   the service account name of terminal |
+| MY_NAMESPACE | string | "sealyun" |  the deployment of k8s namespace |
+| MY_SA_NAME | string | "admin" |   the service account name of terminal |
 
 
 get fist terminal cluster ip

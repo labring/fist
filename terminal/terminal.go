@@ -24,6 +24,9 @@ const (
 	PrefixSvc           = "svc-"
 	ClassPathNamespace  = "MY_NAMESPACE"
 	ServiceAccountName  = "MY_SA_NAME"
+
+	DefaultNamespace      = "sealyun"
+	DefaultServiceAccount = "admin"
 )
 
 //Terminal is
@@ -192,8 +195,14 @@ func GetK8sClient(t *Terminal) (*kubernetes.Clientset, error) {
 		//get namespace
 		myNamespace := os.Getenv(ClassPathNamespace)
 		mySaName := os.Getenv(ServiceAccountName)
-		t.User = mySaName
+		if myNamespace == "" {
+			myNamespace = DefaultNamespace
+		}
+		if mySaName == "" {
+			mySaName = DefaultServiceAccount
+		}
 
+		t.User = mySaName
 		sa, err := clientset.CoreV1().ServiceAccounts(myNamespace).Get(mySaName, metav1.GetOptions{})
 		if err != nil {
 			return nil, err
