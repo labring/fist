@@ -189,10 +189,10 @@ func GetK8sClient(t *Terminal) (*kubernetes.Clientset, error) {
 		return nil, err
 	}
 	if t.WithoutToken {
-		t.User = "admin"
 		//get namespace
 		myNamespace := os.Getenv(ClassPathNamespace)
 		mySaName := os.Getenv(ServiceAccountName)
+		t.User = mySaName
 
 		sa, err := clientset.CoreV1().ServiceAccounts(myNamespace).Get(mySaName, metav1.GetOptions{})
 		if err != nil {
