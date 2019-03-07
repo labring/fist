@@ -22,16 +22,30 @@ type terHeartbeater struct {
 }
 
 func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset) {
+	//get deploy of terminalId
 	deploymentsClient := clientSet.AppsV1().Deployments(t.namespace)
-	result, err := deploymentsClient.Get("deploy-"+t.terminalID, metav1.GetOptions{})
+	deploymentResult, err := deploymentsClient.Get(PrefixDeploy+t.terminalID, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
-	lastHeartbeat, _ := strconv.Atoi(result.Annotations["fist.seayun.com/lastHeartbeat"])
+	//get svc of terminalId
+	serviceClient := clientSet.CoreV1().Services(t.namespace)
+	_, err = serviceClient.Get(PrefixSvc+t.terminalID, metav1.GetOptions{})
+	if err != nil {
+		panic(err)
+	}
+	lastHeartbeat, _ := strconv.Atoi(deploymentResult.Annotations["fist.seayun.com/lastHeartbeat"])
 	heartbeatTime := time.Now().Unix() - int64(lastHeartbeat)
 	if heartbeatTime > 600 { // time.Minute() * 10 = 600
 		deletePolicy := metav1.DeletePropagationForeground
-		if err := deploymentsClient.Delete("deploy-"+t.terminalID, &metav1.DeleteOptions{
+		//delete deploy
+		if err := deploymentsClient.Delete(PrefixDeploy+t.terminalID, &metav1.DeleteOptions{
+			PropagationPolicy: &deletePolicy,
+		}); err != nil {
+			panic(err)
+		}
+		//delete svc
+		if err := serviceClient.Delete(PrefixSvc+t.terminalID, &metav1.DeleteOptions{
 			PropagationPolicy: &deletePolicy,
 		}); err != nil {
 			panic(err)
@@ -41,7 +55,7 @@ func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset) {
 
 func (t *terHeartbeater) UpdateTimestamp(clientSet *kubernetes.Clientset) error {
 	deploymentsClient := clientSet.AppsV1().Deployments(t.namespace)
-	result, err := deploymentsClient.Get("deploy-"+t.terminalID, metav1.GetOptions{})
+	result, err := deploymentsClient.Get(PrefixDeploy+t.terminalID, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
