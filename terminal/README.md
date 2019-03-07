@@ -41,7 +41,6 @@ clent                     terminal                        terminal-pod
 ```
 cd terminal/deploy
 kubectl create ns sealyun
-kubectl create secret generic kube-config -n sealyun --from-file=/root/.kube/config 
 kubectl create -f rbac.yaml
 kubectl create -f deploy.yaml
 ```
@@ -77,7 +76,6 @@ Using http://IP:32219
 | Apiserver | string | "https://kubernetes.default.svc.cluster.local:443" | web-termianl controll k8s cluster,k8s apiserver address |
 | Namespace | string | "default" | default controller k8s cluster namespace |
 | WithoutToken | bool | false | without user token access k8s |
-| KubeConfigPath | string | "" | terminal used config of k8s , when WithoutToken is true |
 | TTYKubeImage | string | "fanux/fist-tty-tools:v1.0.0" | default of tty images  |
 
 

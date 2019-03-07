@@ -3,17 +3,16 @@ package main
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
-	"k8s.io/apimachinery/pkg/util/intstr"
-	"k8s.io/client-go/tools/clientcmd"
-
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"os"
 )
 
 //consts
@@ -23,19 +22,19 @@ const (
 	DefaultKubeTTYimage = "fanux/fist-tty-tools:v1.0.0"
 	PrefixDeploy        = "deploy-"
 	PrefixSvc           = "svc-"
-	PrefixSecret        = "secret-"
+	ClassPathNamespace  = "MY_NAMESPACE"
+	ServiceAccountName  = "MY_SA_NAME"
 )
 
 //Terminal is
 type Terminal struct {
 	//input field
-	User           string
-	UserToken      string
-	Apiserver      string // just using default apiserver
-	Namespace      string // the kubeconfig default context namespace
-	WithoutToken   bool   // if true, mount the kubeconfig file, using ttyd instead the start-terminal.sh
-	KubeConfigPath string //default is  "/root/.kube/config"
-	TTYKubeImage   string //default is  "fanux/fist-tty-tools:v1.0.0"
+	User         string
+	UserToken    string
+	Apiserver    string // just using default apiserver
+	Namespace    string // the kubeconfig default context namespace
+	WithoutToken bool   // if true, mount the kubeconfig file, using ttyd instead the start-terminal.sh
+	TTYKubeImage string //default is  "fanux/fist-tty-tools:v1.0.0"
 
 	//output append field
 	TerminalID string
@@ -98,8 +97,6 @@ func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset, re int32) err
 		templateObjMeta metav1.ObjectMeta
 		ports           []apiv1.ContainerPort
 		env             []apiv1.EnvVar
-		volume          []apiv1.Volume
-		volumeMounts    []apiv1.VolumeMount
 	)
 	//init
 	objMeta = metav1.ObjectMeta{
@@ -122,51 +119,12 @@ func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset, re int32) err
 			ContainerPort: 8080,
 		},
 	}
-	if t.WithoutToken {
-		env = []apiv1.EnvVar{
-			{Name: "TERMINAL_ID", Value: t.TerminalID},
-		}
-		secretsClient := clientset.CoreV1().Secrets(DefaultTTYnameapace)
-		secretsData, _ := ioutil.ReadFile(t.KubeConfigPath)
-		_, err := secretsClient.Create(&apiv1.Secret{
-			Type: apiv1.SecretTypeOpaque,
-			ObjectMeta: metav1.ObjectMeta{
-				Name: PrefixSecret + t.TerminalID,
-			},
-			Data: map[string][]byte{
-				"config": secretsData,
-			},
-		})
-		if err != nil {
-			return err
-		}
-		volume = []apiv1.Volume{
-			{
-				Name: "kube-config",
-				VolumeSource: apiv1.VolumeSource{
-					Secret: &apiv1.SecretVolumeSource{
-						SecretName: PrefixSecret + t.TerminalID,
-					},
-				},
-			},
-		}
-		volumeMounts = []apiv1.VolumeMount{
-			{
-				Name:      "kube-config",
-				MountPath: "/root/.kube",
-				ReadOnly:  true,
-			},
-		}
-	} else {
-		env = []apiv1.EnvVar{
-			{Name: "APISERVER", Value: t.Apiserver},
-			{Name: "USER_TOKEN", Value: t.UserToken},
-			{Name: "NAMESPACE", Value: t.Namespace},
-			{Name: "USER_NAME", Value: t.User},
-			{Name: "TERMINAL_ID", Value: t.TerminalID},
-		}
-		volume = []apiv1.Volume{}
-		volumeMounts = []apiv1.VolumeMount{}
+	env = []apiv1.EnvVar{
+		{Name: "APISERVER", Value: t.Apiserver},
+		{Name: "USER_TOKEN", Value: t.UserToken},
+		{Name: "NAMESPACE", Value: t.Namespace},
+		{Name: "USER_NAME", Value: t.User},
+		{Name: "TERMINAL_ID", Value: t.TerminalID},
 	}
 	_, err := deployClient.Create(&appsv1.Deployment{
 		ObjectMeta: objMeta,
@@ -178,14 +136,12 @@ func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset, re int32) err
 				Spec: apiv1.PodSpec{
 					Containers: []apiv1.Container{
 						{
-							Env:          env,
-							Name:         "tty",
-							Image:        t.TTYKubeImage,
-							Ports:        ports,
-							VolumeMounts: volumeMounts,
+							Env:   env,
+							Name:  "tty",
+							Image: t.TTYKubeImage,
+							Ports: ports,
 						},
 					},
-					Volumes: volume,
 				},
 			},
 		},
@@ -223,11 +179,7 @@ func GetK8sClient(t *Terminal) (*kubernetes.Clientset, error) {
 		config *rest.Config
 		err    error
 	)
-	if t.WithoutToken {
-		config, err = clientcmd.BuildConfigFromFlags("", t.KubeConfigPath)
-	} else {
-		config, err = rest.InClusterConfig()
-	}
+	config, err = rest.InClusterConfig()
 	if err != nil {
 		return nil, err
 	}
@@ -235,6 +187,32 @@ func GetK8sClient(t *Terminal) (*kubernetes.Clientset, error) {
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		return nil, err
+	}
+	if t.WithoutToken {
+		t.User = "admin"
+		//get namespace
+		myNamespace := os.Getenv(ClassPathNamespace)
+		mySaName := os.Getenv(ServiceAccountName)
+
+		sa, err := clientset.CoreV1().ServiceAccounts(myNamespace).Get(mySaName, metav1.GetOptions{})
+		if err != nil {
+			return nil, err
+		}
+		saSercerts := sa.Secrets
+		if saSercerts != nil && len(saSercerts) > 0 {
+			saTokenName := saSercerts[0].Name
+			saTokenSecrets, err := clientset.CoreV1().Secrets(myNamespace).Get(saTokenName, metav1.GetOptions{})
+			if err != nil {
+				return nil, err
+			}
+			token := string(saTokenSecrets.Data["token"])
+			if err != nil {
+				return nil, errors.New("The serviceAccount token is empty.")
+			}
+			t.UserToken = token
+		} else {
+			return nil, errors.New("The serviceAccount token is not exists.")
+		}
 	}
 	return clientset, nil
 }
