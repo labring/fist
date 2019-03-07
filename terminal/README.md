@@ -67,6 +67,11 @@ bc5aaf70741d41c0b4011ebfe7a70f52   NodePort   10.98.60.90   <none>        8080:3
 Using http://IP:32219
 
 ## Using bare docker image
+imageList:
+
+* fanux/kube-ttyd:latest : only has kubectl and tty
+* fanux/fist-tty-tools:v1.0.0 : include golang dev environment, full vim plugins, and vim kubernetes plugins
+
 ```
 docker run -d --net=host -e APISERVER="https://172.31.12.61:6443" -e USER_TOKEN="XX" -e NAMESPACE="default" -e USER_NAME=fanux -e TERMINAL_ID="uuid" fanux/kube-ttyd:latest
 ```
@@ -81,5 +86,11 @@ OR if you want mount the kubeconfig file instead to use user token:
 ```
 docker run -d --net=host -v /root/.kube/config:/root/.kube/config fanux/kube-ttyd:latest ttyd -p 8080 bash
 ```
-
+## How to using the terminal
+* Ctrl g   complete k8s yaml file
+* zm         fold or unfold code
+* Ctrl n   open code dir 
+* ,t       open function or structs list
+* Ctrl h   swith window  (Ctrl h     Ctrl J   Ctrl K  Ctrl L)
+* ,dt      go to defination
 

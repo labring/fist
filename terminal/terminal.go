@@ -19,7 +19,7 @@ import (
 const (
 	TTYnameapace     = "sealyun-tty"
 	DefaultApiserver = "https://kubernetes.default.svc.cluster.local:443" //or https://10.96.0.1:443
-	kubeTTYimage     = "fanux/kube-ttyd:latest"
+	kubeTTYimage     = "fanux/fist-tty-tools:v1.0.0"
 )
 
 //Terminal is
@@ -68,6 +68,17 @@ func CreateTTYcontainer(t *Terminal) error {
 
 	var re int32
 	re = 1
+	_, err = clientset.CoreV1().Namespaces().Get(TTYnameapace, metav1.GetOptions{})
+	if err != nil {
+		_, err = clientset.CoreV1().Namespaces().Create(&apiv1.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: TTYnameapace,
+			},
+		})
+		if err != nil {
+			return err
+		}
+	}
 
 	client := clientset.AppsV1().Deployments(TTYnameapace)
 	_, err = client.Create(&appsv1.Deployment{
