@@ -229,15 +229,12 @@ func GetK8sClient(t *Terminal) (*kubernetes.Clientset, error) {
 //CreateTTYcontainer is
 func CreateTTYcontainer(t *Terminal) error {
 	//get client of k8s
-	clientset, err := GetK8sClient(t)
-	if err != nil {
-		return err
-	}
+	clientset, _ := GetK8sClient(t)
 	var re int32
 	// deploy  Replicas number
 	re = 1
 	//create namespace
-	err = CreateTTYnamespace(clientset)
+	err := CreateTTYnamespace(clientset)
 	if err != nil {
 		return err
 	}
