@@ -24,13 +24,13 @@ type terHeartbeater struct {
 func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset) error {
 	//get deploy of terminalId
 	deploymentsClient := clientSet.AppsV1().Deployments(t.namespace)
-	deploymentResult, err := deploymentsClient.Get(PrefixDeploy+t.terminalID, metav1.GetOptions{})
+	deploymentResult, err := deploymentsClient.Get(t.terminalID, metav1.GetOptions{})
 	if err != nil {
 		return err
 	}
 	//get svc of terminalId
 	serviceClient := clientSet.CoreV1().Services(t.namespace)
-	_, err = serviceClient.Get(PrefixSvc+t.terminalID, metav1.GetOptions{})
+	_, err = serviceClient.Get(t.terminalID, metav1.GetOptions{})
 	if err != nil {
 		return err
 	}
@@ -39,13 +39,13 @@ func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset) error
 	if heartbeatTime > 600 { // time.Minute() * 10 = 600
 		deletePolicy := metav1.DeletePropagationForeground
 		//delete deploy
-		if err := deploymentsClient.Delete(PrefixDeploy+t.terminalID, &metav1.DeleteOptions{
+		if err := deploymentsClient.Delete(t.terminalID, &metav1.DeleteOptions{
 			PropagationPolicy: &deletePolicy,
 		}); err != nil {
 			return err
 		}
 		//delete svc
-		if err := serviceClient.Delete(PrefixSvc+t.terminalID, &metav1.DeleteOptions{
+		if err := serviceClient.Delete(t.terminalID, &metav1.DeleteOptions{
 			PropagationPolicy: &deletePolicy,
 		}); err != nil {
 			return err
@@ -56,7 +56,7 @@ func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset) error
 
 func (t *terHeartbeater) UpdateTimestamp(clientSet *kubernetes.Clientset) error {
 	deploymentsClient := clientSet.AppsV1().Deployments(t.namespace)
-	result, err := deploymentsClient.Get(PrefixDeploy+t.terminalID, metav1.GetOptions{})
+	result, err := deploymentsClient.Get(t.terminalID, metav1.GetOptions{})
 	if err != nil {
 		return err
 	}
