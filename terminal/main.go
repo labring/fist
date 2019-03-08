@@ -54,8 +54,13 @@ func handleHeartbeat(request *restful.Request, response *restful.Response) {
 	if namespace == "" {
 		namespace = DefaultTTYnameapace
 	}
-	hb := &terHeartbeater{namespace: namespace, terminalID: tid}
-	hb.UpdateTimestamp(clientset)
+	var hbInterface Heartbeater
+	hbInterface = &terHeartbeater{namespace: namespace, terminalID: tid}
+	err = hbInterface.UpdateTimestamp(clientset)
+	if err != nil {
+		response.WriteError(http.StatusInternalServerError, err)
+		return
+	}
 }
 
 func main() {
