@@ -20,13 +20,17 @@ const (
 	DefaultTTYnameapace = "sealyun-tty"
 	DefaultApiserver    = "https://kubernetes.default.svc.cluster.local:443" //or https://10.96.0.1:443
 	DefaultKubeTTYimage = "fanux/fist-tty-tools:v1.0.0"
-	PrefixDeploy        = "deploy-"
-	PrefixSvc           = "svc-"
+	DefaultPrefix       = "tid-"
 	ClassPathNamespace  = "MY_NAMESPACE"
 	ServiceAccountName  = "MY_SA_NAME"
 
 	DefaultNamespace      = "sealyun"
 	DefaultServiceAccount = "admin"
+)
+
+//vars
+var (
+	DefaultTTYDeployReplicas = int32(1)
 )
 
 //Terminal is
@@ -67,7 +71,7 @@ func newUUID() string {
 
 //Create a terminal
 func (t *Terminal) Create() error {
-	t.TerminalID = newUUID()
+	t.TerminalID = DefaultPrefix + newUUID()
 
 	//create tty deployment and service
 	return CreateTTYcontainer(t)
@@ -90,7 +94,7 @@ func CreateTTYnamespace(clientset *kubernetes.Clientset) error {
 }
 
 //CreateTTYdeploy
-func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset, re int32) error {
+func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset) error {
 	//get deploy deployClient
 	deployClient := clientset.AppsV1().Deployments(DefaultTTYnameapace)
 	//vars
@@ -103,7 +107,7 @@ func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset, re int32) err
 	)
 	//init
 	objMeta = metav1.ObjectMeta{
-		Name: PrefixDeploy + t.TerminalID,
+		Name: t.TerminalID,
 	}
 	selector = &metav1.LabelSelector{
 		MatchLabels: map[string]string{
@@ -132,7 +136,7 @@ func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset, re int32) err
 	_, err := deployClient.Create(&appsv1.Deployment{
 		ObjectMeta: objMeta,
 		Spec: appsv1.DeploymentSpec{
-			Replicas: &re,
+			Replicas: &DefaultTTYDeployReplicas,
 			Selector: selector,
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: templateObjMeta,
@@ -159,7 +163,7 @@ func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset, re int32) err
 func CreateTTYservice(t *Terminal, clientset *kubernetes.Clientset) error {
 	service, err := clientset.CoreV1().Services(DefaultTTYnameapace).Create(&apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: PrefixSvc + t.TerminalID,
+			Name: t.TerminalID,
 		},
 		Spec: apiv1.ServiceSpec{
 			Selector: map[string]string{
@@ -177,20 +181,7 @@ func CreateTTYservice(t *Terminal, clientset *kubernetes.Clientset) error {
 	t.EndPoint = fmt.Sprintf("%d", service.Spec.Ports[0].NodePort)
 	return nil
 }
-func GetK8sClient(t *Terminal) (*kubernetes.Clientset, error) {
-	var (
-		config *rest.Config
-		err    error
-	)
-	config, err = rest.InClusterConfig()
-	if err != nil {
-		return nil, err
-	}
-	// creates the clientset
-	clientset, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
+func WithoutToken(t *Terminal, clientset *kubernetes.Clientset) error {
 	if t.WithoutToken {
 		//get namespace
 		myNamespace := os.Getenv(ClassPathNamespace)
@@ -205,44 +196,63 @@ func GetK8sClient(t *Terminal) (*kubernetes.Clientset, error) {
 		t.User = mySaName
 		sa, err := clientset.CoreV1().ServiceAccounts(myNamespace).Get(mySaName, metav1.GetOptions{})
 		if err != nil {
-			return nil, err
+			return err
 		}
 		saSercerts := sa.Secrets
 		if saSercerts != nil && len(saSercerts) > 0 {
 			saTokenName := saSercerts[0].Name
 			saTokenSecrets, err := clientset.CoreV1().Secrets(myNamespace).Get(saTokenName, metav1.GetOptions{})
 			if err != nil {
-				return nil, err
+				return err
 			}
 			token := string(saTokenSecrets.Data["token"])
 			if err != nil {
-				return nil, errors.New("The serviceAccount token is empty.")
+				return errors.New("The serviceAccount token is empty.")
 			}
 			t.UserToken = token
 		} else {
-			return nil, errors.New("The serviceAccount token is not exists.")
+			return errors.New("The serviceAccount token is not exists.")
 		}
 	}
+	return nil
+}
+func GetK8sClient() (*kubernetes.Clientset, error) {
+	var (
+		config *rest.Config
+		err    error
+	)
+	config, err = rest.InClusterConfig()
+	if err != nil {
+		return nil, err
+	}
+	// creates the clientset
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
 	return clientset, nil
 }
 
 //CreateTTYcontainer is
 func CreateTTYcontainer(t *Terminal) error {
 	//get client of k8s
-	clientset, err := GetK8sClient(t)
+	clientset, err := GetK8sClient()
 	if err != nil {
 		return err
 	}
-	var re int32
-	// deploy  Replicas number
-	re = 1
+	//process without token
+	err = WithoutToken(t, clientset)
+	if err != nil {
+		return err
+	}
 	//create namespace
 	err = CreateTTYnamespace(clientset)
 	if err != nil {
 		return err
 	}
 	//create deploy
-	err = CreateTTYdeploy(t, clientset, re)
+	err = CreateTTYdeploy(t, clientset)
 	if err != nil {
 		return err
 	}
