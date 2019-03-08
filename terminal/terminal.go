@@ -159,7 +159,7 @@ func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset, re int32) err
 func CreateTTYservice(t *Terminal, clientset *kubernetes.Clientset) error {
 	service, err := clientset.CoreV1().Services(DefaultTTYnameapace).Create(&apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: PrefixDeploy + t.TerminalID,
+			Name: PrefixSvc + t.TerminalID,
 		},
 		Spec: apiv1.ServiceSpec{
 			Selector: map[string]string{
@@ -229,12 +229,15 @@ func GetK8sClient(t *Terminal) (*kubernetes.Clientset, error) {
 //CreateTTYcontainer is
 func CreateTTYcontainer(t *Terminal) error {
 	//get client of k8s
-	clientset, _ := GetK8sClient(t)
+	clientset, err := GetK8sClient(t)
+	if err != nil {
+		return err
+	}
 	var re int32
 	// deploy  Replicas number
 	re = 1
 	//create namespace
-	err := CreateTTYnamespace(clientset)
+	err = CreateTTYnamespace(clientset)
 	if err != nil {
 		return err
 	}
