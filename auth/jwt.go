@@ -5,26 +5,12 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/rsa"
-	"encoding/hex"
 	"errors"
 	"fmt"
-	"io"
 	"log"
 
-	jose "gopkg.in/square/go-jose.v2"
+	"gopkg.in/square/go-jose.v2"
 )
-
-func newUUID() string {
-	u := make([]byte, 16)
-	if _, err := io.ReadFull(rand.Reader, u); err != nil {
-		panic(err)
-	}
-
-	u[8] = (u[8] | 0x80) & 0xBF
-	u[6] = (u[6] | 0x40) & 0x4F
-
-	return hex.EncodeToString(u)
-}
 
 //CreateKeyPair is
 func CreateKeyPair() (pub, priv jose.JSONWebKey) {
