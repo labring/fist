@@ -34,16 +34,16 @@ var (
 //Terminal is
 type Terminal struct {
 	//input field
-	User         string
-	UserToken    string
-	Apiserver    string // just using default apiserver
-	Namespace    string // the kubeconfig default context namespace
-	WithoutToken bool   // if true, mount the kubeconfig file, using ttyd instead the start-terminal.sh
-	TTYKubeImage string //default is  "fanux/fist-tty-tools:v1.0.0"
+	User         string `json:"user,omitempty"`
+	UserToken    string `json:"userToken,omitempty"`
+	Apiserver    string `json:"apiServer,omitempty"`    // just using default apiserver
+	Namespace    string `json:"namespace,omitempty"`    // the kubeconfig default context namespace
+	WithoutToken bool   `json:"withoutToken,omitempty"` // if true, mount the kubeconfig file, using ttyd instead the start-terminal.sh
+	TTYKubeImage string `json:"ttyKubeImage,omitempty"` //default is  "fanux/fist-tty-tools:v1.0.0"
 
 	//output append field
-	TerminalID string
-	EndPoint   string
+	TerminalID string `json:"terminalID,omitempty"`
+	EndPoint   string `json:"endPoint,omitempty"`
 }
 
 func newTerminal() *Terminal {
