@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: fist
-        image: fanux/fist:latest
+        image: lameleg/fist:latest
         command: ["./fist", "auth"]
         imagePullPolicy: Always
         ports:
@@ -52,6 +52,7 @@ metadata:
   namespace: sealyun
 spec:
   type: ClusterIP
+  clusterIP: 10.106.233.67
   ports:
   - name: fist
     port: 8080

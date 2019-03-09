@@ -21,7 +21,7 @@ spec:
       serviceAccountName: admin
       containers:
       - name: fist-terminal
-        image: fanux/fist:latest
+        image: lameleg/fist:latest
         command: ["./fist", "terminal"]
         imagePullPolicy: Always
         ports:

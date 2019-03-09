@@ -15,9 +15,10 @@ steps:
 - name: publish-fist
   image: plugins/docker
   settings:
-    repo: fanux/fist
+    repo: lameleg/fist
     tags: ${DRONE_TAG=latest}
-    username: fanux
+    username: 
+      from_secret: docker-hub-user
     dockerfile: deploy/Dockerfile
     password:
       from_secret: docker-hub-pass
