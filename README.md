@@ -118,3 +118,6 @@ No resources found.
 
 # Webterminal
 [README](./terminal/README.md)
+
+# Contributing
+[Contributing guide](./CONTRIBUTING.md)
