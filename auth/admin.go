@@ -2,10 +2,7 @@ package auth
 
 import (
 	"errors"
-	"k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
+	"github.com/fanux/fist/tools"
 )
 
 // vars
@@ -29,19 +26,19 @@ func NewAdmin(name string, passwd string) Adminer {
 }
 
 func (*Admin) LoadSecret() error {
-	clients, err := GetK8sClient()
+	clients, err := tools.GetK8sClient()
 	if err != nil {
 		return err
 	}
 	if AdminUsername == "" {
-		secrets, err := GetSecrets("sealyun", "fist-admin", clients)
+		secrets, err := tools.GetSecrets("sealyun", "fist-admin", clients)
 		if err != nil {
 			return err
 		}
 		AdminUsername = string(secrets.Data["username"])
 	}
 	if AdminPassword == "" {
-		secrets, err := GetSecrets("sealyun", "fist-admin", clients)
+		secrets, err := tools.GetSecrets("sealyun", "fist-admin", clients)
 		if err != nil {
 			return err
 		}
@@ -62,22 +59,4 @@ func (admin *Admin) IsAdmin() (bool, error) {
 	} else {
 		return false, errors.New("the username and password is mismatching")
 	}
-}
-
-func GetK8sClient() (*kubernetes.Clientset, error) {
-	config, err := rest.InClusterConfig()
-	if err != nil {
-		return nil, err
-	}
-	// creates the clientset
-	clientSet, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-	return clientSet, nil
-}
-
-func GetSecrets(namespace string, name string, clientset *kubernetes.Clientset) (*v1.Secret, error) {
-	secret, err := clientset.CoreV1().Secrets(namespace).Get(name, metav1.GetOptions{})
-	return secret, err
 }

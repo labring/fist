@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"k8s.io/api/core/v1"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -40,4 +41,10 @@ func CreateNamespace(client *kubernetes.Clientset, namespace string) error {
 		}
 	}
 	return nil
+}
+
+//GetSecrets
+func GetSecrets(namespace string, name string, clientset *kubernetes.Clientset) (*v1.Secret, error) {
+	secret, err := clientset.CoreV1().Secrets(namespace).Get(name, metav1.GetOptions{})
+	return secret, err
 }
