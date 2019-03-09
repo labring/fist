@@ -40,7 +40,7 @@ func createTerminal(request *restful.Request, response *restful.Response) {
 
 func handleHeartbeat(request *restful.Request, response *restful.Response) {
 	//get client of k8s
-	clientset, err := GetK8sClient(&Terminal{WithoutToken: false})
+	clientset, err := GetK8sClient()
 	if err != nil {
 		response.WriteError(http.StatusInternalServerError, err)
 		return
