@@ -27,28 +27,28 @@ func createTerminal(request *restful.Request, response *restful.Response) {
 	t := newTerminal()
 	err := request.ReadEntity(t)
 	if err != nil {
-		response.WriteError(http.StatusInternalServerError, err)
+		tools.ResponseError(response, err)
 		return
 	}
 
 	err = t.Create()
 	if err != nil {
-		response.WriteError(http.StatusInternalServerError, err)
+		tools.ResponseError(response, err)
 		return
 	}
-	response.WriteEntity(t)
+	tools.ResponseSuccess(response, t)
 }
 
 func handleHeartbeat(request *restful.Request, response *restful.Response) {
 	//get client of k8s
 	clientset, err := tools.GetK8sClient()
 	if err != nil {
-		response.WriteError(http.StatusInternalServerError, err)
+		tools.ResponseError(response, err)
 		return
 	}
 	tid := request.QueryParameter("tid")
 	if tid == "" {
-		response.WriteError(http.StatusInternalServerError, errors.New("the param tid is empty"))
+		tools.ResponseError(response, errors.New("the param tid is empty"))
 		return
 	}
 	namespace := request.QueryParameter("namespace")
@@ -59,9 +59,10 @@ func handleHeartbeat(request *restful.Request, response *restful.Response) {
 	hbInterface = NewHeartbeater(tid, namespace)
 	err = hbInterface.UpdateTimestamp(clientset)
 	if err != nil {
-		response.WriteError(http.StatusInternalServerError, err)
+		tools.ResponseError(response, err)
 		return
 	}
+	tools.ResponseSuccess(response, nil)
 }
 
 //Serve start a terminal server
