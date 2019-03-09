@@ -1,5 +1,7 @@
 # Kuberntes web terminal
 
+[more imformations of terminal](https://sealyun.com/post/fist-terminal/)
+
 ![](./terminal.jpeg)
 
 ![](./show-terminal.png)
