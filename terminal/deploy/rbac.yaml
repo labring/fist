@@ -21,8 +21,3 @@ metadata:
   labels:
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: sealyun-tty

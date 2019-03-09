@@ -1,4 +1,4 @@
-package main
+package auth
 
 /*
 	fmt.Println("=========veriry========\n\n")

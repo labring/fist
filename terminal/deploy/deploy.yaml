@@ -21,11 +21,18 @@ spec:
       serviceAccountName: admin
       containers:
       - name: fist-terminal
-        image: fanux/fist-terminal:latest
+        image: fanux/fist:latest
+        command: ["./fist", "terminal"]
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-
+        env:
+          - name: MY_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: MY_SA_NAME
+            value: "admin"
 ---
 kind: Service
 apiVersion: v1
