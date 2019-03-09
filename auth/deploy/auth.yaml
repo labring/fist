@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: fist
-        image: fanux/fist:latest
+        image: lameleg/fist:latest
         command: ["./fist", "auth"]
         imagePullPolicy: Always
         ports:
