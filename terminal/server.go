@@ -2,6 +2,7 @@ package terminal
 
 import (
 	"errors"
+	"github.com/fanux/fist/tools"
 	"log"
 	"net/http"
 
@@ -40,7 +41,7 @@ func createTerminal(request *restful.Request, response *restful.Response) {
 
 func handleHeartbeat(request *restful.Request, response *restful.Response) {
 	//get client of k8s
-	clientset, err := GetK8sClient()
+	clientset, err := tools.GetK8sClient()
 	if err != nil {
 		response.WriteError(http.StatusInternalServerError, err)
 		return
