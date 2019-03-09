@@ -1,4 +1,4 @@
-package main
+package terminal
 
 import (
 	"strconv"
@@ -21,6 +21,7 @@ type terHeartbeater struct {
 	namespace  string
 }
 
+//NewHeartbeater is
 func NewHeartbeater(tid string, namespace string) Heartbeater {
 	var hbInterface Heartbeater
 	hbInterface = &terHeartbeater{namespace: namespace, terminalID: tid}

@@ -20,7 +20,8 @@ spec:
     spec:
       containers:
       - name: fist
-        image: fanux/fist-auth:latest
+        image: fanux/fist:latest
+        command: ["./fist", "auth"]
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

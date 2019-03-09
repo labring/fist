@@ -1,4 +1,4 @@
-package main
+package terminal
 
 import (
 	"crypto/rand"
@@ -6,13 +6,14 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
+
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
-	"os"
 )
 
 //consts
@@ -77,7 +78,7 @@ func (t *Terminal) Create() error {
 	return CreateTTYcontainer(t)
 }
 
-//CreateTTYnamespace
+//CreateTTYnamespace create tty nanmeapace
 func CreateTTYnamespace(clientset *kubernetes.Clientset) error {
 	_, err := clientset.CoreV1().Namespaces().Get(DefaultTTYnameapace, metav1.GetOptions{})
 	if err != nil {
@@ -93,7 +94,7 @@ func CreateTTYnamespace(clientset *kubernetes.Clientset) error {
 	return nil
 }
 
-//CreateTTYdeploy
+//CreateTTYdeploy create deployment
 func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset) error {
 	//get deploy deployClient
 	deployClient := clientset.AppsV1().Deployments(DefaultTTYnameapace)
@@ -159,7 +160,7 @@ func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset) error {
 	return nil
 }
 
-//CreateTTYservice
+//CreateTTYservice tty service
 func CreateTTYservice(t *Terminal, clientset *kubernetes.Clientset) error {
 	service, err := clientset.CoreV1().Services(DefaultTTYnameapace).Create(&apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
@@ -181,6 +182,8 @@ func CreateTTYservice(t *Terminal, clientset *kubernetes.Clientset) error {
 	t.EndPoint = fmt.Sprintf("%d", service.Spec.Ports[0].NodePort)
 	return nil
 }
+
+//WithoutToken create terminal without token
 func WithoutToken(t *Terminal, clientset *kubernetes.Clientset) error {
 	if t.WithoutToken {
 		//get namespace
@@ -207,15 +210,17 @@ func WithoutToken(t *Terminal, clientset *kubernetes.Clientset) error {
 			}
 			token := string(saTokenSecrets.Data["token"])
 			if err != nil {
-				return errors.New("The serviceAccount token is empty.")
+				return errors.New("The serviceAccount token is empty")
 			}
 			t.UserToken = token
 		} else {
-			return errors.New("The serviceAccount token is not exists.")
+			return errors.New("The serviceAccount token is not exists")
 		}
 	}
 	return nil
 }
+
+//GetK8sClient get a kubernetes in cluster clientset
 func GetK8sClient() (*kubernetes.Clientset, error) {
 	var (
 		config *rest.Config
