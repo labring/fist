@@ -55,7 +55,7 @@ func handleHeartbeat(request *restful.Request, response *restful.Response) {
 		namespace = DefaultTTYnameapace
 	}
 	var hbInterface Heartbeater
-	hbInterface = &terHeartbeater{namespace: namespace, terminalID: tid}
+	hbInterface = NewHeartbeater(tid, namespace)
 	err = hbInterface.UpdateTimestamp(clientset)
 	if err != nil {
 		response.WriteError(http.StatusInternalServerError, err)

@@ -21,6 +21,12 @@ type terHeartbeater struct {
 	namespace  string
 }
 
+func NewHeartbeater(tid string, namespace string) Heartbeater {
+	var hbInterface Heartbeater
+	hbInterface = &terHeartbeater{namespace: namespace, terminalID: tid}
+	return hbInterface
+}
+
 func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset) error {
 	//get deploy of terminalId
 	deploymentsClient := clientSet.AppsV1().Deployments(t.namespace)
