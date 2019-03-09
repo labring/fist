@@ -6,7 +6,7 @@ workspace:
    path: src/github.com/fanux/fist/
 
 steps:
-- name: build-auth
+- name: build-fist
   image: golang:1.10.8
   commands:
      - go get -v
