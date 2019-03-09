@@ -9,6 +9,12 @@ import (
 var AdminUsername string
 var AdminPassword string
 
+// consts
+const (
+	DefaultNamespace  = "sealyun"
+	DefaultSecretName = "fist-admin"
+)
+
 type Admin struct {
 	Name   string
 	Passwd string
@@ -31,14 +37,14 @@ func (*Admin) LoadSecret() error {
 		return err
 	}
 	if AdminUsername == "" {
-		secrets, err := tools.GetSecrets("sealyun", "fist-admin", clients)
+		secrets, err := tools.GetSecrets(DefaultNamespace, DefaultSecretName, clients)
 		if err != nil {
 			return err
 		}
 		AdminUsername = string(secrets.Data["username"])
 	}
 	if AdminPassword == "" {
-		secrets, err := tools.GetSecrets("sealyun", "fist-admin", clients)
+		secrets, err := tools.GetSecrets(DefaultNamespace, DefaultSecretName, clients)
 		if err != nil {
 			return err
 		}
