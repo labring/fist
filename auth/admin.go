@@ -1,4 +1,4 @@
-package main
+package auth
 
 import (
 	"errors"
@@ -9,8 +9,8 @@ import (
 )
 
 // vars
-var ADMIN_USERNAME string
-var ADMIN_PASSWORD string
+var AdminUsername string
+var AdminPassword string
 
 type Admin struct {
 	Name   string
@@ -23,44 +23,44 @@ type Adminer interface {
 }
 
 func newAdmin(name string, passwd string) Adminer {
-	var adminer Adminer
-	adminer = &Admin{Name: name, Passwd: passwd}
-	return adminer
+	var admire Adminer
+	admire = &Admin{Name: name, Passwd: passwd}
+	return admire
 }
 
 func (*Admin) LoadSecret() error {
-	clientset, err := GetK8sClient()
+	clients, err := GetK8sClient()
 	if err != nil {
 		return err
 	}
-	if ADMIN_USERNAME == "" {
-		secrets, err := GetSecrets("sealyun", "fist-admin", clientset)
+	if AdminUsername == "" {
+		secrets, err := GetSecrets("sealyun", "fist-admin", clients)
 		if err != nil {
 			return err
 		}
-		ADMIN_USERNAME = string(secrets.Data["username"])
+		AdminUsername = string(secrets.Data["username"])
 	}
-	if ADMIN_PASSWORD == "" {
-		secrets, err := GetSecrets("sealyun", "fist-admin", clientset)
+	if AdminPassword == "" {
+		secrets, err := GetSecrets("sealyun", "fist-admin", clients)
 		if err != nil {
 			return err
 		}
-		ADMIN_PASSWORD = string(secrets.Data["password"])
+		AdminPassword = string(secrets.Data["password"])
 	}
 	return nil
 }
 
 func (admin *Admin) IsAdmin() (bool, error) {
 	if admin.Name == "" {
-		return false, errors.New("the username is empty.")
+		return false, errors.New("the username is empty")
 	}
 	if admin.Passwd == "" {
-		return false, errors.New("the password is empty.")
+		return false, errors.New("the password is empty")
 	}
-	if admin.Name == ADMIN_USERNAME && admin.Passwd == ADMIN_PASSWORD {
+	if admin.Name == AdminUsername && admin.Passwd == AdminPassword {
 		return true, nil
 	} else {
-		return false, errors.New("the username and password is mismatching.")
+		return false, errors.New("the username and password is mismatching")
 	}
 }
 
@@ -70,11 +70,11 @@ func GetK8sClient() (*kubernetes.Clientset, error) {
 		return nil, err
 	}
 	// creates the clientset
-	clientset, err := kubernetes.NewForConfig(config)
+	clientSet, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		return nil, err
 	}
-	return clientset, nil
+	return clientSet, nil
 }
 
 func GetSecrets(namespace string, name string, clientset *kubernetes.Clientset) (*v1.Secret, error) {
