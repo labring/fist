@@ -22,7 +22,7 @@ type Adminer interface {
 	IsAdmin() (bool, error)
 }
 
-func newAdmin(name string, passwd string) Adminer {
+func NewAdmin(name string, passwd string) Adminer {
 	var admire Adminer
 	admire = &Admin{Name: name, Passwd: passwd}
 	return admire

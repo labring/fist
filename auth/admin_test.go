@@ -6,7 +6,7 @@ import (
 )
 
 func TestAdmin_IsAdminFalse(t *testing.T) {
-	adminer := newAdmin("admin", "admin")
+	adminer := NewAdmin("admin", "admin")
 	err := adminer.LoadSecret()
 	if err != nil {
 		panic(err)
@@ -21,7 +21,7 @@ func TestAdmin_IsAdminFalse(t *testing.T) {
 }
 
 func TestAdmin_IsAdminTrue(t *testing.T) {
-	adminer := newAdmin("admin", "1f2d1e2e67df")
+	adminer := NewAdmin("admin", "1f2d1e2e67df")
 	err := adminer.LoadSecret()
 	if err != nil {
 		panic(err)
@@ -36,7 +36,7 @@ func TestAdmin_IsAdminTrue(t *testing.T) {
 }
 
 func TestAdmin_LoadSecret(t *testing.T) {
-	adminer := newAdmin("admin", "admin")
+	adminer := NewAdmin("admin", "admin")
 	err := adminer.LoadSecret()
 	if err != nil {
 		panic(err)
