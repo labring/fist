@@ -1,19 +1,16 @@
 package terminal
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"errors"
 	"fmt"
-	"io"
 	"os"
 
+	"github.com/fanux/fist/tools"
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
 )
 
 //consts
@@ -58,40 +55,12 @@ func newTerminal() *Terminal {
 	}
 }
 
-func newUUID() string {
-	u := make([]byte, 16)
-	if _, err := io.ReadFull(rand.Reader, u); err != nil {
-		panic(err)
-	}
-
-	u[8] = (u[8] | 0x80) & 0xBF
-	u[6] = (u[6] | 0x40) & 0x4F
-
-	return hex.EncodeToString(u)
-}
-
 //Create a terminal
 func (t *Terminal) Create() error {
-	t.TerminalID = DefaultPrefix + newUUID()
+	t.TerminalID = DefaultPrefix + tools.NewUUID()
 
 	//create tty deployment and service
 	return CreateTTYcontainer(t)
-}
-
-//CreateTTYnamespace create tty nanmeapace
-func CreateTTYnamespace(clientset *kubernetes.Clientset) error {
-	_, err := clientset.CoreV1().Namespaces().Get(DefaultTTYnameapace, metav1.GetOptions{})
-	if err != nil {
-		_, err = clientset.CoreV1().Namespaces().Create(&apiv1.Namespace{
-			ObjectMeta: metav1.ObjectMeta{
-				Name: DefaultTTYnameapace,
-			},
-		})
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 //CreateTTYdeploy create deployment
@@ -184,7 +153,7 @@ func CreateTTYservice(t *Terminal, clientset *kubernetes.Clientset) error {
 }
 
 //WithoutToken create terminal without token
-func WithoutToken(t *Terminal, clientset *kubernetes.Clientset) error {
+func withoutToken(t *Terminal, clientset *kubernetes.Clientset) error {
 	if t.WithoutToken {
 		//get namespace
 		myNamespace := os.Getenv(ClassPathNamespace)
@@ -210,49 +179,30 @@ func WithoutToken(t *Terminal, clientset *kubernetes.Clientset) error {
 			}
 			token := string(saTokenSecrets.Data["token"])
 			if err != nil {
-				return errors.New("The serviceAccount token is empty")
+				return errors.New("the serviceAccount token is empty")
 			}
 			t.UserToken = token
 		} else {
-			return errors.New("The serviceAccount token is not exists")
+			return errors.New("the serviceAccount token is not exists")
 		}
 	}
 	return nil
 }
 
-//GetK8sClient get a kubernetes in cluster clientset
-func GetK8sClient() (*kubernetes.Clientset, error) {
-	var (
-		config *rest.Config
-		err    error
-	)
-	config, err = rest.InClusterConfig()
-	if err != nil {
-		return nil, err
-	}
-	// creates the clientset
-	clientset, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-
-	return clientset, nil
-}
-
 //CreateTTYcontainer is
 func CreateTTYcontainer(t *Terminal) error {
 	//get client of k8s
-	clientset, err := GetK8sClient()
+	clientset, err := tools.GetK8sClient()
 	if err != nil {
 		return err
 	}
 	//process without token
-	err = WithoutToken(t, clientset)
+	err = withoutToken(t, clientset)
 	if err != nil {
 		return err
 	}
 	//create namespace
-	err = CreateTTYnamespace(clientset)
+	err = tools.CreateNamespace(clientset, DefaultTTYnameapace)
 	if err != nil {
 		return err
 	}
