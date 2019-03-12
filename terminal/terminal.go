@@ -238,13 +238,13 @@ func CheckHeartbeat(t *Terminal, clientset *kubernetes.Clientset) error {
 	        case <- stopped:
 	            return
 	        default:
-	        	time.Sleep(time.Duration(300)*time.Second)  //every 5min check heartbeat
-	        	err := heartBeat.CleanTerminalJob(clientset,stopped) 
-	            if err != nil {
-	            	return err
-	            }
-	        }
-	    }
+				time.Sleep(time.Duration(300)*time.Second)  //every 5min check heartbeat
+				err := heartBeat.CleanTerminalJob(clientset,stopped) 
+				if err != nil {
+					return err
+				}
+			}
+		}
 	}()
 }
 
