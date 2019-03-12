@@ -225,12 +225,11 @@ func CreateTTYcontainer(t *Terminal) error {
 	return nil
 }
 func CheckHeartbeat(t *Terminal, clientset *kubernetes.Clientset) error {
-	clientset, err := tools.GetK8sClient()
+
 	if err != nil {
 		return err
 	}
-	heartBeat := terHeartbeater{terminalID:t.TerminalID, namespace: t.Namespace}
-	
+	heartBeat := NewHeartbeater(t.TerminalID,t.Namespace)
 	stopped := make(chan bool)
 	go func() {
 		for {

@@ -13,7 +13,7 @@ type Heartbeater interface {
 	//terminal deployment is in sealyun-tty namespace
 	UpdateTimestamp(clientSet *kubernetes.Clientset) error
 	//need delete deployment and service in sealyun-tty if it timeout
-	CleanTerminalJob(clientSet *kubernetes.Clientset) error, chan bool
+	CleanTerminalJob(clientSet *kubernetes.Clientset,stopped chan bool) error
 }
 
 type terHeartbeater struct {
@@ -57,7 +57,7 @@ func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset, stopp
 		}); err != nil {
 			return err
 		}
-		stopped <- true 
+		stopped <- true
 	}
 
 
