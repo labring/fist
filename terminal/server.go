@@ -1,12 +1,11 @@
 package terminal
 
 import (
-	"errors"
 	"github.com/fanux/fist/tools"
 	"log"
 	"net/http"
 
-	restful "github.com/emicklei/go-restful"
+	"github.com/emicklei/go-restful"
 )
 
 //Register is
@@ -48,7 +47,7 @@ func handleHeartbeat(request *restful.Request, response *restful.Response) {
 	}
 	tid := request.QueryParameter("tid")
 	if tid == "" {
-		tools.ResponseError(response, errors.New("the param tid is empty"))
+		tools.ResponseError(response, tools.ErrParamTidEmpty)
 		return
 	}
 	namespace := request.QueryParameter("namespace")

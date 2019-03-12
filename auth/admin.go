@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"errors"
 	"github.com/fanux/fist/tools"
 )
 
@@ -55,14 +54,14 @@ func (*Admin) LoadSecret() error {
 
 func (admin *Admin) IsAdmin() (bool, error) {
 	if admin.Name == "" {
-		return false, errors.New("the username is empty")
+		return false, tools.ErrUserNameEmpty
 	}
 	if admin.Passwd == "" {
-		return false, errors.New("the password is empty")
+		return false, tools.ErrPasswordEmpty
 	}
 	if admin.Name == AdminUsername && admin.Passwd == AdminPassword {
 		return true, nil
 	} else {
-		return false, errors.New("the username and password is mismatching")
+		return false, tools.ErrValidateUserPassword
 	}
 }

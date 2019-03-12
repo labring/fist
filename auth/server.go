@@ -85,6 +85,7 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 	signingAlg, err := signatureAlgorithm(&Priv)
 	if err != nil {
 		fmt.Println("failed to sign payload", err)
+		tools.ResponseError(response, tools.ErrSignPayload)
 		return
 	}
 
@@ -105,12 +106,14 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 	fmt.Printf("token claims: %s", payload)
 	if err != nil {
 		fmt.Println("could not serialize claims", err)
+		tools.ResponseError(response, tools.ErrSerializeClaims)
 		return
 	}
 
 	var idToken string
 	if idToken, err = signPayload(&Priv, signingAlg, payload); err != nil {
 		fmt.Println("failed to sign payload", err)
+		tools.ResponseError(response, tools.ErrSignPayload)
 		return
 	}
 
