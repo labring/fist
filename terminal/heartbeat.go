@@ -28,7 +28,7 @@ func NewHeartbeater(tid string, namespace string) Heartbeater {
 	return hbInterface
 }
 
-func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset, stopped chan bool) error, chan bool {
+func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset, stopped chan bool) error {
 	//get deploy of terminalId
 	deploymentsClient := clientSet.AppsV1().Deployments(t.namespace)
 	deploymentResult, err := deploymentsClient.Get(t.terminalID, metav1.GetOptions{})
