@@ -13,7 +13,7 @@ type Heartbeater interface {
 	//terminal deployment is in sealyun-tty namespace
 	UpdateTimestamp(clientSet *kubernetes.Clientset) error
 	//need delete deployment and service in sealyun-tty if it timeout
-	CleanTerminalJob(clientSet *kubernetes.Clientset) error
+	CleanTerminalJob(clientSet *kubernetes.Clientset) error, chan bool
 }
 
 type terHeartbeater struct {
@@ -28,7 +28,7 @@ func NewHeartbeater(tid string, namespace string) Heartbeater {
 	return hbInterface
 }
 
-func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset) error {
+func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset, stopped chan bool) error {
 	//get deploy of terminalId
 	deploymentsClient := clientSet.AppsV1().Deployments(t.namespace)
 	deploymentResult, err := deploymentsClient.Get(t.terminalID, metav1.GetOptions{})
@@ -43,7 +43,7 @@ func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset) error
 	}
 	lastHeartbeat, _ := strconv.Atoi(deploymentResult.Annotations["fist.seayun.com/lastHeartbeat"])
 	heartbeatTime := time.Now().Unix() - int64(lastHeartbeat)
-	if heartbeatTime > 600 { // time.Minute() * 10 = 600
+	if heartbeatTime > 600 { // time.Minute() * 10 = 600		
 		deletePolicy := metav1.DeletePropagationForeground
 		//delete deploy
 		if err := deploymentsClient.Delete(t.terminalID, &metav1.DeleteOptions{
@@ -57,7 +57,10 @@ func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset) error
 		}); err != nil {
 			return err
 		}
+		stopped <- true 
 	}
+
+
 	return nil
 }
 
