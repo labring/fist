@@ -3,6 +3,7 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/fanux/fist/tools"
 	"log"
 	"net/http"
 	"time"
@@ -114,7 +115,7 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 	}
 
 	fmt.Println("token: ", idToken)
-	response.WriteEntity(&idToken)
+	tools.ResponseSuccess(response, &idToken)
 }
 
 func handlePublicKeys(request *restful.Request, response *restful.Response) {
