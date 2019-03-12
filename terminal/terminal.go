@@ -242,6 +242,7 @@ func CheckHeartbeat(t *Terminal, clientset *kubernetes.Clientset) error {
 			}
 		}
 	}()
+	return nil 
 }
 
 //LoadTerminalID is
