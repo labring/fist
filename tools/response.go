@@ -14,6 +14,10 @@ func ResponseSuccess(response *restful.Response, data interface{}) {
 }
 
 //ResponseError
+func ResponseErrorAndCode(response *restful.Response, code int32, err error) {
+	response.WriteEntity(responseObject{Code: code, Message: err.Error(), Data: ""})
+}
+
 func ResponseError(response *restful.Response, err error) {
-	response.WriteEntity(responseObject{Code: 500, Message: err.Error(), Data: ""})
+	ResponseErrorAndCode(response, 500, err)
 }
