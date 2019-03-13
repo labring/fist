@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"time"
+	"log"
 
 	"github.com/fanux/fist/tools"
 	appsv1 "k8s.io/api/apps/v1"
@@ -218,13 +219,10 @@ func CreateTTYcontainer(t *Terminal) error {
 		return err
 	}
 	// check terminal heartbeat
-	err = CheckHeartbeat(t, clientset)
-	if err != nil {
-		return err
-	}
+	CheckHeartbeat(t, clientset)
 	return nil
 }
-func CheckHeartbeat(t *Terminal, clientset *kubernetes.Clientset) error {
+func CheckHeartbeat(t *Terminal, clientset *kubernetes.Clientset)  {
 
 	heartBeat := NewHeartbeater(t.TerminalID,t.Namespace)
 	stopped := make(chan bool)
@@ -237,12 +235,12 @@ func CheckHeartbeat(t *Terminal, clientset *kubernetes.Clientset) error {
 				time.Sleep(time.Duration(600)*time.Second)  //every 10min check heartbeat
 				err := heartBeat.CleanTerminalJob(clientset,stopped) 
 				if err != nil {
-					return err
+					log.Println(err)
 				}
 			}
 		}
 	}()
-	return nil 
+
 }
 
 //LoadTerminalID is
