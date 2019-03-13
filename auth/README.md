@@ -1,40 +1,6 @@
 # auth
 For create a kubernetes user jwt token
 
-~~~ ## install
-```
-# cd auth/deploy
-# sh install.sh
-```
-
-> get fist service cluster ip, add it in /etc/hosts
-
-```
-# kubectl get svc -n sealyun
-
-# cat /etc/hosts
-10.106.233.67 fist.sealyun.svc.cluster.local
-```
-
-> edit /etc/kubernetes/manifests/kube-apiserver.yaml
-
-```
-  - command:
-    - kube-apiserver
-    - --oidc-issuer-url=https://fist.sealyun.svc.cluster.local:8080
-    - --oidc-client-id=sealyun-fist
-    - --oidc-ca-file=/etc/kubernetes/pki/fist/ca.pem
-    - --oidc-username-claim=name
-    - --oidc-groups-claim=groups
-``` ~~~
-
-> clean & uninstall
-
-```
-kubectl delete ns sealyun
-rm -rf /etc/kubernetes/pki/fist
-```
-
 ## using token
 
 > create jwt bare token
