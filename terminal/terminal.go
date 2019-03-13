@@ -1,7 +1,6 @@
 package terminal
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -181,11 +180,11 @@ func withoutToken(t *Terminal, clientset *kubernetes.Clientset) error {
 			}
 			token := string(saTokenSecrets.Data["token"])
 			if err != nil {
-				return errors.New("the serviceAccount token is empty")
+				return tools.ErrServiceAccountEmpty
 			}
 			t.UserToken = token
 		} else {
-			return errors.New("the serviceAccount token is not exists")
+			return tools.ErrServiceAccountNotExists
 		}
 	}
 	return nil
