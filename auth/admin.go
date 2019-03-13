@@ -36,14 +36,14 @@ func (*Admin) LoadSecret() error {
 		return err
 	}
 	if AdminUsername == "" {
-		secrets, err := tools.GetSecrets(DefaultNamespace, DefaultSecretName, clients)
+		secrets, err := tools.GetSecrets(DefaultNamespace, DefaultSecretName)
 		if err != nil {
 			return err
 		}
 		AdminUsername = string(secrets.Data["username"])
 	}
 	if AdminPassword == "" {
-		secrets, err := tools.GetSecrets(DefaultNamespace, DefaultSecretName, clients)
+		secrets, err := tools.GetSecrets(DefaultNamespace, DefaultSecretName)
 		if err != nil {
 			return err
 		}

@@ -16,6 +16,5 @@ var (
 	ErrServiceAccountNotExists = errors.New("the serviceAccount token is not exists")
 	ErrParamTidEmpty           = errors.New("the param tid is empty")
 
-	ErrSignPayload     = errors.New("failed to sign payload")
-	ErrSerializeClaims = errors.New("could not serialize claims")
+	ErrK8sClientInitFailed = errors.New("kubernetes client init failed")
 )
