@@ -1,6 +1,9 @@
 package tools
 
-import "github.com/emicklei/go-restful"
+import (
+	"fmt"
+	"github.com/emicklei/go-restful"
+)
 
 type responseObject struct {
 	Message string      `json:"message"`
@@ -14,10 +17,21 @@ func ResponseSuccess(response *restful.Response, data interface{}) {
 }
 
 //ResponseError
-func ResponseErrorAndCode(response *restful.Response, code int32, err error) {
-	response.WriteEntity(responseObject{Code: code, Message: err.Error(), Data: ""})
+func ResponseErrorAndCodeMessage(response *restful.Response, code int32, err error, message string) {
+	fmt.Printf("response error: %v", err)
+	response.WriteEntity(responseObject{Code: code, Message: message, Data: ""})
 }
 
+//custom error
 func ResponseError(response *restful.Response, err error) {
-	ResponseErrorAndCode(response, 500, err)
+	ResponseErrorAndCodeMessage(response, 500, err, err.Error())
+}
+
+func ResponseSystemError(response *restful.Response, err error) {
+	ResponseErrorAndCodeMessage(response, 500, err, ErrMessageSystem)
+}
+
+//system error and error msg
+func ResponseErrorAndMessage(response *restful.Response, err error, message string) {
+	ResponseErrorAndCodeMessage(response, 500, err, message)
 }
