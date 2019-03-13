@@ -11,7 +11,7 @@ steps:
   commands:
      - go get -v
      - go get -u golang.org/x/lint/golint
-     - golint ./...
+     - golint  -set_exit_status ./...
      - go build -o fist
 
 - name: publish-fist
