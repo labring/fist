@@ -39,7 +39,8 @@ clent                     terminal                        terminal-pod
 
 # Quick start
 ## Using the http server
-### Install
+### Install 
+terminal is sub module of fist, if you already install fist, needn't install this again.
 
 ```
 cd terminal/deploy
@@ -64,10 +65,12 @@ NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
 fist-terminal   NodePort    10.99.162.142   <none>        8080:31857/TCP   17m
 ```
 
+### Create a terminal
 Create a terminal from POST, it will return the webterminal NodePort
 - Use user token access webterminal
     ```
-    curl -H "Content-Type:application/json" -d '{"User":"fanux", "UserToken":"eyJhbGciOiJSUzI1NiIsImtpZCI6IkNnYzRPVEV5TlRVM0VnWm5hWFJvZFdJIn0.eyJpc3MiOiJodHRwczovL2Zpc3Quc2VhbHl1bi5zdmMuY2x1c3Rlci5sb2NhbDo4MDgwIiwic3ViIjoiQ2djNE9URXlOVFUzRWdabmFYUm9kV0kiLCJhdWQiOiJzZWFseXVuLWZpc3QiLCJleHAiOjE1NTE3MTgzMTgsImlhdCI6MTU1MTM1ODMxOCwiZW1haWwiOiJmaHRqb2JAaG90bWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZ3JvdXBzIjpbImRldiIsInRlc3QiXSwibmFtZSI6ImZhbnV4In0.N8YjE5CqhpPHbtpmNxWIuyIii-VD4vYf8i_JfWpwvJ68SB5JbUM1PN-nXH8xU_biyAB5P1ehNKer2ciMfVA45hyDedzkb6E4A-6B0ezMhU-OL9pCdleq2cJma2R3g64i0YybtQuoOS56kS0isbbmx2NDcL_fluMRdZRPS0Zbx5Pu8CBb60ChXj8r7-zkYuzPFkO1UBi99a3QHR9jBpXz2vBQMjqTPcGddaeUpKP6r80Ib4K9whF3U4rH5gNEOGwgMTe_V4PnEdQ3JbIIiqNJPqIisgxT_HBUqIzHtY3Vsxkjzr2Sj5v0ZWV-gYnZr1ib1bM1uXGK4VOebA5DLbCYaw", "Namespace":"default"}' http://10.99.162.142:8080/terminal
+    curl -H "Content-Type:application/json" -d '{"User":"fanux", "UserToken":"eyJhbGciOiJSUzI1NiIsImtpZCI6IkNnYzRPVEV5TlRVM0VnWm5hWFJvZFdJIn0.eyJpc3MiOiJodHRwczovL2Zpc3Quc2VhbHl1bi5zdmMuY2x1c3Rlci5sb2NhbDo4MDgwIiwic3ViIjoiQ2djNE9URXlOVFUzRWdabmFYUm9kV0kiLCJhdWQiOiJzZWFseXVuLWZpc3QiLCJleHAiOjE1NTE3MTgzMTgsImlhdCI6MTU1MTM1ODMxOCwiZW1haWwiOiJmaHRqb2JAaG90bWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZ3JvdXBzIjpbImRldiIsInRlc3QiXSwibmFtZSI6ImZhbnV4In0.N8YjE5CqhpPHbtpmNxWIuyIii-VD4vYf8i_JfWpwvJ68SB5JbUM1PN-nXH8xU_biyAB5P1ehNKer2ciMfVA45hyDedzkb6E4A-6B0ezMhU-OL9pCdleq2cJma2R3g64i0YybtQuoOS56kS0isbbmx2NDcL_fluMRdZRPS0Zbx5Pu8CBb60ChXj8r7-zkYuzPFkO1UBi99a3QHR9jBpXz2vBQMjqTPcGddaeUpKP6r80Ib4K9whF3U4rH5gNEOGwgMTe_V4PnEdQ3JbIIiqNJPqIisgxT_HBUqIzHtY3Vsxkjzr2Sj5v0ZWV-gYnZr1ib1bM1uXGK4VOebA5DLbCYaw", "Namespace":"default"}' \
+http://10.99.162.142:8080/terminal
     ```
 - User admin token access webterminal
     ```
@@ -93,8 +96,6 @@ Using http://IP:32219
 | Namespace | string | "default" | default controller k8s cluster namespace |
 | WithoutToken | bool | false | without user token access k8s |
 | TTYKubeImage | string | "fanux/fist-tty-tools:v1.0.0" | default of tty images  |
-
-
 
 ## Using bare docker image
 imageList:
