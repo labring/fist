@@ -4,6 +4,10 @@ import (
 	"errors"
 )
 
+const (
+	ErrMessageSystem = "system error"
+)
+
 var (
 	ErrUserNameEmpty           = errors.New("the username is empty")
 	ErrPasswordEmpty           = errors.New("the password is empty")
