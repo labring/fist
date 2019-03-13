@@ -1,12 +1,11 @@
 package terminal
 
 import (
-	"errors"
 	"github.com/fanux/fist/tools"
 	"log"
 	"net/http"
 
-	restful "github.com/emicklei/go-restful"
+	"github.com/emicklei/go-restful"
 )
 
 //Register is
@@ -27,13 +26,13 @@ func createTerminal(request *restful.Request, response *restful.Response) {
 	t := newTerminal()
 	err := request.ReadEntity(t)
 	if err != nil {
-		tools.ResponseError(response, err)
+		tools.ResponseSystemError(response, err)
 		return
 	}
 
 	err = t.Create()
 	if err != nil {
-		tools.ResponseError(response, err)
+		tools.ResponseSystemError(response, err)
 		return
 	}
 	tools.ResponseSuccess(response, t)
@@ -43,12 +42,12 @@ func handleHeartbeat(request *restful.Request, response *restful.Response) {
 	//get client of k8s
 	clientset, err := tools.GetK8sClient()
 	if err != nil {
-		tools.ResponseError(response, err)
+		tools.ResponseSystemError(response, err)
 		return
 	}
 	tid := request.QueryParameter("tid")
 	if tid == "" {
-		tools.ResponseError(response, errors.New("the param tid is empty"))
+		tools.ResponseSystemError(response, tools.ErrParamTidEmpty)
 		return
 	}
 	namespace := request.QueryParameter("namespace")
@@ -59,7 +58,7 @@ func handleHeartbeat(request *restful.Request, response *restful.Response) {
 	hbInterface = NewHeartbeater(tid, namespace)
 	err = hbInterface.UpdateTimestamp(clientset)
 	if err != nil {
-		tools.ResponseError(response, err)
+		tools.ResponseSystemError(response, err)
 		return
 	}
 	tools.ResponseSuccess(response, nil)
