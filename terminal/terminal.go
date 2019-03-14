@@ -1,9 +1,10 @@
 package terminal
 
 import (
-	"errors"
 	"fmt"
+	"log"
 	"os"
+	"time"
 
 	"github.com/fanux/fist/tools"
 	appsv1 "k8s.io/api/apps/v1"
@@ -179,11 +180,11 @@ func withoutToken(t *Terminal, clientset *kubernetes.Clientset) error {
 			}
 			token := string(saTokenSecrets.Data["token"])
 			if err != nil {
-				return errors.New("the serviceAccount token is empty")
+				return tools.ErrServiceAccountEmpty
 			}
 			t.UserToken = token
 		} else {
-			return errors.New("the serviceAccount token is not exists")
+			return tools.ErrServiceAccountNotExists
 		}
 	}
 	return nil
@@ -216,7 +217,31 @@ func CreateTTYcontainer(t *Terminal) error {
 	if err != nil {
 		return err
 	}
+	// check terminal heartbeat
+	CheckHeartbeat(t, clientset)
 	return nil
+}
+
+//CheckHeartbeat is
+func CheckHeartbeat(t *Terminal, clientset *kubernetes.Clientset) {
+
+	heartBeat := NewHeartbeater(t.TerminalID, t.Namespace)
+	stopped := make(chan bool)
+	go func() {
+		for {
+			select {
+			case <-stopped:
+				return
+			default:
+				time.Sleep(time.Duration(600) * time.Second) //every 10min check heartbeat
+				err := heartBeat.CleanTerminalJob(clientset, stopped)
+				if err != nil {
+					log.Println(err)
+				}
+			}
+		}
+	}()
+
 }
 
 //LoadTerminalID is
