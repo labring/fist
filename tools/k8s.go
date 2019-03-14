@@ -52,12 +52,13 @@ func instanceSingleK8sClient() *kubernetes.Clientset {
 }
 
 //GetK8sClient get a kubernetes in cluster clientset
-func GetK8sClient() (*kubernetes.Clientset, error) {
+func GetK8sClient() *kubernetes.Clientset {
 	client := instanceSingleK8sClient()
 	if client != nil {
-		return client, nil
+		return client
 	} else {
-		return nil, ErrK8sClientInitFailed
+		fmt.Println(ErrK8sClientInitFailed.Error())
+		return nil
 	}
 }
 

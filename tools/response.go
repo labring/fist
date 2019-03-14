@@ -15,16 +15,16 @@ type responseObject struct {
 func ResponseSuccess(response *restful.Response, data interface{}) {
 	err := response.WriteEntity(responseObject{Code: 200, Message: "success", Data: data})
 	if err != nil {
-		fmt.Printf("return response error: %v", err)
+		fmt.Println("return response error: ", err)
 	}
 }
 
 //ResponseErrorAndCodeMessage is web response for error
 func ResponseErrorAndCodeMessage(response *restful.Response, code int32, err error, message string) {
-	fmt.Printf("response error: %v", err)
+	fmt.Println("response error: ", err)
 	err = response.WriteEntity(responseObject{Code: code, Message: message, Data: ""})
 	if err != nil {
-		fmt.Printf("return response error: %v", err)
+		fmt.Println("return response error: ", err)
 	}
 }
 

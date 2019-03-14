@@ -37,10 +37,6 @@ func NewAdmin(name string, passwd string) Adminer {
 
 // LoadSecret is implements for Adminer  function
 func (*Admin) LoadSecret() error {
-	clients, err := tools.GetK8sClient()
-	if err != nil {
-		return err
-	}
 	if AdminUsername == "" {
 		secrets, err := tools.GetSecrets(DefaultNamespace, DefaultSecretName)
 		if err != nil {
