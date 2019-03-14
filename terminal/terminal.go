@@ -221,6 +221,8 @@ func CreateTTYcontainer(t *Terminal) error {
 	CheckHeartbeat(t, clientset)
 	return nil
 }
+
+//CheckHeartbeat is
 func CheckHeartbeat(t *Terminal, clientset *kubernetes.Clientset) {
 
 	heartBeat := NewHeartbeater(t.TerminalID, t.Namespace)

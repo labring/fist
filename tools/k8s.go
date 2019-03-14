@@ -78,7 +78,7 @@ func CreateNamespace(namespace string) error {
 	return nil
 }
 
-//GetSecrets is get sercrets
+//GetSecrets is get secrets for k8s
 func GetSecrets(namespace string, name string) (*v1.Secret, error) {
 	client := instanceSingleK8sClient()
 	secret, err := client.CoreV1().Secrets(namespace).Get(name, metav1.GetOptions{})

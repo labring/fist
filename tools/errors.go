@@ -4,10 +4,12 @@ import (
 	"errors"
 )
 
+//const is global const
 const (
 	ErrMessageSystem = "system error"
 )
 
+//vars is global var
 var (
 	ErrUserNameEmpty           = errors.New("the username is empty")
 	ErrPasswordEmpty           = errors.New("the password is empty")
