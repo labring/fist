@@ -53,8 +53,7 @@ func GetK8sClient() *kubernetes.Clientset {
 	client := instanceSingleK8sClient()
 	if client != nil {
 		return client
-	} else {
-		fmt.Println(ErrK8sClientInitFailed.Error())
-		return nil
 	}
+	fmt.Println(ErrK8sClientInitFailed.Error())
+	return nil
 }
