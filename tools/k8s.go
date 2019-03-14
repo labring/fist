@@ -2,14 +2,15 @@ package tools
 
 import (
 	"flag"
-	"k8s.io/api/core/v1"
+	"path/filepath"
+
 	apiv1 "k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
-	"path/filepath"
 )
 
 //GetK8sClient get a kubernetes in cluster clientset
