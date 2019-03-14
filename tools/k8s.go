@@ -2,14 +2,15 @@ package tools
 
 import (
 	"flag"
-	"k8s.io/api/core/v1"
+	"path/filepath"
+
 	apiv1 "k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
-	"path/filepath"
 )
 
 //GetK8sClient get a kubernetes in cluster clientset
@@ -52,7 +53,7 @@ func CreateNamespace(client *kubernetes.Clientset, namespace string) error {
 	return nil
 }
 
-//GetSecrets
+//GetSecrets is
 func GetSecrets(namespace string, name string, clientset *kubernetes.Clientset) (*v1.Secret, error) {
 	secret, err := clientset.CoreV1().Secrets(namespace).Get(name, metav1.GetOptions{})
 	return secret, err
