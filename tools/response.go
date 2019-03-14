@@ -11,27 +11,34 @@ type responseObject struct {
 	Data    interface{} `json:"data"`
 }
 
-//ResponseSuccess
+//ResponseSuccess is web response for success
 func ResponseSuccess(response *restful.Response, data interface{}) {
-	response.WriteEntity(responseObject{Code: 200, Message: "success", Data: data})
+	err := response.WriteEntity(responseObject{Code: 200, Message: "success", Data: data})
+	if err != nil {
+		fmt.Printf("return response error: %v", err)
+	}
 }
 
-//ResponseError
+//ResponseErrorAndCodeMessage is web response for error
 func ResponseErrorAndCodeMessage(response *restful.Response, code int32, err error, message string) {
 	fmt.Printf("response error: %v", err)
-	response.WriteEntity(responseObject{Code: code, Message: message, Data: ""})
+	err = response.WriteEntity(responseObject{Code: code, Message: message, Data: ""})
+	if err != nil {
+		fmt.Printf("return response error: %v", err)
+	}
 }
 
-//custom error
+//ResponseError is web response for error
 func ResponseError(response *restful.Response, err error) {
 	ResponseErrorAndCodeMessage(response, 500, err, err.Error())
 }
 
+//ResponseSystemError is web response for error
 func ResponseSystemError(response *restful.Response, err error) {
 	ResponseErrorAndCodeMessage(response, 500, err, ErrMessageSystem)
 }
 
-//system error and error msg
+//ResponseErrorAndMessage is web response for error
 func ResponseErrorAndMessage(response *restful.Response, err error, message string) {
 	ResponseErrorAndCodeMessage(response, 500, err, message)
 }

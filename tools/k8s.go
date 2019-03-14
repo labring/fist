@@ -52,7 +52,7 @@ func CreateNamespace(client *kubernetes.Clientset, namespace string) error {
 	return nil
 }
 
-//GetSecrets
+//GetSecrets is get secrets for k8s
 func GetSecrets(namespace string, name string, clientset *kubernetes.Clientset) (*v1.Secret, error) {
 	secret, err := clientset.CoreV1().Secrets(namespace).Get(name, metav1.GetOptions{})
 	return secret, err
