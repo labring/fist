@@ -1,5 +1,13 @@
 [![Build Status](https://cloud.drone.io/api/badges/fanux/fist/status.svg)](https://cloud.drone.io/fanux/fist)
 
+```
+    _____      __ 
+   / __(_)____/ /_
+  / /_/ / ___/ __/
+ / __/ (__  ) /_  
+/_/ /_/____/\__/ 
+```
+
 # Fist = (One punch to solve everything)
 ![](./fist.png)
 
