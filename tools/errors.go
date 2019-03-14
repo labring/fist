@@ -4,10 +4,12 @@ import (
 	"errors"
 )
 
+//const is global const
 const (
 	ErrMessageSystem = "system error"
 )
 
+//vars is global var
 var (
 	ErrUserNameEmpty           = errors.New("the username is empty")
 	ErrPasswordEmpty           = errors.New("the password is empty")
@@ -15,7 +17,4 @@ var (
 	ErrServiceAccountEmpty     = errors.New("the serviceAccount token is empty")
 	ErrServiceAccountNotExists = errors.New("the serviceAccount token is not exists")
 	ErrParamTidEmpty           = errors.New("the param tid is empty")
-
-	ErrSignPayload     = errors.New("failed to sign payload")
-	ErrSerializeClaims = errors.New("could not serialize claims")
 )
