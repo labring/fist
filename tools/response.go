@@ -8,12 +8,12 @@ type responseObject struct {
 	Data    interface{} `json:"data"`
 }
 
-//ResponseSuccess
+//ResponseSuccess is web response for success
 func ResponseSuccess(response *restful.Response, data interface{}) {
 	response.WriteEntity(responseObject{Code: 200, Message: "success", Data: data})
 }
 
-//ResponseError
+//ResponseError is web response for success
 func ResponseError(response *restful.Response, err error) {
 	response.WriteEntity(responseObject{Code: 500, Message: err.Error(), Data: ""})
 }
