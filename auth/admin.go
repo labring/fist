@@ -10,12 +10,6 @@ var AdminUsername string
 //AdminPassword is global vars for admin password
 var AdminPassword string
 
-// consts
-const (
-	DefaultNamespace  = "sealyun"
-	DefaultSecretName = "fist-admin"
-)
-
 // Admin is struct of Adminer interface
 type Admin struct {
 	Name   string
@@ -38,18 +32,10 @@ func NewAdmin(name string, passwd string) Adminer {
 // LoadSecret is implements for Adminer  function
 func (*Admin) LoadSecret() error {
 	if AdminUsername == "" {
-		secrets, err := tools.GetSecrets(DefaultNamespace, DefaultSecretName)
-		if err != nil {
-			return err
-		}
-		AdminUsername = string(secrets.Data["username"])
+		AdminUsername = tools.SealyunGetAdminSecretString("username")
 	}
 	if AdminPassword == "" {
-		secrets, err := tools.GetSecrets(DefaultNamespace, DefaultSecretName)
-		if err != nil {
-			return err
-		}
-		AdminPassword = string(secrets.Data["password"])
+		AdminPassword = tools.SealyunGetAdminSecretString("password")
 	}
 	return nil
 }

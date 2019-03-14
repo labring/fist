@@ -3,9 +3,6 @@ package tools
 import (
 	"flag"
 	"fmt"
-	"k8s.io/api/core/v1"
-	apiv1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -60,28 +57,4 @@ func GetK8sClient() *kubernetes.Clientset {
 		fmt.Println(ErrK8sClientInitFailed.Error())
 		return nil
 	}
-}
-
-//CreateNamespace create namespace
-func CreateNamespace(namespace string) error {
-	client := instanceSingleK8sClient()
-	_, err := client.CoreV1().Namespaces().Get(namespace, metav1.GetOptions{})
-	if err != nil {
-		_, err = client.CoreV1().Namespaces().Create(&apiv1.Namespace{
-			ObjectMeta: metav1.ObjectMeta{
-				Name: namespace,
-			},
-		})
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-//GetSecrets is get secrets for k8s
-func GetSecrets(namespace string, name string) (*v1.Secret, error) {
-	client := instanceSingleK8sClient()
-	secret, err := client.CoreV1().Secrets(namespace).Get(name, metav1.GetOptions{})
-	return secret, err
 }
