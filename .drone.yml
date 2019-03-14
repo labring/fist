@@ -10,8 +10,6 @@ steps:
   image: golang:1.10.8
   commands:
      - go get -v
-     - go get -u golang.org/x/lint/golint
-     - golint  -set_exit_status ./...
      - go build -o fist
 
 - name: publish-fist
@@ -19,12 +17,12 @@ steps:
   settings:
     repo: lameleg/fist
     tags: ${DRONE_TAG=latest}
-    username:
+    username: 
       from_secret: docker-hub-user
     dockerfile: deploy/Dockerfile
     password:
       from_secret: docker-hub-pass
-
+ 
 
    #steps:
    #- name: build-auth
