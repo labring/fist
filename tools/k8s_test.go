@@ -10,7 +10,7 @@ func TestCreateNamespace(t *testing.T) {
 }
 
 func TestGetSecrets(t *testing.T) {
-	secrect, _ := GetSecrets("sealyun", "fist-admin")
+	secrect := priGetSecrets("sealyun", "fist-admin")
 	fmt.Println(string(secrect.Data["password"]))
 	fmt.Println(string(secrect.Data["username"]))
 }

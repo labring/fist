@@ -2,7 +2,7 @@ package tools
 
 import (
 	"flag"
-	"fmt"
+	"github.com/wonderivan/logger"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -42,7 +42,7 @@ func instanceSingleK8sClient() *kubernetes.Clientset {
 		var err error
 		singleK8sClientInstance, err = newK8sClient()
 		if err != nil {
-			fmt.Printf("kubernetes client init faild. the error info %v", err)
+			logger.Error("kubernetes client init faild. the error info :", err)
 		}
 	})
 	return singleK8sClientInstance
@@ -54,6 +54,6 @@ func GetK8sClient() *kubernetes.Clientset {
 	if client != nil {
 		return client
 	}
-	fmt.Println(ErrK8sClientInitFailed.Error())
+	logger.Error(ErrK8sClientInitFailed.Error())
 	return nil
 }

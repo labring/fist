@@ -1,8 +1,8 @@
 package tools
 
 import (
-	"fmt"
 	"github.com/emicklei/go-restful"
+	"github.com/wonderivan/logger"
 )
 
 type responseObject struct {
@@ -13,18 +13,19 @@ type responseObject struct {
 
 //ResponseSuccess is web response for success
 func ResponseSuccess(response *restful.Response, data interface{}) {
+	logger.Info("return response data: ", data)
 	err := response.WriteEntity(responseObject{Code: 200, Message: "success", Data: data})
 	if err != nil {
-		fmt.Println("return response error: ", err)
+		logger.Error("return response error: ", err)
 	}
 }
 
 //ResponseErrorAndCodeMessage is web response for error
 func ResponseErrorAndCodeMessage(response *restful.Response, code int32, err error, message string) {
-	fmt.Println("response error: ", err)
+	logger.Error("response error: ", err)
 	err = response.WriteEntity(responseObject{Code: code, Message: message, Data: ""})
 	if err != nil {
-		fmt.Println("return response error: ", err)
+		logger.Error("return response error: ", err)
 	}
 }
 
