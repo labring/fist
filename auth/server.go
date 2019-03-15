@@ -3,9 +3,11 @@ package auth
 import (
 	"encoding/json"
 	"github.com/fanux/fist/tools"
+	"github.com/spf13/cobra"
 	"github.com/wonderivan/logger"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/emicklei/go-restful"
@@ -131,12 +133,18 @@ func handlePublicKeys(request *restful.Request, response *restful.Response) {
 }
 
 //Serve start a auth server
-func Serve() {
+func Serve(cmd *cobra.Command) {
 	wsContainer := restful.NewContainer()
 	wsContainer.Router(restful.CurlyRouter{})
 	Register(wsContainer)
-
-	log.Print("start listening on localhost:8080")
-	server := &http.Server{Addr: ":8080", Handler: wsContainer}
-	log.Fatal(server.ListenAndServeTLS("/etc/fist/cert.pem", "/etc/fist/key.pem"))
+	//process port for command
+	port, _ := cmd.Flags().GetUint16("port")
+	sPort := ":" + strconv.FormatUint(uint64(port), 10)
+	logger.Info("start listening on localhost", sPort)
+	server := &http.Server{Addr: sPort, Handler: wsContainer}
+	//process cert/key for command
+	cert, _ := cmd.Flags().GetString("cert")
+	key, _ := cmd.Flags().GetString("key")
+	logger.Info("certFile is :", cert, ";keyFile is:", key)
+	log.Fatal(server.ListenAndServeTLS(cert, key))
 }
