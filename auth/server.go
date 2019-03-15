@@ -138,5 +138,5 @@ func Serve() {
 
 	log.Print("start listening on localhost:8080")
 	server := &http.Server{Addr: ":8080", Handler: wsContainer}
-	log.Fatal(server.ListenAndServeTLS("I://sealyun//ssl//cert.pem", "I://sealyun//ssl//key.pem"))
+	log.Fatal(server.ListenAndServeTLS("/etc/fist/cert.pem", "/etc/fist/key.pem"))
 }
