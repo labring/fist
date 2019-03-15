@@ -2,14 +2,14 @@ package auth
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/fanux/fist/tools"
+	"github.com/wonderivan/logger"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/emicklei/go-restful"
-	jose "gopkg.in/square/go-jose.v2"
+	"gopkg.in/square/go-jose.v2"
 )
 
 //key paires
@@ -73,14 +73,14 @@ func discoveryHandler(request *restful.Request, response *restful.Response) {
 			"none"},
 	}
 
-	fmt.Printf("discovery: %v", dis)
+	logger.Info("discovery: %v", dis)
 	response.WriteEntity(dis)
 }
 
 func handlerToken(request *restful.Request, response *restful.Response) {
 	groups := request.Request.URL.Query()["group"]
 	user := request.QueryParameter("user")
-	fmt.Printf("user: %s, groups: %v, url value: %v", user, groups, request.Request.URL.Query())
+	logger.Info("user: ", user, ", groups: ", groups, ", url value:", request.Request.URL.Query())
 
 	signingAlg, err := signatureAlgorithm(&Priv)
 	if err != nil {
@@ -102,7 +102,7 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 	}
 
 	payload, err := json.Marshal(&tok)
-	fmt.Printf("token claims: %s", payload)
+	logger.Info("token claims: %s", payload)
 	if err != nil {
 		tools.ResponseSystemError(response, err)
 		return
@@ -114,7 +114,7 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 		return
 	}
 
-	fmt.Println("token: ", idToken)
+	logger.Info("token: ", idToken)
 	tools.ResponseSuccess(response, &idToken)
 }
 
@@ -124,7 +124,7 @@ func handlePublicKeys(request *restful.Request, response *restful.Response) {
 	}
 	jwks.Keys[0] = Pub
 
-	fmt.Printf("public keys: %v", jwks)
+	logger.Info("public keys: ", jwks)
 
 	response.AddHeader("Content-Type", "application/json")
 	response.WriteEntity(&jwks)
