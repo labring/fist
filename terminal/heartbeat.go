@@ -1,19 +1,19 @@
 package terminal
 
 import (
+	"github.com/fanux/fist/tools"
 	"strconv"
 	"time"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
 )
 
 //Heartbeater is
 type Heartbeater interface {
 	//terminal deployment is in sealyun-tty namespace
-	UpdateTimestamp(clientSet *kubernetes.Clientset) error
+	UpdateTimestamp() error
 	//need delete deployment and service in sealyun-tty if it timeout
-	CleanTerminalJob(clientSet *kubernetes.Clientset,stopped chan bool) error
+	CleanTerminalJob(stopped chan bool) error
 }
 
 type terHeartbeater struct {
@@ -28,7 +28,8 @@ func NewHeartbeater(tid string, namespace string) Heartbeater {
 	return hbInterface
 }
 
-func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset, stopped chan bool) error {
+func (t *terHeartbeater) CleanTerminalJob(stopped chan bool) error {
+	clientSet := tools.GetK8sClient()
 	//get deploy of terminalId
 	deploymentsClient := clientSet.AppsV1().Deployments(t.namespace)
 	deploymentResult, err := deploymentsClient.Get(t.terminalID, metav1.GetOptions{})
@@ -43,7 +44,7 @@ func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset, stopp
 	}
 	lastHeartbeat, _ := strconv.Atoi(deploymentResult.Annotations["fist.seayun.com/lastHeartbeat"])
 	heartbeatTime := time.Now().Unix() - int64(lastHeartbeat)
-	if heartbeatTime > 600 { // time.Minute() * 10 = 600		
+	if heartbeatTime > 600 { // time.Minute() * 10 = 600
 		deletePolicy := metav1.DeletePropagationForeground
 		//delete deploy
 		if err := deploymentsClient.Delete(t.terminalID, &metav1.DeleteOptions{
@@ -59,12 +60,11 @@ func (t *terHeartbeater) CleanTerminalJob(clientSet *kubernetes.Clientset, stopp
 		}
 		stopped <- true
 	}
-
-
 	return nil
 }
 
-func (t *terHeartbeater) UpdateTimestamp(clientSet *kubernetes.Clientset) error {
+func (t *terHeartbeater) UpdateTimestamp() error {
+	clientSet := tools.GetK8sClient()
 	deploymentsClient := clientSet.AppsV1().Deployments(t.namespace)
 	result, err := deploymentsClient.Get(t.terminalID, metav1.GetOptions{})
 	if err != nil {
