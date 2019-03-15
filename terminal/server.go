@@ -40,14 +40,9 @@ func createTerminal(request *restful.Request, response *restful.Response) {
 
 func handleHeartbeat(request *restful.Request, response *restful.Response) {
 	//get client of k8s
-	clientset, err := tools.GetK8sClient()
-	if err != nil {
-		tools.ResponseSystemError(response, err)
-		return
-	}
 	tid := request.QueryParameter("tid")
 	if tid == "" {
-		tools.ResponseSystemError(response, tools.ErrParamTidEmpty)
+		tools.ResponseError(response, tools.ErrParamTidEmpty)
 		return
 	}
 	namespace := request.QueryParameter("namespace")
@@ -56,7 +51,7 @@ func handleHeartbeat(request *restful.Request, response *restful.Response) {
 	}
 	var hbInterface Heartbeater
 	hbInterface = NewHeartbeater(tid, namespace)
-	err = hbInterface.UpdateTimestamp(clientset)
+	err := hbInterface.UpdateTimestamp()
 	if err != nil {
 		tools.ResponseSystemError(response, err)
 		return

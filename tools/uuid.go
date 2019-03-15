@@ -6,7 +6,7 @@ import (
 	"io"
 )
 
-//NewUUID
+//NewUUID is generator uuid
 func NewUUID() string {
 	u := make([]byte, 16)
 	if _, err := io.ReadFull(rand.Reader, u); err != nil {

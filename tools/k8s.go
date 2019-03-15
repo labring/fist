@@ -2,18 +2,20 @@ package tools
 
 import (
 	"flag"
-	"k8s.io/api/core/v1"
-	apiv1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"github.com/wonderivan/logger"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
 	"path/filepath"
+	"sync"
 )
 
-//GetK8sClient get a kubernetes in cluster clientset
-func GetK8sClient() (*kubernetes.Clientset, error) {
+var singleK8sClientInstance *kubernetes.Clientset
+var once sync.Once
+
+// install function
+func newK8sClient() (*kubernetes.Clientset, error) {
 	var (
 		config *rest.Config
 		err    error
@@ -32,28 +34,26 @@ func GetK8sClient() (*kubernetes.Clientset, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return client, nil
 }
 
-//CreateNamespace create namespace
-func CreateNamespace(client *kubernetes.Clientset, namespace string) error {
-	_, err := client.CoreV1().Namespaces().Get(namespace, metav1.GetOptions{})
-	if err != nil {
-		_, err = client.CoreV1().Namespaces().Create(&apiv1.Namespace{
-			ObjectMeta: metav1.ObjectMeta{
-				Name: namespace,
-			},
-		})
+func instanceSingleK8sClient() *kubernetes.Clientset {
+	once.Do(func() {
+		var err error
+		singleK8sClientInstance, err = newK8sClient()
 		if err != nil {
-			return err
+			logger.Error("kubernetes client init faild. the error info :", err)
 		}
-	}
-	return nil
+	})
+	return singleK8sClientInstance
 }
 
-//GetSecrets
-func GetSecrets(namespace string, name string, clientset *kubernetes.Clientset) (*v1.Secret, error) {
-	secret, err := clientset.CoreV1().Secrets(namespace).Get(name, metav1.GetOptions{})
-	return secret, err
+//GetK8sClient get a kubernetes in cluster clientset
+func GetK8sClient() *kubernetes.Clientset {
+	client := instanceSingleK8sClient()
+	if client != nil {
+		return client
+	}
+	logger.Error(ErrK8sClientInitFailed.Error())
+	return nil
 }

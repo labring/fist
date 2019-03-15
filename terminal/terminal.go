@@ -2,14 +2,15 @@ package terminal
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"time"
 
 	"github.com/fanux/fist/tools"
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
-	"k8s.io/client-go/kubernetes"
 )
 
 //consts
@@ -63,7 +64,8 @@ func (t *Terminal) Create() error {
 }
 
 //CreateTTYdeploy create deployment
-func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset) error {
+func CreateTTYdeploy(t *Terminal) error {
+	clientset := tools.GetK8sClient()
 	//get deploy deployClient
 	deployClient := clientset.AppsV1().Deployments(DefaultTTYnameapace)
 	//vars
@@ -129,7 +131,8 @@ func CreateTTYdeploy(t *Terminal, clientset *kubernetes.Clientset) error {
 }
 
 //CreateTTYservice tty service
-func CreateTTYservice(t *Terminal, clientset *kubernetes.Clientset) error {
+func CreateTTYservice(t *Terminal) error {
+	clientset := tools.GetK8sClient()
 	service, err := clientset.CoreV1().Services(DefaultTTYnameapace).Create(&apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: t.TerminalID,
@@ -152,8 +155,9 @@ func CreateTTYservice(t *Terminal, clientset *kubernetes.Clientset) error {
 }
 
 //WithoutToken create terminal without token
-func withoutToken(t *Terminal, clientset *kubernetes.Clientset) error {
+func withoutToken(t *Terminal) error {
 	if t.WithoutToken {
+		clientset := tools.GetK8sClient()
 		//get namespace
 		myNamespace := os.Getenv(ClassPathNamespace)
 		mySaName := os.Getenv(ServiceAccountName)
@@ -190,32 +194,50 @@ func withoutToken(t *Terminal, clientset *kubernetes.Clientset) error {
 
 //CreateTTYcontainer is
 func CreateTTYcontainer(t *Terminal) error {
-	//get client of k8s
-	clientset, err := tools.GetK8sClient()
-	if err != nil {
-		return err
-	}
 	//process without token
-	err = withoutToken(t, clientset)
+	err := withoutToken(t)
 	if err != nil {
 		return err
 	}
 	//create namespace
-	err = tools.CreateNamespace(clientset, DefaultTTYnameapace)
+	err = tools.CreateNamespace(DefaultTTYnameapace)
 	if err != nil {
 		return err
 	}
 	//create deploy
-	err = CreateTTYdeploy(t, clientset)
+	err = CreateTTYdeploy(t)
 	if err != nil {
 		return err
 	}
 	//create service
-	err = CreateTTYservice(t, clientset)
+	err = CreateTTYservice(t)
 	if err != nil {
 		return err
 	}
+	// check terminal heartbeat
+	CheckHeartbeat(t)
 	return nil
+}
+
+//CheckHeartbeat is
+func CheckHeartbeat(t *Terminal) {
+	heartBeat := NewHeartbeater(t.TerminalID, t.Namespace)
+	stopped := make(chan bool)
+	go func() {
+		for {
+			select {
+			case <-stopped:
+				return
+			default:
+				time.Sleep(time.Duration(600) * time.Second) //every 10min check heartbeat
+				err := heartBeat.CleanTerminalJob(stopped)
+				if err != nil {
+					log.Println(err)
+				}
+			}
+		}
+	}()
+
 }
 
 //LoadTerminalID is
