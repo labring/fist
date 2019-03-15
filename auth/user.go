@@ -22,10 +22,23 @@ func NewLdapUserInfo(name, password string) *UserInfo {
 	return &UserInfo{Name: name, Password: password, Groups: []string{"ldap"}}
 }
 
-//type UserService interface {
-//	GetUser() error   // GET
-//	AddUser()         //POST
-//	DelUser()          //DELETE
-//	UpdateUser()      //PUT
-//	ListUser()      //PUT
+//func GetUserInfo(name string) *UserInfo  {
+//	return nil
+//}
+//
+//func ListAllUserInfo() *[]UserInfo  {
+//	return nil
+//}
+//
+//
+//func AddUserInfo(userInfo *UserInfo) error {
+//	return nil
+//}
+//
+//func UpdateUserInfo(userInfo *UserInfo) error {
+//	return nil
+//}
+//
+//func DelUserInfo(name string) error {
+//	return nil
 //}
