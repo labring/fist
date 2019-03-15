@@ -33,7 +33,7 @@ func Register(container *restful.Container) {
 	auth.Route(auth.GET("/.well-known/openid-configuration").To(discoveryHandler))
 	auth.Route(auth.GET("/token").To(handlerToken))
 	auth.Route(auth.GET("/keys").To(handlePublicKeys))
-
+	auth.Route(auth.POST("/login").To(handleLogin))
 	container.Add(auth)
 
 }
@@ -130,6 +130,21 @@ func handlePublicKeys(request *restful.Request, response *restful.Response) {
 
 	response.AddHeader("Content-Type", "application/json")
 	response.WriteEntity(&jwks)
+}
+
+func handleLogin(request *restful.Request, response *restful.Response) {
+	t := &UserInfo{}
+	err := request.ReadEntity(t)
+	if err != nil {
+		tools.ResponseSystemError(response, err)
+		return
+	}
+	uerInfo := DoAuthentication(t.Name, t.Password)
+	if uerInfo == nil {
+		tools.ResponseError(response, tools.ErrUserAuth)
+		return
+	}
+	tools.ResponseSuccess(response, uerInfo)
 }
 
 //Serve start a auth server
