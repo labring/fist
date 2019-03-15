@@ -1,4 +1,5 @@
 [![Build Status](https://cloud.drone.io/api/badges/fanux/fist/status.svg)](https://cloud.drone.io/fanux/fist)
+[![Go Report Card](https://goreportcard.com/badge/github.com/fanux/fist)](https://goreportcard.com/report/github.com/fanux/fist)
 
 ```
                     __                        _____      __ 
