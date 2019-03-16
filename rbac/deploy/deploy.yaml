@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fist-rbac
+  namespace: sealyun
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: fist-rbac
+  template:
+    metadata:
+      labels:
+        name: fist-rbac
+    spec:
+      containers:
+      - name: fist-rbac
+        image: lameleg/fist:latest
+        command: ["./fist", "rbac"]
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: fist-rbac
+  namespace: sealyun
+spec:
+  type: NodePort
+  clusterIP: 10.106.233.69
+  ports:
+  - name: fist-rbac
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+    nodePort: 32203
+  selector:
+    name: fist-rbac
