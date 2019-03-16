@@ -17,6 +17,7 @@ var (
 	ErrServiceAccountEmpty     = errors.New("the serviceAccount token is empty")
 	ErrServiceAccountNotExists = errors.New("the serviceAccount token is not exists")
 	ErrParamTidEmpty           = errors.New("the param tid is empty")
+	ErrUserAuth                = errors.New("user auth failed ")
 
 	ErrK8sClientInitFailed = errors.New("kubernetes client init failed")
 )
