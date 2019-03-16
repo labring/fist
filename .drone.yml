@@ -32,11 +32,11 @@ steps:
   - mkdir ~/.kube
   - cp deploy/config ~/.kube/config
   - cd auth/deploy
-  - kubectl delete -f auth.yaml
-  - kubectl delete -f secret.yaml
-  - kubectl delete secrets fist  -n sealyun
+  - kubectl delete -f auth.yaml  || true
+  - kubectl delete -f secret.yaml  || true
   - sleep 15
-  - sh install.sh || true
+  - kubectl create -f secret.yaml  || true
+  - kubectl create -f auth.yaml  || true
 
 - name: deploy-terminal
   image: lachlanevenson/k8s-kubectl
