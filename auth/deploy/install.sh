@@ -1,14 +1,15 @@
+set -e
 rm ssl/*
 sh gencert.sh
 sleep 3
 sh secret.sh
 kubectl create -f auth.yaml
 kubectl create -f secret.yaml
-mkdir /etc/kubernetes/pki/fist/ || true
-cp ssl/ca.pem /etc/kubernetes/pki/fist/
+mkdir -f /etc/kubernetes/pki/fist/ || true
+cp -rf  ssl/ca.pem /etc/kubernetes/pki/fist/
 
 echo "wait for auth service sleep 15s... "
-sleep 15 
+sleep 15
 
 echo '  [WARN] edit kube-apiserver.yaml and add oidc config, if auth service not ready, apiserver may start failed!'
 sed '/- kube-apiserver/a\    - --oidc-groups-claim=groups' -i /etc/kubernetes/manifests/kube-apiserver.yaml
