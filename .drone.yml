@@ -25,34 +25,23 @@ steps:
     password:
       from_secret: docker-hub-pass
 
+- name: deploy-auth
+  image: lachlanevenson/k8s-kubectl
+  commands:
+  - mkdir ~/.kube
+  - cp deploy/config ~/.kube/config
+  - cd auth/deploy
+  - kubectl delete -f auth.yaml  || true
+  - kubectl delete -f secret.yaml  || true
+  - sleep 15
+  - kubectl create -f secret.yaml  || true
+  - kubectl create -f auth.yaml  || true
 
-   #steps:
-   #- name: build-auth
-   #  image: golang:1.10.8
-   #  commands:
-   #     - cd auth && go build -o auth
-   #
-   #- name: publish-auth
-   #  image: plugins/docker
-   #  settings:
-   #    repo: fanux/fist-auth
-   #    tags: ${DRONE_TAG=latest}
-   #    username: fanux
-   #    dockerfile: auth/deploy/Dockerfile
-   #    password:
-   #      from_secret: docker-hub-pass
-   #
-   #- name: build-terminal
-   #  image: golang:1.10.8
-   #  commands:
-   #     - cd terminal && go get && go build -o terminal
-   #
-   #- name: publish-terminal
-   #  image: plugins/docker
-   #  settings:
-   #    repo: fanux/fist-terminal
-   #    tags: ${DRONE_TAG=latest}
-   #    username: fanux
-   #    dockerfile: terminal/deploy/Dockerfile
-   #    password:
-   #      from_secret: docker-hub-pass
+- name: deploy-terminal
+  image: lachlanevenson/k8s-kubectl
+  commands:
+  - mkdir ~/.kube
+  - cp deploy/config ~/.kube/config
+  - kubectl delete -f terminal/deploy/deploy.yaml  || true
+  - sleep 15
+  - kubectl create -f  terminal/deploy/deploy.yaml || true

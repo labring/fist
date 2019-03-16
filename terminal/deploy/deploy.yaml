@@ -41,10 +41,12 @@ metadata:
   namespace: sealyun
 spec:
   type: NodePort
+  clusterIP: 10.106.233.68
   ports:
   - name: fist-terminal
     port: 8080
     targetPort: 8080
     protocol: TCP
+    nodePort: 32202
   selector:
     name: fist-terminal

@@ -10,13 +10,11 @@ func TestAdmin_IsAdminFalse(t *testing.T) {
 	err := adminer.LoadSecret()
 	if err != nil {
 		panic(err)
-		return
 	}
 	isAdmin, err := adminer.IsAdmin()
 	println("isAdmin:" + strconv.FormatBool(isAdmin))
 	if err != nil {
 		panic(err)
-		return
 	}
 }
 
@@ -25,13 +23,11 @@ func TestAdmin_IsAdminTrue(t *testing.T) {
 	err := adminer.LoadSecret()
 	if err != nil {
 		panic(err)
-		return
 	}
 	isAdmin, err := adminer.IsAdmin()
 	println("isAdmin:" + strconv.FormatBool(isAdmin))
 	if err != nil {
 		panic(err)
-		return
 	}
 }
 
@@ -40,6 +36,5 @@ func TestAdmin_LoadSecret(t *testing.T) {
 	err := adminer.LoadSecret()
 	if err != nil {
 		panic(err)
-		return
 	}
 }
