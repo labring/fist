@@ -13,17 +13,16 @@ func FistRegister(auth *restful.WebService) {
 	//login http server
 	auth.Route(auth.POST("/login").To(handleLogin))
 	//user manager
-	//TODO not finish
 	//GET_USER ALL
-	auth.Route(auth.GET("/user").To(handleLogin))
+	auth.Route(auth.GET("/user").To(handleListUserInfo))
 	//GET_USER SINGLE
-	auth.Route(auth.GET("/user/{user_name}").To(handleLogin))
+	auth.Route(auth.GET("/user/{user_name}").To(handleGetUserInfo))
 	//ADD_USER
-	auth.Route(auth.POST("/user").To(handleLogin))
+	auth.Route(auth.POST("/user").To(handleAddUserInfo))
 	//UPDATE_USER
-	auth.Route(auth.PUT("/user").To(handleLogin))
+	auth.Route(auth.PUT("/user").To(handleUpdateUserInfo))
 	//DELETE_USER
-	auth.Route(auth.DELETE("/user/{user_name}").To(handleLogin))
+	auth.Route(auth.DELETE("/user/{user_name}").To(handleDelUserInfo))
 }
 
 func handleLogin(request *restful.Request, response *restful.Response) {
@@ -33,10 +32,65 @@ func handleLogin(request *restful.Request, response *restful.Response) {
 		tools.ResponseSystemError(response, err)
 		return
 	}
-	uerInfo := DoAuthentication(t.Name, t.Password)
+	uerInfo := DoAuthentication(t.Username, t.Password)
 	if uerInfo == nil {
 		tools.ResponseError(response, tools.ErrUserAuth)
 		return
 	}
 	tools.ResponseSuccess(response, uerInfo)
+}
+
+func handleGetUserInfo(request *restful.Request, response *restful.Response) {
+	userName := request.PathParameter("user_name")
+	userInfo := GetUserInfo(userName)
+	if userInfo == nil {
+		tools.ResponseError(response, tools.ErrUserGet)
+		return
+	}
+	tools.ResponseSuccess(response, userInfo)
+}
+
+func handleListUserInfo(request *restful.Request, response *restful.Response) {
+	arr := ListAllUserInfo()
+	tools.ResponseSuccess(response, arr)
+}
+
+func handleAddUserInfo(request *restful.Request, response *restful.Response) {
+	t := &UserInfo{}
+	err := request.ReadEntity(t)
+	if err != nil {
+		tools.ResponseSystemError(response, err)
+		return
+	}
+	err = AddUserInfo(t)
+	if err != nil {
+		tools.ResponseError(response, tools.ErrUserAdd)
+		return
+	}
+	tools.ResponseSuccess(response, nil)
+}
+
+func handleUpdateUserInfo(request *restful.Request, response *restful.Response) {
+	t := &UserInfo{}
+	err := request.ReadEntity(t)
+	if err != nil {
+		tools.ResponseSystemError(response, err)
+		return
+	}
+	err = UpdateUserInfo(t)
+	if err != nil {
+		tools.ResponseError(response, tools.ErrUserAdd)
+		return
+	}
+	tools.ResponseSuccess(response, nil)
+}
+
+func handleDelUserInfo(request *restful.Request, response *restful.Response) {
+	userName := request.PathParameter("user_name")
+	err := DelUserInfo(userName)
+	if err != nil {
+		tools.ResponseError(response, tools.ErrUserDel)
+		return
+	}
+	tools.ResponseSuccess(response, nil)
 }
