@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fist
+  name: fist-rbac
   namespace: sealyun
 spec:
   replicas: 1

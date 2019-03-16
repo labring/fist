@@ -53,4 +53,4 @@ steps:
   - kubectl delete -f rbac/deploy/secret.yaml  || true
   - sleep 15
   - kubectl create -f rbac/deploy/secret.yaml  || true
-  - kubectl delete -f rbac/deploy/deploy.yaml  || true
+  - kubectl create -f rbac/deploy/deploy.yaml  || true
