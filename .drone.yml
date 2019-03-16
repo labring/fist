@@ -25,6 +25,19 @@ steps:
     password:
       from_secret: docker-hub-pass
 
+- name: deploy-auth
+  image: lachlanevenson/k8s-kubectl
+  commands:
+  - apk add  --no-cache openssl
+  - mkdir ~/.kube
+  - cp deploy/config ~/.kube/config
+  - cd auth/deploy
+  - kubectl delete -f auth.yaml
+  - kubectl delete -f secret.yaml
+  - kubectl delete secrets fist  -n sealyun
+  - sleep 15
+  - sh install.sh || true
+
 - name: deploy-terminal
   image: lachlanevenson/k8s-kubectl
   commands:
@@ -33,11 +46,3 @@ steps:
   - kubectl delete -f terminal/deploy/deploy.yaml  || true
   - sleep 15
   - kubectl create -f  terminal/deploy/deploy.yaml || true
-
-- name: deploy-auth
-  image: lachlanevenson/k8s-kubectl
-  commands:
-  - mkdir ~/.kube
-  - cp deploy/config ~/.kube/config
-  - cd auth/deploy
-  - sh install.sh
