@@ -1,4 +1,4 @@
-package auth
+package rbac
 
 //DoAuthentication is user login access function
 func DoAuthentication(user, password string) *UserInfo {
