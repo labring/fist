@@ -1,4 +1,4 @@
-package auth
+package rbac
 
 import (
 	"github.com/emicklei/go-restful"
