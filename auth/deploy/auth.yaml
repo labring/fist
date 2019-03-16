@@ -52,6 +52,7 @@ metadata:
   namespace: sealyun
 spec:
   type: NodePort
+  clusterIP: 10.106.233.67
   ports:
   - name: fist
     port: 8080
