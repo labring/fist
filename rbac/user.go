@@ -1,4 +1,4 @@
-package auth
+package rbac
 
 import (
 	"github.com/fanux/fist/tools"

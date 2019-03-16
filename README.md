@@ -46,7 +46,7 @@ Create a kubernetes User token
 [README](./auth/README.md)
 
 # Webterminal
-![](https://sealyun.com/fist/config-highlight.png)
+![](./terminal/terminal.jpg)
 
 [terminal show](https://sealyun.com/post/fist-terminal/)
 
