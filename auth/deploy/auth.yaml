@@ -51,12 +51,12 @@ metadata:
   name: fist
   namespace: sealyun
 spec:
-  type: ClusterIP
-  clusterIP: 10.106.233.67
+  type: NodePort
   ports:
   - name: fist
     port: 8080
     targetPort: 8080
     protocol: TCP
+    nodePort: 32201
   selector:
     name: fist
