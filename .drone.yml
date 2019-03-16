@@ -28,7 +28,6 @@ steps:
 - name: deploy-auth
   image: lachlanevenson/k8s-kubectl
   commands:
-  - apk add  --no-cache openssl
   - mkdir ~/.kube
   - cp deploy/config ~/.kube/config
   - cd auth/deploy
