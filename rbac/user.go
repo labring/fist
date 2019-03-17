@@ -34,23 +34,23 @@ func NewLdapUserInfo(username, nickname, password string) *UserInfo {
 }
 
 //GetUserInfo is add method from server_fist
-func GetUserInfo(name string) *UserInfo {
+func GetUserInfo(name string, needPwd bool) *UserInfo {
 	secretMap := tools.SealyunGetSecretMap(tools.UserOperator, name)
 	if secretMap != nil {
-		return mapToUserInfo(secretMap, false)
+		return mapToUserInfo(secretMap, needPwd)
 	}
 	return nil
 }
 
 //ListAllUserInfo is list method from server_fist
-func ListAllUserInfo() []*UserInfo {
+func ListAllUserInfo(needPwd bool) []*UserInfo {
 	labelsMap := make(map[string]string)
 	labelsMap["module"] = "users"
 	secrets := tools.SealyunListSecrets(tools.UserOperator, labelsMap)
 	var users = make([]*UserInfo, len(secrets))
 	if len(secrets) != 0 {
 		for i, v := range secrets {
-			users[i] = mapToUserInfo(v, false)
+			users[i] = mapToUserInfo(v, needPwd)
 		}
 	}
 	return users
