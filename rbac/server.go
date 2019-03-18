@@ -2,6 +2,7 @@ package rbac
 
 import (
 	"github.com/emicklei/go-restful"
+	"github.com/fanux/fist/tools"
 	"github.com/spf13/cobra"
 	"github.com/wonderivan/logger"
 	"log"
@@ -17,6 +18,9 @@ func Serve(cmd *cobra.Command) {
 	//registry  fist auth
 	FistRegister(auth)
 	wsContainer.Add(auth)
+	//cors
+	tools.Cors(wsContainer)
+
 	//process port for command
 	port, _ := cmd.Flags().GetUint16("port")
 	sPort := ":" + strconv.FormatUint(uint64(port), 10)
