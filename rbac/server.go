@@ -2,6 +2,7 @@ package rbac
 
 import (
 	"github.com/emicklei/go-restful"
+	"github.com/fanux/fist/tools"
 	"github.com/spf13/cobra"
 	"github.com/wonderivan/logger"
 	"log"
@@ -17,16 +18,8 @@ func Serve(cmd *cobra.Command) {
 	//registry  fist auth
 	FistRegister(auth)
 	wsContainer.Add(auth)
-	// Add container filter to enable CORS
-	cors := restful.CrossOriginResourceSharing{
-		ExposeHeaders:  []string{"X-My-Header"},
-		AllowedHeaders: []string{"Content-Type", "Accept"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
-		CookiesAllowed: false,
-		Container:      wsContainer}
-	wsContainer.Filter(cors.Filter)
-	// Add container filter to respond to OPTIONS
-	wsContainer.Filter(wsContainer.OPTIONSFilter)
+	//cors
+	tools.Cors(wsContainer)
 
 	//process port for command
 	port, _ := cmd.Flags().GetUint16("port")
