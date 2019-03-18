@@ -42,7 +42,7 @@ func handleLogin(request *restful.Request, response *restful.Response) {
 
 func handleGetUserInfo(request *restful.Request, response *restful.Response) {
 	userName := request.PathParameter("user_name")
-	userInfo := GetUserInfo(userName)
+	userInfo := GetUserInfo(userName, false)
 	if userInfo == nil {
 		tools.ResponseError(response, tools.ErrUserGet)
 		return
@@ -51,7 +51,7 @@ func handleGetUserInfo(request *restful.Request, response *restful.Response) {
 }
 
 func handleListUserInfo(request *restful.Request, response *restful.Response) {
-	arr := ListAllUserInfo()
+	arr := ListAllUserInfo(false)
 	tools.ResponseSuccess(response, arr)
 }
 
@@ -79,7 +79,7 @@ func handleUpdateUserInfo(request *restful.Request, response *restful.Response) 
 	}
 	err = UpdateUserInfo(t)
 	if err != nil {
-		tools.ResponseError(response, tools.ErrUserAdd)
+		tools.ResponseError(response, tools.ErrUserUpdate)
 		return
 	}
 	tools.ResponseSuccess(response, nil)

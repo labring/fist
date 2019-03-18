@@ -69,6 +69,8 @@ func Serve(cmd *cobra.Command) {
 	wsContainer := restful.NewContainer()
 	wsContainer.Router(restful.CurlyRouter{})
 	Register(wsContainer)
+	//cors
+	tools.Cors(wsContainer)
 	//process port for command
 	port, _ := cmd.Flags().GetUint16("port")
 	sPort := ":" + strconv.FormatUint(uint64(port), 10)

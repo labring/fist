@@ -6,7 +6,7 @@ import (
 )
 
 func TestCreateNamespace(t *testing.T) {
-	CreateNamespace("ffff")
+	_ = CreateNamespace("ffff")
 }
 
 func TestGetSecrets(t *testing.T) {
