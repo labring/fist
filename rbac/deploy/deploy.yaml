@@ -13,6 +13,7 @@ spec:
       labels:
         name: fist-rbac
     spec:
+      serviceAccountName: admin
       containers:
       - name: fist-rbac
         image: lameleg/fist:latest

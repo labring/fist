@@ -57,13 +57,17 @@ func (AdminAuth) Authenticate(user, password string) *UserInfo {
 	}
 	isAdmin, err := admire.IsAdmin()
 	if err == nil && isAdmin {
-		return NewAdminUserInfo(user, password)
+		return NewAdminUserInfo(user, "")
 	}
 	return nil
 }
 
 //Authenticate is interface impl for KubeSecretAuth
 func (KubeSecretAuth) Authenticate(user, password string) *UserInfo {
+	userInfo := GetUserInfo(user, true)
+	if userInfo != nil && password == userInfo.Password {
+		return userInfo
+	}
 	return nil
 }
 
