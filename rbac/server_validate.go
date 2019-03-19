@@ -12,11 +12,16 @@ func validateUserName(username string) bool {
 }
 
 func validateUserNameExist(username string) bool {
-	data := tools.SealyunGetSecretMap(tools.UserOperator, username)
-	if _, ok := data["username"]; ok {
+	if username == "admin" {
+		//validate admin is username
 		return true
+	} else {
+		data := tools.SealyunGetSecretMap(tools.UserOperator, username)
+		if _, ok := data["username"]; ok {
+			return true
+		}
+		return false
 	}
-	return false
 }
 
 func validateGroups(groups []string) bool {
