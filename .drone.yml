@@ -34,11 +34,9 @@ steps:
   - kubectl delete -f auth.yaml  || true
   - sleep 15
   - kubectl create -f auth.yaml  || true
-  trigger:
+  when:
     event:
-      exclude:
-      - pull_request
-      - rollback
+    - push
 
 - name: deploy-terminal
   image: lachlanevenson/k8s-kubectl
@@ -48,11 +46,9 @@ steps:
   - kubectl delete -f terminal/deploy/deploy.yaml  || true
   - sleep 15
   - kubectl create -f  terminal/deploy/deploy.yaml || true
-  trigger:
+  when:
     event:
-      exclude:
-      - pull_request
-      - rollback
+    - push
 
 - name: deploy-rbac
   image: lachlanevenson/k8s-kubectl
@@ -64,8 +60,6 @@ steps:
   - sleep 15
   - kubectl create -f rbac/deploy/secret.yaml  || true
   - kubectl create -f rbac/deploy/deploy.yaml  || true
-  trigger:
+  when:
     event:
-      exclude:
-      - pull_request
-      - rollback
+    - push
