@@ -24,6 +24,9 @@ steps:
     dockerfile: deploy/Dockerfile
     password:
       from_secret: docker-hub-pass
+  when:
+    event:
+    - push
 
 - name: deploy-auth
   image: lachlanevenson/k8s-kubectl
