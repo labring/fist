@@ -214,30 +214,7 @@ func CreateTTYcontainer(t *Terminal) error {
 	if err != nil {
 		return err
 	}
-	// check terminal heartbeat
-	CheckHeartbeat(t)
 	return nil
-}
-
-//CheckHeartbeat is
-func CheckHeartbeat(t *Terminal) {
-	heartBeat := NewHeartbeater(t.TerminalID, t.Namespace)
-	stopped := make(chan bool)
-	go func() {
-		for {
-			select {
-			case <-stopped:
-				return
-			default:
-				time.Sleep(time.Duration(600) * time.Second) //every 10min check heartbeat
-				err := heartBeat.CleanTerminalJob(stopped)
-				if err != nil {
-					log.Println(err)
-				}
-			}
-		}
-	}()
-
 }
 
 //LoadTerminalID is

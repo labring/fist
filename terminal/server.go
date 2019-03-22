@@ -62,6 +62,28 @@ func handleHeartbeat(request *restful.Request, response *restful.Response) {
 	tools.ResponseSuccess(response, nil)
 }
 
+func cleanTerminal(namespace string) {
+	clientSet := tools.GetK8sClient()
+	deploymentsClient := clientSet.AppsV1().Deployments(namespace)
+
+	go func {
+		time.Sleep(time.Duration(600) * time.Second)//every 10min check heartbeat
+
+		list, err := deploymentsClient.List(metav1.ListOptions{})
+	    if err != nil {
+	        log.Fatal(err)
+	    }
+	    for _, d := range list.Items {
+	    	var hbInterface Heartbeater
+			hbInterface = NewHeartbeater(d.Name, namespace)
+			err := hbInterface.CleanTerminalJob()
+			if err != nil {
+	      	   log.Fatal(err)
+	   		}
+		}
+	}
+}
+
 //Serve start a terminal server
 func Serve(cmd *cobra.Command) {
 	LoadTerminalID()
@@ -71,6 +93,10 @@ func Serve(cmd *cobra.Command) {
 	Register(wsContainer)
 	//cors
 	tools.Cors(wsContainer)
+
+	//clean dead terminal
+	cleanTerminal(DefaultTTYnameapace)
+
 	//process port for command
 	port, _ := cmd.Flags().GetUint16("port")
 	sPort := ":" + strconv.FormatUint(uint64(port), 10)
