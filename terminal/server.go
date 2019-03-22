@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/emicklei/go-restful"
+	"time"
 )
 
 //Register is
@@ -66,7 +67,7 @@ func cleanTerminal(namespace string) {
 	clientSet := tools.GetK8sClient()
 	deploymentsClient := clientSet.AppsV1().Deployments(namespace)
 
-	go func {
+	go func() {
 		time.Sleep(time.Duration(600) * time.Second)//every 10min check heartbeat
 
 		list, err := deploymentsClient.List(metav1.ListOptions{})
@@ -81,7 +82,7 @@ func cleanTerminal(namespace string) {
 	      	   log.Fatal(err)
 	   		}
 		}
-	}
+	}()
 }
 
 //Serve start a terminal server
