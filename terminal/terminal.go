@@ -2,9 +2,7 @@ package terminal
 
 import (
 	"fmt"
-	"log"
 	"os"
-	"time"
 
 	"github.com/fanux/fist/tools"
 	appsv1 "k8s.io/api/apps/v1"
