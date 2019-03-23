@@ -47,6 +47,6 @@ spec:
     port: 8080
     targetPort: 8080
     protocol: TCP
-    nodePort: 32202
+    nodePort: 32203
   selector:
     name: fist-terminal

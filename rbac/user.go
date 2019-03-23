@@ -25,12 +25,12 @@ func NewDefaultUserInfo(username, password string, groups []string) *UserInfo {
 
 //NewAdminUserInfo  is construction method for admin
 func NewAdminUserInfo(username, password string) *UserInfo {
-	return NewUserInfo(username, "administrator", password, []string{"admin"})
+	return NewUserInfo(username, "administrator", password, []string{""})
 }
 
 //NewLdapUserInfo is construction method for ldap
 func NewLdapUserInfo(username, nickname, password string) *UserInfo {
-	return NewUserInfo(username, nickname, password, []string{"ldap"})
+	return NewUserInfo(username, nickname, password, []string{""})
 }
 
 //GetUserInfo is add method from server_fist

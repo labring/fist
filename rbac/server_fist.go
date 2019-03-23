@@ -72,11 +72,6 @@ func handleAddUserInfo(request *restful.Request, response *restful.Response) {
 		tools.ResponseSystemError(response, tools.ErrUserName)
 		return
 	}
-	//2 groups is error ?
-	if validateGroups(t.Groups) {
-		tools.ResponseSystemError(response, tools.ErrUserGroups)
-		return
-	}
 	//3 user is  not exists ?
 	if validateUserNameExist(t.Username) {
 		tools.ResponseSystemError(response, tools.ErrUserExists)
@@ -100,11 +95,6 @@ func handleUpdateUserInfo(request *restful.Request, response *restful.Response) 
 	//1 user name is error ?
 	if validateUserName(t.Username) {
 		tools.ResponseSystemError(response, tools.ErrUserName)
-		return
-	}
-	//2 groups is error ?
-	if validateGroups(t.Groups) {
-		tools.ResponseSystemError(response, tools.ErrUserGroups)
 		return
 	}
 	//3 user is   exists ?
