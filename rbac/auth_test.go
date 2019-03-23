@@ -24,7 +24,7 @@ package rbac
 
 	fmt.Println("=========oidc verify========\n\n")
 	ctx := context.Background()
-	provider, err := oidc.NewProvider(ctx, "https://fist.sealyun.svc.cluster.local:8080")
+	provider, err := oidc.NewProvider(ctx, "https://fist.sealyun.svc.cluster.local:8443")
 	if err != nil {
 		fmt.Println("new provider failed: ", err)
 	}
