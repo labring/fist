@@ -2,15 +2,23 @@ package auth
 
 import (
 	"github.com/emicklei/go-restful"
-	"github.com/spf13/cobra"
 	"github.com/wonderivan/logger"
 	"log"
 	"net/http"
 	"strconv"
 )
 
+var (
+	//AuthPort is cmd port param
+	AuthPort uint16
+	//AuthCert is cmd cert file
+	AuthCert string
+	//AuthKey is cmd key file
+	AuthKey string
+)
+
 //Serve start a auth server
-func Serve(cmd *cobra.Command) {
+func Serve() {
 	wsContainer := restful.NewContainer()
 	wsContainer.Router(restful.CurlyRouter{})
 	auth := new(restful.WebService)
@@ -18,14 +26,11 @@ func Serve(cmd *cobra.Command) {
 	K8sRegister(auth)
 	wsContainer.Add(auth)
 	//process port for command
-	port, _ := cmd.Flags().GetUint16("port")
-	sPort := ":" + strconv.FormatUint(uint64(port), 10)
+	sPort := ":" + strconv.FormatUint(uint64(AuthPort), 10)
 	logger.Info("start listening on localhost", sPort)
 	server := &http.Server{Addr: sPort, Handler: wsContainer}
 	//process cert/key for command
-	cert, _ := cmd.Flags().GetString("cert")
-	key, _ := cmd.Flags().GetString("key")
-	logger.Info("certFile is :", cert, ";keyFile is:", key)
+	logger.Info("certFile is :", AuthCert, ";keyFile is:", AuthKey)
 
-	log.Fatal(server.ListenAndServeTLS(cert, key))
+	log.Fatal(server.ListenAndServeTLS(AuthCert, AuthKey))
 }

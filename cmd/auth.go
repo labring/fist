@@ -30,7 +30,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		auth.Serve(cmd)
+		auth.Serve()
 	},
 }
 
@@ -38,9 +38,9 @@ func init() {
 	rootCmd.AddCommand(authCmd)
 
 	// Here you will define your flags and configuration settings.
-	authCmd.Flags().Uint16P("port", "P", 8080, "start  listening port")
-	authCmd.Flags().StringP("cert", "C", "/etc/fist/cert.pem", "the cert.pem for fist")
-	authCmd.Flags().StringP("key", "K", "/etc/fist/key.pem", "the key.pem for fist")
+	authCmd.Flags().Uint16VarP(&auth.AuthPort, "port", "P", 8080, "start  listening port")
+	authCmd.Flags().StringVarP(&auth.AuthCert, "cert", "C", "/etc/fist/cert.pem", "the cert.pem for fist")
+	authCmd.Flags().StringVarP(&auth.AuthKey, "key", "K", "/etc/fist/key.pem", "the key.pem for fist")
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
