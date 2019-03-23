@@ -42,6 +42,11 @@ func handleLogin(request *restful.Request, response *restful.Response) {
 
 func handleGetUserInfo(request *restful.Request, response *restful.Response) {
 	userName := request.PathParameter("user_name")
+	// is exists
+	if !validateUserNameExist(userName) {
+		tools.ResponseError(response, tools.ErrUserNotExists)
+		return
+	}
 	userInfo := GetUserInfo(userName, false)
 	if userInfo == nil {
 		tools.ResponseError(response, tools.ErrUserGet)
@@ -62,6 +67,16 @@ func handleAddUserInfo(request *restful.Request, response *restful.Response) {
 		tools.ResponseSystemError(response, err)
 		return
 	}
+	//1 user name is error ?
+	if validateUserName(t.Username) {
+		tools.ResponseSystemError(response, tools.ErrUserName)
+		return
+	}
+	//3 user is  not exists ?
+	if validateUserNameExist(t.Username) {
+		tools.ResponseSystemError(response, tools.ErrUserExists)
+		return
+	}
 	err = AddUserInfo(t)
 	if err != nil {
 		tools.ResponseError(response, tools.ErrUserAdd)
@@ -77,6 +92,16 @@ func handleUpdateUserInfo(request *restful.Request, response *restful.Response) 
 		tools.ResponseSystemError(response, err)
 		return
 	}
+	//1 user name is error ?
+	if validateUserName(t.Username) {
+		tools.ResponseSystemError(response, tools.ErrUserName)
+		return
+	}
+	//3 user is   exists ?
+	if !validateUserNameExist(t.Username) {
+		tools.ResponseSystemError(response, tools.ErrUserNotExists)
+		return
+	}
 	err = UpdateUserInfo(t)
 	if err != nil {
 		tools.ResponseError(response, tools.ErrUserUpdate)
@@ -87,6 +112,11 @@ func handleUpdateUserInfo(request *restful.Request, response *restful.Response) 
 
 func handleDelUserInfo(request *restful.Request, response *restful.Response) {
 	userName := request.PathParameter("user_name")
+	// is exists
+	if !validateUserNameExist(userName) {
+		tools.ResponseError(response, tools.ErrUserNotExists)
+		return
+	}
 	err := DelUserInfo(userName)
 	if err != nil {
 		tools.ResponseError(response, tools.ErrUserDel)
