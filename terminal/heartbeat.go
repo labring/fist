@@ -13,7 +13,7 @@ type Heartbeater interface {
 	//terminal deployment is in sealyun-tty namespace
 	UpdateTimestamp() error
 	//need delete deployment and service in sealyun-tty if it timeout
-	CleanTerminalJob(stopped chan bool) error
+	CleanTerminalJob() error
 }
 
 type terHeartbeater struct {
@@ -28,7 +28,7 @@ func NewHeartbeater(tid string, namespace string) Heartbeater {
 	return hbInterface
 }
 
-func (t *terHeartbeater) CleanTerminalJob(stopped chan bool) error {
+func (t *terHeartbeater) CleanTerminalJob() error {
 	clientSet := tools.GetK8sClient()
 	//get deploy of terminalId
 	deploymentsClient := clientSet.AppsV1().Deployments(t.namespace)
@@ -58,7 +58,6 @@ func (t *terHeartbeater) CleanTerminalJob(stopped chan bool) error {
 		}); err != nil {
 			return err
 		}
-		stopped <- true
 	}
 	return nil
 }
