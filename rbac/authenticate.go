@@ -73,8 +73,6 @@ func (KubeSecretAuth) Authenticate(user, password string) *UserInfo {
 
 //Authenticate is interface impl for LdapAuth
 func (LdapAuth) Authenticate(user, password string) *UserInfo {
-	if RbacLdapEnable {
-		//这里需要判断用户是否已经开启ldap
-	}
+	//这里需要判断用户是否已经开启ldap
 	return nil
 }

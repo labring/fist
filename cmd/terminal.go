@@ -30,7 +30,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		terminal.Serve()
+		terminal.Serve(cmd)
 	},
 }
 
@@ -38,7 +38,7 @@ func init() {
 	rootCmd.AddCommand(terminalCmd)
 
 	// Here you will define your flags and configuration settings.
-	terminalCmd.Flags().Uint16VarP(&terminal.TerminalPort, "port", "P", 8080, "start  listening port")
+	terminalCmd.Flags().Uint16P("port", "P", 8080, "start  listening port")
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:

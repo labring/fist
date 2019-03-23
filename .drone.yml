@@ -24,9 +24,6 @@ steps:
     dockerfile: deploy/Dockerfile
     password:
       from_secret: docker-hub-pass
-  when:
-    event:
-    - push
 
 - name: deploy-auth
   image: lachlanevenson/k8s-kubectl
@@ -37,9 +34,6 @@ steps:
   - kubectl delete -f auth.yaml  || true
   - sleep 15
   - kubectl create -f auth.yaml  || true
-  when:
-    event:
-    - push
 
 - name: deploy-terminal
   image: lachlanevenson/k8s-kubectl
@@ -49,9 +43,6 @@ steps:
   - kubectl delete -f terminal/deploy/deploy.yaml  || true
   - sleep 15
   - kubectl create -f  terminal/deploy/deploy.yaml || true
-  when:
-    event:
-    - push
 
 - name: deploy-rbac
   image: lachlanevenson/k8s-kubectl
@@ -63,6 +54,3 @@ steps:
   - sleep 15
   - kubectl create -f rbac/deploy/secret.yaml  || true
   - kubectl create -f rbac/deploy/deploy.yaml  || true
-  when:
-    event:
-    - push
