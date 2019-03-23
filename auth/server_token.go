@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-//K8sRegister is k8s auth
+//TokenRegister is k8s auth token
 func TokenRegister(auth *restful.WebService) {
 	Pub, Priv = CreateKeyPair()
 	auth.Path("/").
