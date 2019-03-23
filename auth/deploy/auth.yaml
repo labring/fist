@@ -24,6 +24,7 @@ spec:
         command: ["./fist", "auth"]
         imagePullPolicy: Always
         ports:
+        - containerPort: 8443
         - containerPort: 8080
         volumeMounts:
         - name: fist
@@ -54,10 +55,15 @@ spec:
   type: NodePort
   clusterIP: 10.106.233.67
   ports:
-  - name: fist
+  - name: fist-https
+    port: 8443
+    targetPort: 8443
+    protocol: TCP
+    nodePort: 32201
+  - name: fist-http
     port: 8080
     targetPort: 8080
     protocol: TCP
-    nodePort: 32201
+    nodePort: 32202
   selector:
     name: fist
