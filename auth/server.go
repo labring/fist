@@ -24,6 +24,11 @@ var (
 
 //Serve start a auth server
 func Serve() {
+	go httpServer()
+	httpsServer()
+}
+
+func httpsServer() {
 	wsContainer := restful.NewContainer()
 	wsContainer.Router(restful.CurlyRouter{})
 	auth := new(restful.WebService)
@@ -38,4 +43,19 @@ func Serve() {
 	logger.Info("certFile is :", AuthCert, ";keyFile is:", AuthKey)
 
 	log.Fatal(server.ListenAndServeTLS(AuthCert, AuthKey))
+}
+
+func httpServer() {
+	wsContainer := restful.NewContainer()
+	wsContainer.Router(restful.CurlyRouter{})
+	auth := new(restful.WebService)
+	//registry k8s auth and fist auth
+	TokenRegister(auth)
+	wsContainer.Add(auth)
+	//process port for command
+	httpPort := ":" + strconv.FormatUint(uint64(AuthHTTPPort), 10)
+	logger.Info("start listening on localhost", httpPort)
+	server := &http.Server{Addr: httpPort, Handler: wsContainer}
+
+	log.Fatal(server.ListenAndServe())
 }
