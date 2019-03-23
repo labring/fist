@@ -38,7 +38,7 @@ func init() {
 	rootCmd.AddCommand(authCmd)
 
 	// Here you will define your flags and configuration settings.
-	authCmd.Flags().Uint16VarP(&auth.AuthPort, "port", "P", 8080, "start  listening port")
+	authCmd.Flags().Uint16VarP(&auth.AuthHttpsPort, "port", "P", 8443, "start  listening port")
 	authCmd.Flags().StringVarP(&auth.AuthCert, "cert", "C", "/etc/fist/cert.pem", "the cert.pem for fist")
 	authCmd.Flags().StringVarP(&auth.AuthKey, "key", "K", "/etc/fist/key.pem", "the key.pem for fist")
 

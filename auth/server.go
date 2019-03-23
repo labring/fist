@@ -10,7 +10,7 @@ import (
 
 var (
 	//AuthPort is cmd port param
-	AuthPort uint16
+	AuthHttpsPort uint16
 	//AuthCert is cmd cert file
 	AuthCert string
 	//AuthKey is cmd key file
@@ -26,7 +26,7 @@ func Serve() {
 	K8sRegister(auth)
 	wsContainer.Add(auth)
 	//process port for command
-	sPort := ":" + strconv.FormatUint(uint64(AuthPort), 10)
+	sPort := ":" + strconv.FormatUint(uint64(AuthHttpsPort), 10)
 	logger.Info("start listening on localhost", sPort)
 	server := &http.Server{Addr: sPort, Handler: wsContainer}
 	//process cert/key for command
