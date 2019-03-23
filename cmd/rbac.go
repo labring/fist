@@ -30,7 +30,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		rbac.Serve(cmd)
+		rbac.Serve()
 	},
 }
 
@@ -38,7 +38,13 @@ func init() {
 	rootCmd.AddCommand(rbacCmd)
 
 	// Here you will define your flags and configuration settings.
-	rbacCmd.Flags().Uint16P("port", "P", 8080, "start  listening port")
+	rbacCmd.Flags().Uint16VarP(&rbac.RbacPort, "port", "P", 8080, "start  listening port")
+
+	rbacCmd.Flags().BoolVarP(&rbac.RbacLdapEnable, "ldap-enable", "", false, "ldap enable config.")
+	rbacCmd.Flags().Uint16VarP(&rbac.RbacLdapPort, "ldap-port", "", 636, "ldap port config.  e.g. 636")
+	rbacCmd.Flags().StringVarP(&rbac.RbacLdapHost, "ldap-host", "", "ldap.com", "ldap host config. e.g. mydomain.com")
+	rbacCmd.Flags().StringVarP(&rbac.RbacLdapBindDN, "ldap-bind-dn", "", "", "ldap  bind-dn config. e.g. cn=Search,dc=mydomain,dc=com")
+	rbacCmd.Flags().StringVarP(&rbac.RbacLdapBindPassword, "ldap-bind-password", "", "", "ldap bind-password config.")
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
