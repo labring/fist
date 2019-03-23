@@ -6,9 +6,9 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/emicklei/go-restful"
-	"time"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -66,23 +66,26 @@ func handleHeartbeat(request *restful.Request, response *restful.Response) {
 func cleanTerminal(namespace string) {
 	clientSet := tools.GetK8sClient()
 	deploymentsClient := clientSet.AppsV1().Deployments(namespace)
-
-	go func() {
-		time.Sleep(time.Duration(600) * time.Second)//every 10min check heartbeat
-
-		list, err := deploymentsClient.List(metav1.ListOptions{})
-	    if err != nil {
-	        log.Fatal(err)
-	    }
-	    for _, d := range list.Items {
-	    	var hbInterface Heartbeater
-			hbInterface = NewHeartbeater(d.Name, namespace)
-			err := hbInterface.CleanTerminalJob()
+	t := time.NewTicker(600 * time.Second) //every 10min check heartbeat
+	defer t.Stop()
+	for {
+		select {
+		case <-t.C:
+			logger.Info("timer running for cleanTerminal.")
+			list, err := deploymentsClient.List(metav1.ListOptions{})
 			if err != nil {
-	      	   log.Fatal(err)
-	   		}
+				log.Fatal(err)
+			}
+			for _, d := range list.Items {
+				var hbInterface Heartbeater
+				hbInterface = NewHeartbeater(d.Name, namespace)
+				err := hbInterface.CleanTerminalJob()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}
 		}
-	}()
+	}
 }
 
 var (
@@ -101,7 +104,7 @@ func Serve() {
 	tools.Cors(wsContainer)
 
 	//clean dead terminal
-	cleanTerminal(DefaultTTYnameapace)
+	go cleanTerminal(DefaultTTYnameapace)
 
 	//process port for command
 	sPort := ":" + strconv.FormatUint(uint64(TerminalPort), 10)
