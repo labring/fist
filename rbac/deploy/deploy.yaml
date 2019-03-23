@@ -35,6 +35,6 @@ spec:
     port: 8080
     targetPort: 8080
     protocol: TCP
-    nodePort: 32204
+    nodePort: 32203
   selector:
     name: fist-rbac

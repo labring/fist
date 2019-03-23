@@ -15,4 +15,4 @@ sed '/- kube-apiserver/a\    - --oidc-groups-claim=groups' -i /etc/kubernetes/ma
 sed '/- kube-apiserver/a\    - --oidc-username-claim=name' -i /etc/kubernetes/manifests/kube-apiserver.yaml
 sed '/- kube-apiserver/a\    - --oidc-ca-file=/etc/kubernetes/pki/fist/ca.pem' -i /etc/kubernetes/manifests/kube-apiserver.yaml
 sed '/- kube-apiserver/a\    - --oidc-client-id=sealyun-fist' -i /etc/kubernetes/manifests/kube-apiserver.yaml
-sed '/- kube-apiserver/a\    - --oidc-issuer-url=https://fist.sealyun.svc.cluster.local:8443' -i /etc/kubernetes/manifests/kube-apiserver.yaml
+sed '/- kube-apiserver/a\    - --oidc-issuer-url=https://fist.sealyun.svc.cluster.local:8080' -i /etc/kubernetes/manifests/kube-apiserver.yaml

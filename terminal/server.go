@@ -2,6 +2,7 @@ package terminal
 
 import (
 	"github.com/fanux/fist/tools"
+	"github.com/spf13/cobra"
 	"github.com/wonderivan/logger"
 	"log"
 	"net/http"
@@ -61,13 +62,8 @@ func handleHeartbeat(request *restful.Request, response *restful.Response) {
 	tools.ResponseSuccess(response, nil)
 }
 
-var (
-	//TerminalPort is cmd port param
-	TerminalPort uint16
-)
-
 //Serve start a terminal server
-func Serve() {
+func Serve(cmd *cobra.Command) {
 	LoadTerminalID()
 
 	wsContainer := restful.NewContainer()
@@ -76,7 +72,8 @@ func Serve() {
 	//cors
 	tools.Cors(wsContainer)
 	//process port for command
-	sPort := ":" + strconv.FormatUint(uint64(TerminalPort), 10)
+	port, _ := cmd.Flags().GetUint16("port")
+	sPort := ":" + strconv.FormatUint(uint64(port), 10)
 	logger.Info("start listening on localhost", sPort)
 	server := &http.Server{Addr: sPort, Handler: wsContainer}
 	log.Fatal(server.ListenAndServe())
