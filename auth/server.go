@@ -2,6 +2,7 @@ package auth
 
 import (
 	"github.com/emicklei/go-restful"
+	"github.com/fanux/fist/tools"
 	"github.com/wonderivan/logger"
 	"log"
 	"net/http"
@@ -52,6 +53,8 @@ func httpServer() {
 	//registry k8s auth and fist auth
 	TokenRegister(auth)
 	wsContainer.Add(auth)
+	//cors
+	tools.Cors(wsContainer)
 	//process port for command
 	httpPort := ":" + strconv.FormatUint(uint64(AuthHTTPPort), 10)
 	logger.Info("start listening on localhost", httpPort)
