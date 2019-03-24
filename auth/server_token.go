@@ -12,7 +12,7 @@ import (
 func TokenRegister(auth *restful.WebService) {
 	Pub, Priv = CreateKeyPair()
 	auth.Path("/").
-		Consumes(restful.MIME_JSON).
+		Consumes("*/*").
 		Produces(restful.MIME_JSON) // you can specify this per route as well
 	//user token http
 	auth.Route(auth.GET("/token").To(handlerToken))
