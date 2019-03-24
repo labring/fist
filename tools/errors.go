@@ -27,4 +27,6 @@ var (
 	ErrUserName      = errors.New("user name is error ")
 	ErrUserNotExists = errors.New("user not exists ")
 	ErrUserExists    = errors.New("user is exists ")
+	//
+	ErrUserNotLogin = errors.New("user not login ")
 )

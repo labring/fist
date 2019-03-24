@@ -12,19 +12,33 @@ func FistRegister(auth *restful.WebService) {
 		Produces(restful.MIME_JSON) // you can specify this per route as well
 	//login http server
 	auth.Route(auth.POST("/login").To(handleLogin))
+	//logout http server
+	auth.Route(auth.POST("/logout").Filter(cookieFilter).To(handleLogout))
 	//user manager
 	//GET_USER ALL
-	auth.Route(auth.GET("/user").To(handleListUserInfo))
+	auth.Route(auth.GET("/user").Filter(cookieFilter).To(handleListUserInfo))
 	//GET_USER SINGLE
-	auth.Route(auth.GET("/user/{user_name}").To(handleGetUserInfo))
+	auth.Route(auth.GET("/user/{user_name}").Filter(cookieFilter).To(handleGetUserInfo))
 	//ADD_USER
-	auth.Route(auth.POST("/user").To(handleAddUserInfo))
+	auth.Route(auth.POST("/user").Filter(cookieFilter).To(handleAddUserInfo))
 	//UPDATE_USER
-	auth.Route(auth.PUT("/user").To(handleUpdateUserInfo))
+	auth.Route(auth.PUT("/user").Filter(cookieFilter).To(handleUpdateUserInfo))
 	//DELETE_USER
-	auth.Route(auth.DELETE("/user/{user_name}").To(handleDelUserInfo))
+	auth.Route(auth.DELETE("/user/{user_name}").Filter(cookieFilter).To(handleDelUserInfo))
 }
 
+// cookie Filter
+func cookieFilter(req *restful.Request, resp *restful.Response, chain *restful.FilterChain) {
+	if filterCookieValidate(req) {
+		chain.ProcessFilter(req, resp)
+	} else {
+		tools.ResponseAuthError(resp)
+	}
+}
+func handleLogout(request *restful.Request, response *restful.Response) {
+	logoutCookieSetter(response, FistCookieUserInfo(request).Username)
+	tools.ResponseSuccess(response, "")
+}
 func handleLogin(request *restful.Request, response *restful.Response) {
 	t := &UserInfo{}
 	err := request.ReadEntity(t)
@@ -37,6 +51,7 @@ func handleLogin(request *restful.Request, response *restful.Response) {
 		tools.ResponseError(response, tools.ErrUserAuth)
 		return
 	}
+	loginCookieSetter(response, uerInfo)
 	tools.ResponseSuccess(response, uerInfo)
 }
 
