@@ -36,7 +36,7 @@ func cookieFilter(req *restful.Request, resp *restful.Response, chain *restful.F
 	}
 }
 func handleLogout(request *restful.Request, response *restful.Response) {
-	logoutCookieSetter(response, FistCookieUserInfo(request).Username)
+	logoutCookieSetter(response)
 	tools.ResponseSuccess(response, "")
 }
 func handleLogin(request *restful.Request, response *restful.Response) {

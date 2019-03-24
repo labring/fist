@@ -66,7 +66,7 @@ func loginCookieSetter(response *restful.Response, userInfo *UserInfo) {
 }
 
 // used logout restful
-func logoutCookieSetter(response *restful.Response, username string) {
+func logoutCookieSetter(response *restful.Response) {
 	//1. username
 	tools.CookieRemoveValue(response, "username")
 	//2. login status
@@ -86,12 +86,17 @@ func filterCookieValidate(req *restful.Request) bool {
 	return false
 }
 
-//FistCookieUserInfo is get fist cookie user info
-func FistCookieUserInfo(req *restful.Request) *UserInfo {
+//FistCookieGetUserInfo is get fist cookie user info
+func FistCookieGetUserInfo(req *restful.Request) *UserInfo {
 	if filterCookieValidate(req) {
 		//if validated
 		token := tools.CookieRead(req, "user_token")
 		return getUserInfoFromToken(token)
 	}
 	return nil
+}
+
+//FistCookieUpdateUserInfo is update fist cookie user info
+func FistCookieUpdateUserInfo(response *restful.Response, userInfo *UserInfo) {
+	loginCookieSetter(response, userInfo)
 }
