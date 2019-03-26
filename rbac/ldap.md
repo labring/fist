@@ -5,7 +5,6 @@
 sudo docker run --name my-openldap-container -p 389:389 -p 636:636 -v /root/ldap:/root/ldap   --env LDAP_ORGANISATION="Sealyun Company" --env LDAP_DOMAIN="sealyun.com" --env LDAP_ADMIN_PASSWORD="admin" --detach osixia/openldap:1.2.4
 
 
-
 ##  into docker 
 
 sudo docker exec -it my-openldap-container /bin/bash
