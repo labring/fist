@@ -30,9 +30,10 @@ func getLdapSearchResult (user, password string) (*ldap.SearchResult,error) {
         if err != nil {
             log.Fatal(err)
             return sr,err
-        } else {
-            return sr,nil 
-        }
+        } 
+
+        return sr,nil 
+        
 }
 
 func authenticationLdap(user, password string) error {
@@ -52,10 +53,11 @@ func authenticationLdap(user, password string) error {
         err = l.Bind(userdn, password)
         if err != nil {
             return err
-        } else {
-            log.Fatal("user authenticated")
-            return nil 
-        }
+        } 
+
+        log.Fatal("user authenticated")
+        return nil 
+        
 }
 
 func getLdapUserCn(user, password string) string {

@@ -78,11 +78,10 @@ func (LdapAuth) Authenticate(user, password string) *UserInfo {
 	if RbacLdapEnable {
 		//if user enable ldap
 		if err := authenticationLdap(user, password); err != nil {
-		    return NewLdapUserInfo(user, getLdapUserCn(user, password), password )  
-		} else {
 			log.Fatal(err)
-			return nil 
-		}
+		    return nil 
+		} 
+		return NewLdapUserInfo(user, getLdapUserCn(user, password), password )
     }
 	return nil
 }
