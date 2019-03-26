@@ -1,5 +1,7 @@
 package rbac
-
+import (
+   "log"
+)
 //DoAuthentication is user login access function
 func DoAuthentication(user, password string) *UserInfo {
 	var authenticators = []authenticator{newAdminAuth(), newLdapAuth(), newKubeSecretAuth()}

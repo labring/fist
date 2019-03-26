@@ -7,7 +7,7 @@ import (
         "fmt"
 )
  
-func getLdapSearchResult (user, password string) (ldap.SearchResult,error) {
+func getLdapSearchResult (user, password string) (*ldap.SearchResult,error) {
         l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", RbacLdapHost, RbacLdapPort))
         if err != nil {
             log.Fatal(err)
@@ -29,18 +29,25 @@ func getLdapSearchResult (user, password string) (ldap.SearchResult,error) {
         sr, err := l.Search(searchRequest)
         if err != nil {
             log.Fatal(err)
-            return nil,err
+            return sr,err
         } else {
             return sr,nil 
         }
 }
 
 func authenticationLdap(user, password string) error {
+        l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", RbacLdapHost, RbacLdapPort))
+        if err != nil {
+            log.Fatal(err)
+        }
+        defer l.Close() 
+
         sr, err := getLdapSearchResult(user, password)
         if err != nil {
             return err
         }
         userdn := sr.Entries[0].DN
+
         // Bind as the user to verify their password
         err = l.Bind(userdn, password)
         if err != nil {
@@ -53,6 +60,7 @@ func authenticationLdap(user, password string) error {
 
 func getLdapUserCn(user, password string) string {
     sr, err := getLdapSearchResult(user, password)
+
     if err != nil {
         log.Fatal(err)
     }
