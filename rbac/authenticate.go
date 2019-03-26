@@ -2,6 +2,10 @@ package rbac
 
 import (
 	"strings"
+	"gopkg.in/ldap.v3"
+ 	"log"
+ 	"fmt"
+
 )
 //DoAuthentication is user login access function
 func DoAuthentication(user, password string) *UserInfo {
