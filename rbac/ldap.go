@@ -7,7 +7,7 @@ import (
         "fmt"
 )
  
-func getLdapSearchResult (user, password string) ldap.SearchResult,error {
+func getLdapSearchResult (user, password string) (ldap.SearchResult,error) {
         l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", RbacLdapHost, RbacLdapPort))
         if err != nil {
             log.Fatal(err)
