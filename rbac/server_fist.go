@@ -46,7 +46,7 @@ func handleLogin(request *restful.Request, response *restful.Response) {
 		tools.ResponseSystemError(response, err)
 		return
 	}
-	uerInfo := DoAuthentication(t.Username, t.Password)
+	uerInfo := DoFactoryAuthentication(t.Username, t.Password)
 	if uerInfo == nil {
 		tools.ResponseError(response, tools.ErrUserAuth)
 		return
