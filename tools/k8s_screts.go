@@ -2,7 +2,7 @@ package tools
 
 import (
 	"github.com/wonderivan/logger"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -47,7 +47,7 @@ func priDeleteSecrets(namespace, name string) error {
 //priCreateSecrets is create secrets for k8s
 func priCreateSecrets(namespace string, secret *v1.Secret) error {
 	client := instanceSingleK8sClient()
-	secret, err := client.CoreV1().Secrets(namespace).Create(secret)
+	_, err := client.CoreV1().Secrets(namespace).Create(secret)
 	if err != nil {
 		logger.Error("priCreateSecrets is  error: ", err)
 		return err
@@ -58,7 +58,7 @@ func priCreateSecrets(namespace string, secret *v1.Secret) error {
 //priUpdateSecrets is update secrets for k8s
 func priUpdateSecrets(namespace string, secret *v1.Secret) error {
 	client := instanceSingleK8sClient()
-	secret, err := client.CoreV1().Secrets(namespace).Update(secret)
+	_, err := client.CoreV1().Secrets(namespace).Update(secret)
 	if err != nil {
 		logger.Error("priUpdateSecrets is  error: ", err)
 		return err
