@@ -1,4 +1,7 @@
 package rbac
+import (
+	"log"
+)
 
 //DoFactoryAuthentication is user login access function
 func DoFactoryAuthentication(user, password string) *UserInfo {
