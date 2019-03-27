@@ -1,5 +1,7 @@
 package tools
 
+import "strings"
+
 //NotEmptyAll is not empty for all
 func NotEmptyAll(str ...string) bool {
 	if len(str) == 0 {
@@ -15,10 +17,10 @@ func NotEmptyAll(str ...string) bool {
 
 //MapToString is used for k8s select string from map convert
 func MapToString(labels map[string]string) string {
-	var returnVar string
+	var returnStringArr []string
 	for index, value := range labels {
-		singleLabel := index + "=" + value + ","
-		returnVar += singleLabel
+		singleLabel := index + "=" + value
+		returnStringArr = append(returnStringArr, singleLabel)
 	}
-	return returnVar[:len(returnVar)-1]
+	return strings.Join(returnStringArr, ",")
 }
