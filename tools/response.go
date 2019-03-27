@@ -43,3 +43,8 @@ func ResponseSystemError(response *restful.Response, err error) {
 func ResponseErrorAndMessage(response *restful.Response, err error, message string) {
 	ResponseErrorAndCodeMessage(response, 500, err, message)
 }
+
+//ResponseAuthError is web response for error of cookie not login
+func ResponseAuthError(response *restful.Response) {
+	ResponseErrorAndCodeMessage(response, 401, ErrUserNotLogin, ErrUserNotLogin.Error())
+}

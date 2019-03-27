@@ -1,11 +1,12 @@
 package rbac
 
-//DoAuthentication is user login access function
-func DoAuthentication(user, password string) *UserInfo {
+//DoInterfaceAuthentication is user login access function
+//Deprecated
+func DoInterfaceAuthentication(user, password string) *UserInfo {
 	var authenticators = []authenticator{newAdminAuth(), newLdapAuth(), newKubeSecretAuth()}
 	var userInfo *UserInfo
-	for i := 0; i < len(authenticators); i++ {
-		userInfo = authenticators[i].Authenticate(user, password)
+	for _, v := range authenticators {
+		userInfo = v.Authenticate(user, password)
 		if userInfo != nil {
 			return userInfo
 		}
@@ -14,6 +15,7 @@ func DoAuthentication(user, password string) *UserInfo {
 }
 
 //newAdminAuth construction method  for admin auth
+//Deprecated
 func newAdminAuth() authenticator {
 	var iAuthenticator authenticator
 	iAuthenticator = &AdminAuth{}
@@ -21,6 +23,7 @@ func newAdminAuth() authenticator {
 }
 
 //newKubeSecretAuth construction method  for user name
+//Deprecated
 func newKubeSecretAuth() authenticator {
 	var iAuthenticator authenticator
 	iAuthenticator = &KubeSecretAuth{}
@@ -28,6 +31,7 @@ func newKubeSecretAuth() authenticator {
 }
 
 //newLdapAuth construction method  for ldap
+//Deprecated
 func newLdapAuth() authenticator {
 	var iAuthenticator authenticator
 	iAuthenticator = &LdapAuth{}
@@ -36,7 +40,7 @@ func newLdapAuth() authenticator {
 
 //authenticator interface for auth
 type authenticator interface {
-	Authenticate(user, password string) *UserInfo //失败返回nil  成功返回用户信息
+	Authenticate(user, password string) *UserInfo //error return nil ,other return userInfo
 }
 
 //AdminAuth is struct type
@@ -74,7 +78,7 @@ func (KubeSecretAuth) Authenticate(user, password string) *UserInfo {
 //Authenticate is interface impl for LdapAuth
 func (LdapAuth) Authenticate(user, password string) *UserInfo {
 	if RbacLdapEnable {
-		//这里需要判断用户是否已经开启ldap
+		//if user enable ldap
 	}
 	return nil
 }
