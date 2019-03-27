@@ -37,6 +37,11 @@ func userAuth(user, password string) *UserInfo {
 func ldapAuth(user, password string) *UserInfo {
 	if RbacLdapEnable {
 		//if user enable ldap
-	}
+		if err := authenticationLdap(user, password); err != nil {
+			log.Fatal(err)
+		    return nil 
+		} 
+		return NewLdapUserInfo(user, getLdapUserCn(user, password), password )
+    }
 	return nil
 }
