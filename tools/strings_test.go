@@ -7,5 +7,5 @@ func TestMapToString(t *testing.T) {
 	s["ddd"] = "ddd"
 	s["eee"] = "eee"
 	s["fff"] = "fff"
-	MapToString(s)
+	t.Log(MapToString(s))
 }
