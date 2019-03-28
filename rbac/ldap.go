@@ -2,69 +2,70 @@ package rbac
 
 import (
 	"fmt"
-	"gopkg.in/ldap.v3"
-	"log"
 	"strings"
+
+	"github.com/wonderivan/logger"
+	"gopkg.in/ldap.v3"
 )
 
 func getLdapSearchResult(user, password string) (*ldap.SearchResult, error) {
 	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", RbacLdapHost, RbacLdapPort))
 	if err != nil {
-		log.Fatal(err)
+		logger.Error(err)
+		return nil, err
 	}
 	defer l.Close()
 
 	err = l.Bind(RbacLdapBindDN, RbacLdapBindPassword)
 	if err != nil {
-		log.Fatal(err)
+		logger.Error(err)
+		return nil, err
 	}
 	ldapdn := strings.Split(RbacLdapBindDN, ",")
 	dc := ldapdn[1] + string(',') + ldapdn[2] // dc=sealyun,dc=com
 	searchRequest := ldap.NewSearchRequest(
 		dc, ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
 		fmt.Sprintf("(&(objectClass=*)(uid=%s))", user),
-		[]string{"dn"},
+		[]string{"dn", "cn"},
 		nil,
 	)
 	sr, err := l.Search(searchRequest)
 	if err != nil {
-		log.Fatal(err)
-		return sr, err
+		logger.Error(err)
+		return nil, err
 	}
-
 	return sr, nil
-
 }
 
 func authenticationLdap(user, password string) error {
 	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", RbacLdapHost, RbacLdapPort))
 	if err != nil {
-		log.Fatal(err)
+		logger.Error(err)
+		return err
 	}
 	defer l.Close()
 
 	sr, err := getLdapSearchResult(user, password)
 	if err != nil {
+		logger.Error(err)
 		return err
 	}
 	userdn := sr.Entries[0].DN
-
 	// Bind as the user to verify their password
 	err = l.Bind(userdn, password)
 	if err != nil {
+		logger.Error(err)
 		return err
 	}
-
-	log.Fatal("user authenticated")
+	logger.Info("user authenticated")
 	return nil
-
 }
 
 func getLdapUserCn(user, password string) string {
 	sr, err := getLdapSearchResult(user, password)
-
 	if err != nil {
-		log.Fatal(err)
+		logger.Error(err)
+		return "ldap-" + user
 	}
 	return sr.Entries[0].GetAttributeValue("cn") //get nickname by ldap cn
 }
