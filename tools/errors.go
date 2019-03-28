@@ -29,4 +29,6 @@ var (
 	ErrUserExists    = errors.New("user is exists ")
 	//
 	ErrUserNotLogin = errors.New("user not login ")
+	//ldap
+	ErrLdapUserNotExists = errors.New("ldap user not exists ")
 )
