@@ -1,9 +1,5 @@
 package rbac
 
-import (
-	"log"
-)
-
 //DoFactoryAuthentication is user login access function
 func DoFactoryAuthentication(user, password string) *UserInfo {
 	var authenticators = map[int]func(user, password string) *UserInfo{1: adminAuth, 2: userAuth, 3: ldapAuth}
@@ -42,7 +38,6 @@ func ldapAuth(user, password string) *UserInfo {
 	if RbacLdapEnable {
 		//if user enable ldap
 		if err := authenticationLdap(user, password); err != nil {
-			log.Fatal(err)
 			return nil
 		}
 		return NewLdapUserInfo(user, getLdapUserCn(user, password), password)
