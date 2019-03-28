@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/fanux/fist/tools"
+
 	"github.com/wonderivan/logger"
 	"gopkg.in/ldap.v3"
 )
@@ -33,6 +35,10 @@ func getLdapSearchResult(user, password string) (*ldap.SearchResult, error) {
 	if err != nil {
 		logger.Error(err)
 		return nil, err
+	}
+	if len(sr.Entries) == 0 {
+		logger.Error(tools.ErrLdapUserNotExists)
+		return nil, tools.ErrLdapUserNotExists
 	}
 	return sr, nil
 }
