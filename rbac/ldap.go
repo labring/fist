@@ -59,7 +59,6 @@ func authenticationLdap(user, password string) error {
 	}
 	logger.Info("user authenticated")
 	return nil
-
 }
 
 func getLdapUserCn(user, password string) string {
