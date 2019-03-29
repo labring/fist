@@ -56,6 +56,7 @@ func authenticationLdap(user, password string) error {
 		logger.Error(err)
 		return err
 	}
+
 	userdn := sr.Entries[0].DN
 	// Bind as the user to verify their password
 	err = l.Bind(userdn, password)
@@ -73,5 +74,9 @@ func getLdapUserCn(user, password string) string {
 		logger.Error(err)
 		return "ldap-" + user
 	}
+
+	if len(sr.Entries) == 0 {
+        log.Fatal("user not found") 
+    }
 	return sr.Entries[0].GetAttributeValue("cn") //get nickname by ldap cn
 }
