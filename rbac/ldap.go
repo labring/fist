@@ -74,9 +74,5 @@ func getLdapUserCn(user string) string {
 		logger.Error(err)
 		return "ldap-" + user
 	}
-
-	if len(sr.Entries) == 0 {
-        log.Fatal("user not found") 
-    }
 	return sr.Entries[0].GetAttributeValue("cn") //get nickname by ldap cn
 }
