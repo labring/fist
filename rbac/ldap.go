@@ -10,7 +10,7 @@ import (
 	"gopkg.in/ldap.v3"
 )
 
-func getLdapSearchResult(user, password string) (*ldap.SearchResult, error) {
+func getLdapSearchResult(user string) (*ldap.SearchResult, error) {
 	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", RbacLdapHost, RbacLdapPort))
 	if err != nil {
 		logger.Error(err)
@@ -51,7 +51,7 @@ func authenticationLdap(user, password string) error {
 	}
 	defer l.Close()
 
-	sr, err := getLdapSearchResult(user, password)
+	sr, err := getLdapSearchResult(user)
 	if err != nil {
 		logger.Error(err)
 		return err
@@ -67,8 +67,8 @@ func authenticationLdap(user, password string) error {
 	return nil
 }
 
-func getLdapUserCn(user, password string) string {
-	sr, err := getLdapSearchResult(user, password)
+func getLdapUserCn(user string) string {
+	sr, err := getLdapSearchResult(user)
 	if err != nil {
 		logger.Error(err)
 		return "ldap-" + user
