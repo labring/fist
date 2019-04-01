@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: fist-ingress
+  namespace: sealyun
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /token
+        backend:
+          serviceName: fist
+          servicePort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: rbac-ingress
+  namespace: sealyun
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /login
+        backend:
+          serviceName: fist-rbac
+          servicePort: 8080
+      - path: /logout
+        backend:
+          serviceName: fist-rbac
+          servicePort: 8080
+      - path: /user
+        backend:
+          serviceName: fist-rbac
+          servicePort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: terminal-ingress
+  namespace: sealyun
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /terminal   
+        backend:
+          serviceName: fist-terminal
+          servicePort: 8080
+      - path: /heartbeat 
+        backend:
+          serviceName: fist-terminal
+          servicePort: 8080
