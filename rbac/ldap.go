@@ -56,7 +56,6 @@ func authenticationLdap(user, password string) error {
 		logger.Error(err)
 		return err
 	}
-
 	userdn := sr.Entries[0].DN
 	// Bind as the user to verify their password
 	err = l.Bind(userdn, password)
