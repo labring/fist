@@ -1,13 +1,19 @@
-# deploy ldap docker
+# deploy ldap 
 
-## start ldap docker
+## start ldap  docker 
 
 sudo docker run --name my-openldap-container -p 389:389 -p 636:636 -v /root/ldap:/root/ldap   --env LDAP_ORGANISATION="Sealyun Company" --env LDAP_DOMAIN="sealyun.com" --env LDAP_ADMIN_PASSWORD="admin" --detach osixia/openldap:1.2.4
 
 
-##  into docker 
+###  into docker 
 
 sudo docker exec -it my-openldap-container /bin/bash
+
+## or start ldap on k8s
+kubectl apply -f rbac/deploy/ldap.yaml
+
+### into pod
+kubectl -n sealyun exec -it ldap-****   bash 
 
 ## init  organizational 
 
@@ -68,7 +74,7 @@ add: memberuid
 memberuid: fanux
 EOF
 
-ldapmodify -x -W -D "cn=admin,dc=sealyun,dc=com" -f adduser2dev.ldif 
+ldapmodify -x -w "admin" -D "cn=admin,dc=sealyun,dc=com" -f adduser2dev.ldif 
 
 cat << EOF >adduser2sealyun.ldif 
 dn: cn=sealyun,ou=groups,dc=sealyun,dc=com
@@ -76,4 +82,4 @@ changetype: modify
 add: memberuid
 memberuid: fanux
 EOF
-ldapmodify -x -W -D "cn=admin,dc=sealyun,dc=com" -f adduser2sealyun.ldif 
+ldapmodify -x -w "admin" -D "cn=admin,dc=sealyun,dc=com" -f adduser2sealyun.ldif 
