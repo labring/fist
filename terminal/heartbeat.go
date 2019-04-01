@@ -1,9 +1,10 @@
 package terminal
 
 import (
-	"github.com/fanux/fist/tools"
 	"strconv"
 	"time"
+
+	"github.com/fanux/fist/tools"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )

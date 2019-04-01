@@ -16,7 +16,7 @@ spec:
       serviceAccountName: admin
       containers:
       - name: fist-rbac
-        image: lameleg/fist:latest
+        image: {{.TEMPLATE_REPO}}:{{.TEMPLATE_TAGS}}
         command: ["./fist", "rbac", "--ldap-enable=true", "--ldap-host=ldap-service", "--ldap-bind-dn=cn=admin,dc=sealyun,dc=com", "--ldap-bind-password=admin" ]
         imagePullPolicy: Always
         ports:

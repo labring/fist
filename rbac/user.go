@@ -1,8 +1,9 @@
 package rbac
 
 import (
-	"github.com/fanux/fist/tools"
 	"strings"
+
+	"github.com/fanux/fist/tools"
 )
 
 //UserInfo is user info struct for restful http

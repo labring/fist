@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: fist
-        image: lameleg/fist:latest
+        image: {{.TEMPLATE_REPO}}:{{.TEMPLATE_TAGS}}
         command: ["./fist", "auth"]
         imagePullPolicy: Always
         ports:

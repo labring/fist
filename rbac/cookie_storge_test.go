@@ -1,8 +1,9 @@
 package rbac
 
 import (
-	"github.com/wonderivan/logger"
 	"testing"
+
+	"github.com/wonderivan/logger"
 )
 
 func Test_generatorCookieValue(t *testing.T) {

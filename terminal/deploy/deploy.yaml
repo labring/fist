@@ -21,7 +21,7 @@ spec:
       serviceAccountName: admin
       containers:
       - name: fist-terminal
-        image: lameleg/fist:latest
+        image: {{.TEMPLATE_REPO}}:{{.TEMPLATE_TAGS}}
         command: ["./fist", "terminal"]
         imagePullPolicy: Always
         ports:

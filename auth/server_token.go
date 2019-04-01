@@ -2,10 +2,11 @@ package auth
 
 import (
 	"encoding/json"
+	"time"
+
 	"github.com/emicklei/go-restful"
 	"github.com/fanux/fist/tools"
 	"github.com/wonderivan/logger"
-	"time"
 )
 
 //TokenRegister is k8s auth token
