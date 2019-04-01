@@ -40,7 +40,7 @@ func ldapAuth(user, password string) *UserInfo {
 		if err := authenticationLdap(user, password); err != nil {
 			return nil
 		}
-		return NewLdapUserInfo(user, getLdapUserCn(user, password), password)
+		return NewLdapUserInfo(user, getLdapUserCn(user), "")
 	}
 	return nil
 }
