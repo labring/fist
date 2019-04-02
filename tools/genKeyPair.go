@@ -19,9 +19,12 @@ func ExportRsaPrivateKeyAsPemStr(fileDir string, privkey *rsa.PrivateKey) error 
 	err = pem.Encode(file,
 		&pem.Block{
 			Type:  "RSA PRIVATE KEY",
-			Bytes: privkey_bytes,
+			Bytes: privkeyBytes,
 		},
 	)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -59,9 +62,12 @@ func ExportRsaPublicKeyAsPemStr(fileDir string, pubkey *rsa.PublicKey) error {
 	err = pem.Encode(file,
 		&pem.Block{
 			Type:  "RSA PUBLIC KEY",
-			Bytes: pubkey_bytes,
+			Bytes: pubkeyBytes,
 		},
 	)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
