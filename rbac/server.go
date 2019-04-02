@@ -34,7 +34,7 @@ func Serve() {
 	wsContainer.Router(restful.CurlyRouter{})
 	auth := new(restful.WebService)
 	//registry  fist auth
-	FistRegister(auth)
+	Register(auth)
 	wsContainer.Add(auth)
 	//cors
 	tools.Cors(wsContainer)

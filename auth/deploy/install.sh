@@ -4,7 +4,7 @@ sh gencert.sh
 sleep 3
 sh secret.sh
 kubectl create -f auth.yaml
-mkdir -f /etc/kubernetes/pki/fist/ || true
+mkdir -p /etc/kubernetes/pki/fist/ || true
 cp -rf  ssl/ca.pem /etc/kubernetes/pki/fist/
 
 echo "wait for auth service sleep 15s... "

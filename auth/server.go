@@ -3,6 +3,7 @@ package auth
 import (
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/emicklei/go-restful"
@@ -19,6 +20,10 @@ var (
 	AuthCert string
 	//AuthKey is cmd key file
 	AuthKey string
+	//PrivateKey is gen keypair privateKey
+	PrivateKey string
+	//PublicKey is gen keypair publicKey
+	PublicKey string
 
 	//authHTTPSPortString is string of AuthHTTPSPort
 	authHTTPSPortString string
@@ -26,6 +31,21 @@ var (
 
 //Serve start a auth server
 func Serve() {
+	var err error
+	//var err error
+	Pub, Priv, err = loadKeyPair()
+	if err != nil {
+		logger.Error(err)
+		os.Exit(-1)
+	}
+	if _, err = os.Stat(AuthCert); err != nil {
+		logger.Error(err)
+		os.Exit(-1)
+	}
+	if _, err = os.Stat(AuthKey); err != nil {
+		logger.Error(err)
+		os.Exit(-1)
+	}
 	go httpServer()
 	httpsServer()
 }

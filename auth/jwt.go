@@ -3,35 +3,41 @@ package auth
 import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
-	"crypto/rand"
 	"crypto/rsa"
 	"errors"
 	"fmt"
-	"log"
 
+	"github.com/fanux/fist/tools"
 	"gopkg.in/square/go-jose.v2"
 )
 
-//CreateKeyPair is
-func CreateKeyPair() (pub, priv jose.JSONWebKey) {
-	key, err := rsa.GenerateKey(rand.Reader, 2048)
-	if err != nil {
-		log.Fatalf("gen rsa key: %v", err)
+//loadKeyPair is
+func loadKeyPair() (pub, priv jose.JSONWebKey, err error) {
+
+	privKey, _ := tools.ParseRsaPrivateKeyFromPemFile(PrivateKey)
+	publicKey, _ := tools.ParseRsaPubKeyFromPemFile(PublicKey)
+	//if file is not pem file format
+	if privKey == nil || publicKey == nil {
+		privKey = tools.PemDefaultPrivateKey()
+		publicKey = tools.PemDefaultPublicKey()
+		if privKey == nil || publicKey == nil {
+			return jose.JSONWebKey{}, jose.JSONWebKey{}, tools.ErrAuthTokeKeyError
+		}
 	}
 	priv = jose.JSONWebKey{
-		Key:       key,
+		Key:       privKey,
 		KeyID:     "Cgc4OTEyNTU3EgZnaXRodWI",
 		Algorithm: "RS256",
 		Use:       "sig",
 	}
 	pub = jose.JSONWebKey{
-		Key:       key.Public(),
+		Key:       publicKey,
 		KeyID:     "Cgc4OTEyNTU3EgZnaXRodWI",
 		Algorithm: "RS256",
 		Use:       "sig",
 	}
 
-	return pub, priv
+	return pub, priv, nil
 }
 
 // Determine the signature algorithm for a JWT.
