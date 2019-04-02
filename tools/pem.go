@@ -1,8 +1,12 @@
-package auth
+package tools
 
 import (
+	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
+	"errors"
+	"io/ioutil"
+	"os"
 )
 
 var publicPem = []byte(`-----BEGIN RSA FIST PUBLIC KEY-----
@@ -42,7 +46,7 @@ SkncTI/fMbYIOKsRtF+e9oJkBQPYklFkiTg8iv4YNusb90awbMAbRymJhuef7VfT
 hrl7TRewrgKHnJt57QXEz5X8/Ov2+C9h2TULunbwTh5iN1Bj1eoo2Q==
 -----END RSA FIST PRIVATE KEY-----`)
 
-func pemPrivateKey() interface{} {
+func PemDefaultPrivateKey() *rsa.PrivateKey {
 	block, _ := pem.Decode(privatePem)
 	if block == nil {
 		return nil
@@ -54,11 +58,107 @@ func pemPrivateKey() interface{} {
 	return private
 }
 
-func pemPublicKey() interface{} {
+func PemDefaultPublicKey() *rsa.PublicKey {
 	block, _ := pem.Decode(publicPem)
 	pubInterface, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
 		return nil
 	}
-	return pubInterface
+	switch pubInterface := pubInterface.(type) {
+	case *rsa.PublicKey:
+		return pubInterface
+	default:
+		break // fall through
+	}
+	return nil
+}
+
+//ParseRsaPubKeyFromPemFile is read publicKey from file
+func ParseRsaPubKeyFromPemFile(pemFile string) (*rsa.PublicKey, error) {
+	fileIO, err := os.Open(pemFile)
+	if err != nil {
+		return nil, err
+	}
+	defer fileIO.Close()
+	pubPEM, err := ioutil.ReadAll(fileIO)
+	block, _ := pem.Decode([]byte(pubPEM))
+	if block == nil {
+		return nil, errors.New("failed to parse PEM block containing the key")
+	}
+
+	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	switch pub := pub.(type) {
+	case *rsa.PublicKey:
+		return pub, nil
+	default:
+		break // fall through
+	}
+	return nil, errors.New("key type is not RSA type")
+}
+
+//ParseRsaPrivateKeyFromPemFile is read privateKey from file
+func ParseRsaPrivateKeyFromPemFile(pemFile string) (*rsa.PrivateKey, error) {
+	fileIO, err := os.Open(pemFile)
+	if err != nil {
+		return nil, err
+	}
+	defer fileIO.Close()
+	privPEM, err := ioutil.ReadAll(fileIO)
+	block, _ := pem.Decode([]byte(privPEM))
+	if block == nil {
+		return nil, errors.New("failed to parse PEM block containing the key")
+	}
+
+	priv, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return priv, nil
+}
+
+//ExportRsaPrivateKeyAsPemStr is store privateKey into file
+func ExportRsaPrivateKeyAsPemStr(filename string, privkey *rsa.PrivateKey) error {
+	privkeyBytes := x509.MarshalPKCS1PrivateKey(privkey)
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	err = pem.Encode(file,
+		&pem.Block{
+			Type:  "RSA PRIVATE KEY",
+			Bytes: privkeyBytes,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//ExportRsaPublicKeyAsPemStr is store publicKey into file
+func ExportRsaPublicKeyAsPemStr(fileDir string, pubkey *rsa.PublicKey) error {
+	pubkeyBytes, err := x509.MarshalPKIXPublicKey(pubkey)
+	if err != nil {
+		return err
+	}
+	file, err := os.Create(fileDir)
+	if err != nil {
+		return err
+	}
+	err = pem.Encode(file,
+		&pem.Block{
+			Type:  "RSA PUBLIC KEY",
+			Bytes: pubkeyBytes,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

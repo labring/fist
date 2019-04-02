@@ -3,6 +3,7 @@ package auth
 import (
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/emicklei/go-restful"
@@ -31,9 +32,16 @@ var (
 //Serve start a auth server
 func Serve() {
 	var err error
+	//var err error
 	Pub, Priv, err = loadKeyPair()
 	if err != nil {
-
+		panic(err)
+	}
+	if _, err = os.Stat(AuthCert); err != nil {
+		panic(err)
+	}
+	if _, err = os.Stat(AuthKey); err != nil {
+		panic(err)
 	}
 	go httpServer()
 	httpsServer()
