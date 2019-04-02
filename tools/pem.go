@@ -46,6 +46,7 @@ SkncTI/fMbYIOKsRtF+e9oJkBQPYklFkiTg8iv4YNusb90awbMAbRymJhuef7VfT
 hrl7TRewrgKHnJt57QXEz5X8/Ov2+C9h2TULunbwTh5iN1Bj1eoo2Q==
 -----END RSA FIST PRIVATE KEY-----`)
 
+//PemDefaultPrivateKey is get default private pem key
 func PemDefaultPrivateKey() *rsa.PrivateKey {
 	block, _ := pem.Decode(privatePem)
 	if block == nil {
@@ -58,6 +59,7 @@ func PemDefaultPrivateKey() *rsa.PrivateKey {
 	return private
 }
 
+//PemDefaultPublicKey is get default public pem key
 func PemDefaultPublicKey() *rsa.PublicKey {
 	block, _ := pem.Decode(publicPem)
 	pubInterface, err := x509.ParsePKIXPublicKey(block.Bytes)
