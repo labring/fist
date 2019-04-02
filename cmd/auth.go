@@ -42,7 +42,8 @@ func init() {
 	authCmd.Flags().Uint16VarP(&auth.AuthHTTPPort, "http-port", "p", 8080, "start  listening http port")
 	authCmd.Flags().StringVarP(&auth.AuthCert, "cert", "C", "/etc/fist/cert.pem", "the cert.pem for fist")
 	authCmd.Flags().StringVarP(&auth.AuthKey, "key", "K", "/etc/fist/key.pem", "the key.pem for fist")
-
+	authCmd.Flags().StringVarP(&auth.PrivateKey, "gen-pirv", "Pri", "/etc/fist-genKey/private.pem", "the private.pem for generate key pair")
+	authCmd.Flags().StringVarP(&auth.PublicKey, "gen-pub", "Pub", "/etc/fist-genKey/public.pem", "the public.pem for generate key pair")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// authCmd.PersistentFlags().String("foo", "", "A help for foo")
