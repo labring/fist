@@ -30,7 +30,11 @@ var (
 
 //Serve start a auth server
 func Serve() {
-	Pub, Priv = CreateKeyPair()
+	var err error
+	Pub, Priv, err = loadKeyPair()
+	if err != nil {
+
+	}
 	go httpServer()
 	httpsServer()
 }

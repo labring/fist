@@ -31,4 +31,6 @@ var (
 	ErrUserNotLogin = errors.New("user not login ")
 	//ldap
 	ErrLdapUserNotExists = errors.New("ldap user not exists ")
+	//k8s
+	ErrAuthTokeKeyError = errors.New("auth loadKeyPair is error ")
 )
