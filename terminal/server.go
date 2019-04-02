@@ -1,14 +1,16 @@
 package terminal
 
 import (
-	"github.com/fanux/fist/tools"
-	"github.com/spf13/cobra"
-	"github.com/wonderivan/logger"
 	"log"
 	"net/http"
 	"strconv"
+	"time"
+
+	"github.com/fanux/fist/tools"
+	"github.com/wonderivan/logger"
 
 	"github.com/emicklei/go-restful"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 //Register is
@@ -62,8 +64,38 @@ func handleHeartbeat(request *restful.Request, response *restful.Response) {
 	tools.ResponseSuccess(response, nil)
 }
 
+func cleanTerminal(namespace string) {
+	clientSet := tools.GetK8sClient()
+	deploymentsClient := clientSet.AppsV1().Deployments(namespace)
+	t := time.NewTicker(600 * time.Second) //every 10min check heartbeat
+	defer t.Stop()
+	for {
+		select {
+		case <-t.C:
+			logger.Info("timer running for cleanTerminal.")
+			list, err := deploymentsClient.List(metav1.ListOptions{})
+			if err != nil {
+				log.Fatal(err)
+			}
+			for _, d := range list.Items {
+				var hbInterface Heartbeater
+				hbInterface = NewHeartbeater(d.Name, namespace)
+				err := hbInterface.CleanTerminalJob()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}
+		}
+	}
+}
+
+var (
+	//TerminalPort is cmd port param
+	TerminalPort uint16
+)
+
 //Serve start a terminal server
-func Serve(cmd *cobra.Command) {
+func Serve() {
 	LoadTerminalID()
 
 	wsContainer := restful.NewContainer()
@@ -71,9 +103,12 @@ func Serve(cmd *cobra.Command) {
 	Register(wsContainer)
 	//cors
 	tools.Cors(wsContainer)
+
+	//clean dead terminal
+	go cleanTerminal(DefaultTTYnameapace)
+
 	//process port for command
-	port, _ := cmd.Flags().GetUint16("port")
-	sPort := ":" + strconv.FormatUint(uint64(port), 10)
+	sPort := ":" + strconv.FormatUint(uint64(TerminalPort), 10)
 	logger.Info("start listening on localhost", sPort)
 	server := &http.Server{Addr: sPort, Handler: wsContainer}
 	log.Fatal(server.ListenAndServe())

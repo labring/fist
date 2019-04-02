@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: fist
-        image: lameleg/fist:latest
+        image: {{.TEMPLATE_REPO}}:{{.TEMPLATE_TAGS}}
         command: ["./fist", "auth"]
         imagePullPolicy: Always
         ports:
@@ -38,13 +38,6 @@ spec:
              path: cert.pem
            - key: key.pem
              path: key.pem
-#       resources:
-#         limits:
-#           memory: "128Mi"
-#           cpu: "1000m"
-#         requests:
-#           memory: "128Mi"
-#           cpu: "500m"
 ---
 kind: Service
 apiVersion: v1

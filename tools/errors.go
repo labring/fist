@@ -23,4 +23,12 @@ var (
 	ErrUserDel                 = errors.New("user del failed ")
 	ErrUserGet                 = errors.New("user get failed ")
 	ErrK8sClientInitFailed     = errors.New("kubernetes client init failed")
+	//validate
+	ErrUserName      = errors.New("user name is error ")
+	ErrUserNotExists = errors.New("user not exists ")
+	ErrUserExists    = errors.New("user is exists ")
+	//
+	ErrUserNotLogin = errors.New("user not login ")
+	//ldap
+	ErrLdapUserNotExists = errors.New("ldap user not exists ")
 )

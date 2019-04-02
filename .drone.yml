@@ -24,33 +24,54 @@ steps:
     dockerfile: deploy/Dockerfile
     password:
       from_secret: docker-hub-pass
+  when:
+    event:
+    - push
 
-- name: deploy-auth
-  image: lachlanevenson/k8s-kubectl
+- name: deploy-template
+  image: cuisongliu/drone-kube
+  settings:
+    template_repo: lameleg/fist
+    template_tags: ${DRONE_TAG=latest}
   commands:
-  - mkdir ~/.kube
-  - cp deploy/config ~/.kube/config
-  - cd auth/deploy
-  - kubectl delete -f auth.yaml  || true
-  - sleep 15
-  - kubectl create -f auth.yaml  || true
+    - drone-kube template --deploy=deploy/template
+  when:
+    event:
+      - push
 
-- name: deploy-terminal
-  image: lachlanevenson/k8s-kubectl
+- name: deploy-uninstall
+  image: cuisongliu/drone-kube
+  settings:
+    kube_server:
+      from_secret: k8s-server
+    kube_ca:
+      from_secret: k8s-ca
+    kube_admin:
+      from_secret: k8s-admin
+    kube_admin_key:
+      from_secret: k8s-admin-key
   commands:
-  - mkdir ~/.kube
-  - cp deploy/config ~/.kube/config
-  - kubectl delete -f terminal/deploy/deploy.yaml  || true
-  - sleep 15
-  - kubectl create -f  terminal/deploy/deploy.yaml || true
+    - drone-kube config
+    - kubectl delete -f deploy/template  || true
+    - sleep 5
+  when:
+    event:
+    - push
 
-- name: deploy-rbac
-  image: lachlanevenson/k8s-kubectl
+- name: deploy-install
+  image: cuisongliu/drone-kube
+  settings:
+    kube_server:
+      from_secret: k8s-server
+    kube_ca:
+      from_secret: k8s-ca
+    kube_admin:
+      from_secret: k8s-admin
+    kube_admin_key:
+      from_secret: k8s-admin-key
   commands:
-  - mkdir ~/.kube
-  - cp deploy/config ~/.kube/config
-  - kubectl delete -f rbac/deploy/deploy.yaml  || true
-  - kubectl delete -f rbac/deploy/secret.yaml  || true
-  - sleep 15
-  - kubectl create -f rbac/deploy/secret.yaml  || true
-  - kubectl create -f rbac/deploy/deploy.yaml  || true
+  - drone-kube config
+  - kubectl create -f deploy/template  || true
+  when:
+    event:
+    - push

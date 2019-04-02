@@ -15,9 +15,9 @@
 
 - [x] A lightweight JWT User token creater. RBAC and PSP manager.
 - [x] A powerful webterminal
+- [x] Ldap support
 - [ ] Muti tencent namespace manager
 - [ ] Web yaml render
-- [ ] kubernets job based pipeline
 
 # Install
 ```
@@ -34,7 +34,7 @@ rm -rf /etc/kubernetes/pki/fist
 and delete oidc config in kube-apiserver.yaml (/etc/kuberentes/manifests/kube-apiserver.yaml)
 
 ```
-    - --oidc-issuer-url=https://fist.sealyun.svc.cluster.local:8080
+    - --oidc-issuer-url=https://fist.sealyun.svc.cluster.local:8443
     - --oidc-client-id=sealyun-fist
     - --oidc-ca-file=/etc/kubernetes/pki/fist/ca.pem
     - --oidc-username-claim=name

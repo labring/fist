@@ -1,12 +1,8 @@
 package auth
 
 import (
-	"encoding/json"
-	"github.com/fanux/fist/tools"
-	"github.com/wonderivan/logger"
-	"time"
-
 	"github.com/emicklei/go-restful"
+	"github.com/wonderivan/logger"
 	"gopkg.in/square/go-jose.v2"
 )
 
@@ -45,10 +41,10 @@ func discoveryHandler(request *restful.Request, response *restful.Response) {
 	}
 
 	dis := &discovery{
-		Issuer:      "https://fist.sealyun.svc.cluster.local:8080",
-		Auth:        "https://fist.sealyun.svc.cluster.local:8080/auth",
-		Token:       "https://fist.sealyun.svc.cluster.local:8080/token",
-		Keys:        "https://fist.sealyun.svc.cluster.local:8080/keys",
+		Issuer:      "https://fist.sealyun.svc.cluster.local" + authHTTPSPortString,
+		Auth:        "https://fist.sealyun.svc.cluster.local" + authHTTPSPortString + "/auth",
+		Token:       "https://fist.sealyun.svc.cluster.local" + authHTTPSPortString + "/token",
+		Keys:        "https://fist.sealyun.svc.cluster.local" + authHTTPSPortString + "/keys",
 		Subjects:    []string{"public"},
 		IDTokenAlgs: []string{string(jose.RS256)},
 		Scopes:      []string{"openid", "email", "groups", "profile", "offline_access"},
@@ -69,47 +65,6 @@ func discoveryHandler(request *restful.Request, response *restful.Response) {
 
 	logger.Info("discovery: %v", dis)
 	response.WriteEntity(dis)
-}
-
-func handlerToken(request *restful.Request, response *restful.Response) {
-	groups := request.Request.URL.Query()["group"]
-	user := request.QueryParameter("user")
-	logger.Info("user: ", user, ", groups: ", groups, ", url value:", request.Request.URL.Query())
-
-	signingAlg, err := signatureAlgorithm(&Priv)
-	if err != nil {
-		tools.ResponseSystemError(response, err)
-		return
-	}
-
-	ev := true
-	tok := idTokenClaims{
-		Issuer:        "https://fist.sealyun.svc.cluster.local:8080",
-		Subject:       "Cgc4OTEyNTU3EgZnaXRodWI",
-		Audience:      "sealyun-fist",
-		Expiry:        time.Now().Add(time.Hour * 100).Unix(),
-		IssuedAt:      time.Now().Unix(),
-		Email:         "fhtjob@hotmail.com",
-		EmailVerified: &ev,
-		Groups:        groups,
-		Name:          user,
-	}
-
-	payload, err := json.Marshal(&tok)
-	logger.Info("token claims: %s", payload)
-	if err != nil {
-		tools.ResponseSystemError(response, err)
-		return
-	}
-
-	var idToken string
-	if idToken, err = signPayload(&Priv, signingAlg, payload); err != nil {
-		tools.ResponseSystemError(response, err)
-		return
-	}
-
-	logger.Info("token: ", idToken)
-	tools.ResponseSuccess(response, &idToken)
 }
 
 func handlePublicKeys(request *restful.Request, response *restful.Response) {
