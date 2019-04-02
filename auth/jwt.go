@@ -3,29 +3,40 @@ package auth
 import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
-	"crypto/rand"
 	"crypto/rsa"
 	"errors"
 	"fmt"
 	"log"
 
 	"gopkg.in/square/go-jose.v2"
+	"github.com/fanux/fist/tools"
 )
 
 //CreateKeyPair is
 func CreateKeyPair() (pub, priv jose.JSONWebKey) {
-	key, err := rsa.GenerateKey(rand.Reader, 2048)
+	// key, err := rsa.GenerateKey(rand.Reader, 2048)
+	// if err != nil {
+	// 	log.Fatalf("gen rsa key: %v", err)
+	// }
+
+	privKey, err := tools.ParseRsaPrivateKeyFromPemStr(PrivateKey)
 	if err != nil {
-		log.Fatalf("gen rsa key: %v", err)
+		log.Fatalf("pasre rsa priveKey from file err: %v", err)
 	}
+
+	publicKey, err := tools.ParseRsaPublicKeyFromPemStr(PublicKey)
+	if err != nil {
+		log.Fatalf("pasre rsa publicKey from file err: %v", err)
+	}
+	
 	priv = jose.JSONWebKey{
-		Key:       key,
+		Key:       privKey,
 		KeyID:     "Cgc4OTEyNTU3EgZnaXRodWI",
 		Algorithm: "RS256",
 		Use:       "sig",
 	}
 	pub = jose.JSONWebKey{
-		Key:       key.Public(),
+		Key:       publicKey,
 		KeyID:     "Cgc4OTEyNTU3EgZnaXRodWI",
 		Algorithm: "RS256",
 		Use:       "sig",
