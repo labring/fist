@@ -6,29 +6,24 @@ import (
 	"crypto/rsa"
 	"errors"
 	"fmt"
-	"log"
 
 	"github.com/fanux/fist/tools"
 	"gopkg.in/square/go-jose.v2"
 )
 
-//CreateKeyPair is
-func CreateKeyPair() (pub, priv jose.JSONWebKey) {
-	// key, err := rsa.GenerateKey(rand.Reader, 2048)
-	// if err != nil {
-	// 	log.Fatalf("gen rsa key: %v", err)
-	// }
+//loadKeyPair is
+func loadKeyPair() (pub, priv jose.JSONWebKey, err error) {
 
-	privKey, err := tools.ParseRsaPrivateKeyFromPemStr(PrivateKey)
-	if err != nil {
-		log.Fatalf("pasre rsa priveKey from file err: %v", err)
+	privKey, _ := tools.ParseRsaPrivateKeyFromPemFile(PrivateKey)
+	publicKey, _ := tools.ParseRsaPubKeyFromPemFile(PublicKey)
+	//if file is not pem file format
+	if privKey == nil || publicKey == nil {
+		privKey = tools.PemDefaultPrivateKey()
+		publicKey = tools.PemDefaultPublicKey()
+		if privKey == nil || publicKey == nil {
+			return jose.JSONWebKey{}, jose.JSONWebKey{}, tools.ErrAuthTokeKeyError
+		}
 	}
-
-	publicKey, err := tools.ParseRsaPublicKeyFromPemStr(PublicKey)
-	if err != nil {
-		log.Fatalf("pasre rsa publicKey from file err: %v", err)
-	}
-
 	priv = jose.JSONWebKey{
 		Key:       privKey,
 		KeyID:     "Cgc4OTEyNTU3EgZnaXRodWI",
@@ -42,7 +37,7 @@ func CreateKeyPair() (pub, priv jose.JSONWebKey) {
 		Use:       "sig",
 	}
 
-	return pub, priv
+	return pub, priv, nil
 }
 
 // Determine the signature algorithm for a JWT.
