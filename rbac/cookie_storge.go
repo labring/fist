@@ -101,3 +101,12 @@ func FistCookieGetUserInfo(req *restful.Request) *UserInfo {
 func FistCookieUpdateUserInfo(response *restful.Response, userInfo *UserInfo) {
 	loginCookieSetter(response, userInfo)
 }
+
+//CookieFilter is public filer for cookie
+func CookieFilter(req *restful.Request, resp *restful.Response, chain *restful.FilterChain) {
+	if filterCookieValidate(req) {
+		chain.ProcessFilter(req, resp)
+	} else {
+		tools.ResponseAuthError(resp)
+	}
+}
