@@ -63,5 +63,5 @@ func TestLoadKeyPairPri(t *testing.T) {
 	if block == nil {
 		return
 	}
-	_, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+	_, _ = x509.ParsePKCS1PrivateKey(block.Bytes)
 }

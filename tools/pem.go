@@ -82,7 +82,7 @@ func ParseRsaPubKeyFromPemFile(pemFile string) (*rsa.PublicKey, error) {
 		return nil, err
 	}
 	defer fileIO.Close()
-	pubPEM, err := ioutil.ReadAll(fileIO)
+	pubPEM, _ := ioutil.ReadAll(fileIO)
 	block, _ := pem.Decode([]byte(pubPEM))
 	if block == nil {
 		return nil, errors.New("failed to parse PEM block containing the key")
@@ -109,7 +109,7 @@ func ParseRsaPrivateKeyFromPemFile(pemFile string) (*rsa.PrivateKey, error) {
 		return nil, err
 	}
 	defer fileIO.Close()
-	privPEM, err := ioutil.ReadAll(fileIO)
+	privPEM, _ := ioutil.ReadAll(fileIO)
 	block, _ := pem.Decode([]byte(privPEM))
 	if block == nil {
 		return nil, errors.New("failed to parse PEM block containing the key")
