@@ -19,6 +19,10 @@ var (
 	AuthCert string
 	//AuthKey is cmd key file
 	AuthKey string
+	//PrivateKey is gen keypair privateKey
+	PrivateKey string
+	//PublicKey is gen keypair publicKey
+	PublicKey string
 
 	//authHTTPSPortString is string of AuthHTTPSPort
 	authHTTPSPortString string
