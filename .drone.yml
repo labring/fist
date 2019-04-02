@@ -13,6 +13,12 @@ steps:
      - go get -u golang.org/x/lint/golint
      - golint  -set_exit_status ./...
      - go build -o fist
+- name: tryrun-fist
+  image: golang:1.10.8
+  commands:
+    - fist auth -h
+    - fist terminal -h
+    - fist rbac -h
 
 - name: publish-fist
   image: plugins/docker
