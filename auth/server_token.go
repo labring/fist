@@ -11,7 +11,6 @@ import (
 
 //TokenRegister is k8s auth token
 func TokenRegister(auth *restful.WebService) {
-	Pub, Priv = CreateKeyPair()
 	auth.Path("/").
 		Consumes("*/*").
 		Produces(restful.MIME_JSON) // you can specify this per route as well

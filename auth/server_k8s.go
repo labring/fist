@@ -14,7 +14,6 @@ var (
 
 //K8sRegister is k8s auth
 func K8sRegister(auth *restful.WebService) {
-	Pub, Priv = CreateKeyPair()
 	auth.Path("/").
 		Consumes(restful.MIME_JSON).
 		Produces(restful.MIME_JSON) // you can specify this per route as well
@@ -64,7 +63,7 @@ func discoveryHandler(request *restful.Request, response *restful.Response) {
 	}
 
 	logger.Info("discovery: %v", dis)
-	response.WriteEntity(dis)
+	_ = response.WriteEntity(dis)
 }
 
 func handlePublicKeys(request *restful.Request, response *restful.Response) {
@@ -76,5 +75,5 @@ func handlePublicKeys(request *restful.Request, response *restful.Response) {
 	logger.Info("public keys: ", jwks)
 
 	response.AddHeader("Content-Type", "application/json")
-	response.WriteEntity(&jwks)
+	_ = response.WriteEntity(&jwks)
 }
