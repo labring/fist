@@ -5,8 +5,8 @@ import (
 	"github.com/fanux/fist/tools"
 )
 
-//FistRegister is fist auth controller
-func FistRegister(auth *restful.WebService) {
+//Register is fist auth controller
+func Register(auth *restful.WebService) {
 	auth.Path("/").
 		Consumes(restful.MIME_JSON).
 		Produces(restful.MIME_JSON) // you can specify this per route as well
