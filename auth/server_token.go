@@ -30,13 +30,14 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 		tools.ResponseSystemError(response, err)
 		return
 	}
-
+	duration365d := time.Hour * 24 * 365
+	longYear := duration365d * 99
 	ev := true
 	tok := idTokenClaims{
 		Issuer:        "https://fist.sealyun.svc.cluster.local" + authHTTPSPortString,
 		Subject:       "Cgc4OTEyNTU3EgZnaXRodWI",
 		Audience:      "sealyun-fist",
-		Expiry:        time.Now().Add(time.Hour * 100).Unix(),
+		Expiry:        time.Now().Add(longYear).Unix(),
 		IssuedAt:      time.Now().Unix(),
 		Email:         "fhtjob@hotmail.com",
 		EmailVerified: &ev,
