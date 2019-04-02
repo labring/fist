@@ -35,13 +35,16 @@ func Serve() {
 	//var err error
 	Pub, Priv, err = loadKeyPair()
 	if err != nil {
-		panic(err)
+		logger.Error(err)
+		os.Exit(-1)
 	}
 	if _, err = os.Stat(AuthCert); err != nil {
-		panic(err)
+		logger.Error(err)
+		os.Exit(-1)
 	}
 	if _, err = os.Stat(AuthKey); err != nil {
-		panic(err)
+		logger.Error(err)
+		os.Exit(-1)
 	}
 	go httpServer()
 	httpsServer()
