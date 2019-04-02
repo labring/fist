@@ -11,7 +11,6 @@ import (
 
 //TokenRegister is k8s auth token
 func TokenRegister(auth *restful.WebService) {
-	Pub, Priv = CreateKeyPair()
 	auth.Path("/").
 		Consumes("*/*").
 		Produces(restful.MIME_JSON) // you can specify this per route as well
@@ -30,13 +29,14 @@ func handlerToken(request *restful.Request, response *restful.Response) {
 		tools.ResponseSystemError(response, err)
 		return
 	}
-
+	duration365d := time.Hour * 24 * 365
+	longYear := duration365d * 99
 	ev := true
 	tok := idTokenClaims{
 		Issuer:        "https://fist.sealyun.svc.cluster.local" + authHTTPSPortString,
 		Subject:       "Cgc4OTEyNTU3EgZnaXRodWI",
 		Audience:      "sealyun-fist",
-		Expiry:        time.Now().Add(time.Hour * 100).Unix(),
+		Expiry:        time.Now().Add(longYear).Unix(),
 		IssuedAt:      time.Now().Unix(),
 		Email:         "fhtjob@hotmail.com",
 		EmailVerified: &ev,
