@@ -9,8 +9,9 @@ import (
 	"os"
 )
 
+//ExportRsaPrivateKeyAsPemStr is store privateKey into file
 func ExportRsaPrivateKeyAsPemStr(fileDir string, privkey *rsa.PrivateKey) error {
-	privkey_bytes := x509.MarshalPKCS1PrivateKey(privkey)
+	privkeyBytes := x509.MarshalPKCS1PrivateKey(privkey)
 	file, err := os.Create(fileDir)
 	if err != nil {
 		return err
@@ -24,6 +25,7 @@ func ExportRsaPrivateKeyAsPemStr(fileDir string, privkey *rsa.PrivateKey) error 
 	return nil
 }
 
+//ParseRsaPrivateKeyFromPemStr is read privateKey from file
 func ParseRsaPrivateKeyFromPemStr(fileDir string) (*rsa.PrivateKey, error) {
 	fileIO, err := os.Open(fileDir)
 	if err != nil {
@@ -44,8 +46,9 @@ func ParseRsaPrivateKeyFromPemStr(fileDir string) (*rsa.PrivateKey, error) {
 	return priv, nil
 }
 
+//ExportRsaPublicKeyAsPemStr is store publicKey into file
 func ExportRsaPublicKeyAsPemStr(fileDir string, pubkey *rsa.PublicKey) error {
-	pubkey_bytes, err := x509.MarshalPKIXPublicKey(pubkey)
+	pubkeyBytes, err := x509.MarshalPKIXPublicKey(pubkey)
 	if err != nil {
 		return err
 	}
@@ -63,6 +66,7 @@ func ExportRsaPublicKeyAsPemStr(fileDir string, pubkey *rsa.PublicKey) error {
 	return nil
 }
 
+//ParseRsaPublicKeyFromPemStr is read publicKey from file
 func ParseRsaPublicKeyFromPemStr(fileDir string) (*rsa.PublicKey, error) {
 	fileIO, err := os.Open(fileDir)
 	if err != nil {
