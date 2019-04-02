@@ -1,8 +1,9 @@
 package tools
 
 import (
-	"github.com/wonderivan/logger"
 	"testing"
+
+	"github.com/wonderivan/logger"
 )
 
 func TestDESEncrypt(t *testing.T) {

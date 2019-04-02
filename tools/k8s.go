@@ -2,13 +2,14 @@ package tools
 
 import (
 	"flag"
+	"path/filepath"
+	"sync"
+
 	"github.com/wonderivan/logger"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
-	"path/filepath"
-	"sync"
 )
 
 var singleK8sClientInstance *kubernetes.Clientset

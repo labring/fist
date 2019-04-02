@@ -2,10 +2,11 @@ package rbac
 
 import (
 	"encoding/json"
+	"strings"
+
 	"github.com/emicklei/go-restful"
 	"github.com/fanux/fist/tools"
 	"github.com/wonderivan/logger"
-	"strings"
 )
 
 const desCookieKey = "df9gtsq3"

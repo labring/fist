@@ -1,0 +1,52 @@
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: sealyun
+#---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fist-terminal
+  namespace: sealyun
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: fist-terminal
+  template:
+    metadata:
+      labels:
+        name: fist-terminal
+    spec:
+      serviceAccountName: admin
+      containers:
+      - name: fist-terminal
+        image: {{.TEMPLATE_REPO}}:{{.TEMPLATE_TAGS}}
+        command: ["./fist", "terminal"]
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+          - name: MY_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: MY_SA_NAME
+            value: "admin"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: fist-terminal
+  namespace: sealyun
+spec:
+  type: NodePort
+  clusterIP: 10.106.233.68
+  ports:
+  - name: fist-terminal
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+    nodePort: 32203
+  selector:
+    name: fist-terminal

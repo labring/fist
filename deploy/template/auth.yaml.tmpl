@@ -1,0 +1,62 @@
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: sealyun
+#---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fist
+  namespace: sealyun
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: fist
+  template:
+    metadata:
+      labels:
+        name: fist
+    spec:
+      containers:
+      - name: fist
+        image: {{.TEMPLATE_REPO}}:{{.TEMPLATE_TAGS}}
+        command: ["./fist", "auth"]
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8443
+        - containerPort: 8080
+        volumeMounts:
+        - name: fist
+          mountPath: /etc/fist
+      volumes:
+       - name: fist
+         secret:
+           secretName: fist
+           items:
+           - key: cert.pem
+             path: cert.pem
+           - key: key.pem
+             path: key.pem
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: fist
+  namespace: sealyun
+spec:
+  type: NodePort
+  clusterIP: 10.106.233.67
+  ports:
+  - name: fist-https
+    port: 8443
+    targetPort: 8443
+    protocol: TCP
+    nodePort: 32201
+  - name: fist-http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+    nodePort: 32202
+  selector:
+    name: fist

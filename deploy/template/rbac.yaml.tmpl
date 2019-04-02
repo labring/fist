@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fist-rbac
+  namespace: sealyun
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: fist-rbac
+  template:
+    metadata:
+      labels:
+        name: fist-rbac
+    spec:
+      serviceAccountName: admin
+      containers:
+      - name: fist-rbac
+        image: {{.TEMPLATE_REPO}}:{{.TEMPLATE_TAGS}}
+        command: ["./fist", "rbac", "--ldap-enable=true", "--ldap-host=ldap-service", "--ldap-bind-dn=cn=admin,dc=sealyun,dc=com", "--ldap-bind-password=admin" ]
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: fist-rbac
+  namespace: sealyun
+spec:
+  type: NodePort
+  clusterIP: 10.106.233.69
+  ports:
+  - name: fist-rbac
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+    nodePort: 32204
+  selector:
+    name: fist-rbac
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: fist-admin
+  namespace: sealyun
+type: Opaque
+data:
+  username: YWRtaW4=
+  password: MWYyZDFlMmU2N2Rm

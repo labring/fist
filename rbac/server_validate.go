@@ -1,8 +1,9 @@
 package rbac
 
 import (
-	"github.com/fanux/fist/tools"
 	"regexp"
+
+	"github.com/fanux/fist/tools"
 )
 
 // validate username  , only  a-z A-Z
