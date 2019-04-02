@@ -34,9 +34,7 @@ steps:
     template_repo: lameleg/fist
     template_tags: ${DRONE_TAG=latest}
   commands:
-    - drone-kube template --deploy=auth/deploy
-    - drone-kube template --deploy=terminal/deploy
-    - drone-kube template --deploy=rbac/deploy
+    - drone-kube template --deploy=deploy/template
   when:
     event:
       - push
@@ -54,10 +52,7 @@ steps:
       from_secret: k8s-admin-key
   commands:
     - drone-kube config
-    - kubectl delete -f auth/deploy/auth.yaml  || true
-    - kubectl delete -f terminal/deploy/deploy.yaml  || true
-    - kubectl delete -f rbac/deploy/secret.yaml || true
-    - kubectl delete -f rbac/deploy/deploy.yaml  || true
+    - kubectl delete -f deploy/template  || true
     - sleep 5
   when:
     event:
@@ -76,10 +71,7 @@ steps:
       from_secret: k8s-admin-key
   commands:
   - drone-kube config
-  - kubectl create -f  auth/deploy/auth.yaml  || true
-  - kubectl create -f  terminal/deploy/deploy.yaml || true
-  - kubectl create -f rbac/deploy/secret.yaml  || true
-  - kubectl create -f rbac/deploy/deploy.yaml  || true
+  - kubectl create -f deploy/template  || true
   when:
     event:
     - push
