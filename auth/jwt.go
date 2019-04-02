@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"log"
 
-	"gopkg.in/square/go-jose.v2"
 	"github.com/fanux/fist/tools"
+	"gopkg.in/square/go-jose.v2"
 )
 
 //CreateKeyPair is
@@ -28,7 +28,7 @@ func CreateKeyPair() (pub, priv jose.JSONWebKey) {
 	if err != nil {
 		log.Fatalf("pasre rsa publicKey from file err: %v", err)
 	}
-	
+
 	priv = jose.JSONWebKey{
 		Key:       privKey,
 		KeyID:     "Cgc4OTEyNTU3EgZnaXRodWI",
