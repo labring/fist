@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/fanux/fist/rbac"
+
 	"github.com/fanux/fist/tools"
 	"github.com/wonderivan/logger"
 
@@ -21,8 +23,8 @@ func Register(container *restful.Container) {
 		Consumes(restful.MIME_XML, restful.MIME_JSON).
 		Produces(restful.MIME_JSON, restful.MIME_XML) // you can specify this per route as well
 
-	terminal.Route(terminal.POST("/terminal").To(createTerminal))
-	terminal.Route(terminal.GET("/heartbeat").To(handleHeartbeat))
+	terminal.Route(terminal.POST("/terminal").Filter(rbac.CookieFilter).To(createTerminal))
+	terminal.Route(terminal.GET("/heartbeat").Filter(rbac.CookieFilter).To(handleHeartbeat))
 
 	container.Add(terminal)
 }

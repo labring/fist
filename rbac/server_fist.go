@@ -13,28 +13,20 @@ func FistRegister(auth *restful.WebService) {
 	//login http server
 	auth.Route(auth.POST("/login").To(handleLogin))
 	//logout http server
-	auth.Route(auth.POST("/logout").Filter(cookieFilter).To(handleLogout))
+	auth.Route(auth.POST("/logout").Filter(CookieFilter).To(handleLogout))
 	//user manager
 	//GET_USER ALL
-	auth.Route(auth.GET("/user").Filter(cookieFilter).To(handleListUserInfo))
+	auth.Route(auth.GET("/user").Filter(CookieFilter).To(handleListUserInfo))
 	//GET_USER SINGLE
-	auth.Route(auth.GET("/user/{user_name}").Filter(cookieFilter).To(handleGetUserInfo))
+	auth.Route(auth.GET("/user/{user_name}").Filter(CookieFilter).To(handleGetUserInfo))
 	//ADD_USER
-	auth.Route(auth.POST("/user").Filter(cookieFilter).To(handleAddUserInfo))
+	auth.Route(auth.POST("/user").Filter(CookieFilter).To(handleAddUserInfo))
 	//UPDATE_USER
-	auth.Route(auth.PUT("/user").Filter(cookieFilter).To(handleUpdateUserInfo))
+	auth.Route(auth.PUT("/user").Filter(CookieFilter).To(handleUpdateUserInfo))
 	//DELETE_USER
-	auth.Route(auth.DELETE("/user/{user_name}").Filter(cookieFilter).To(handleDelUserInfo))
+	auth.Route(auth.DELETE("/user/{user_name}").Filter(CookieFilter).To(handleDelUserInfo))
 }
 
-// cookie Filter
-func cookieFilter(req *restful.Request, resp *restful.Response, chain *restful.FilterChain) {
-	if filterCookieValidate(req) {
-		chain.ProcessFilter(req, resp)
-	} else {
-		tools.ResponseAuthError(resp)
-	}
-}
 func handleLogout(request *restful.Request, response *restful.Response) {
 	logoutCookieSetter(response)
 	tools.ResponseSuccess(response, "")
