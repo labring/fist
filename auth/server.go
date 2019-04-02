@@ -26,6 +26,7 @@ var (
 
 //Serve start a auth server
 func Serve() {
+	Pub, Priv = CreateKeyPair()
 	go httpServer()
 	httpsServer()
 }
