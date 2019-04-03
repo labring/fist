@@ -59,7 +59,7 @@ metadata:
   name: read-secrets-global
 subjects:
 - kind: User
-  name: "https://fist.sealyun.svc.cluster.local:8443#fanux" # Name is case sensitive
+  name: "fanux" # Name is case sensitive
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
