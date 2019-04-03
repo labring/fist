@@ -9,7 +9,6 @@ func Cors(wsContainer *restful.Container) {
 		ExposeHeaders:  []string{"X-My-Header"},
 		AllowedHeaders: []string{"Content-Type", "Accept"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
-		AllowedDomains: []string{"*"},
 		CookiesAllowed: true,
 		Container:      wsContainer}
 	wsContainer.Filter(cors.Filter)
