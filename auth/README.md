@@ -6,7 +6,7 @@ For create a kubernetes user jwt token
 > create jwt bare token
 
 ```
-curl "https://fist.sealyun.svc.cluster.local:8443/token?user=fanux&group=sealyun&group=develop" -k
+curl "http://fist.sealyun.svc.cluster.local:8080/token?user=fanux&group=sealyun&group=develop" 
 
 eyJhbGciOiJSUzI1NiIsImtpZCI6IkNnYzRPVEV5TlRVM0VnWm5hWFJvZFdJIn0.eyJpc3MiOiJodHRwczovL2RleC5leGFtcGxlLmNvbTo4MDgwIiwic3ViIjoiQ2djNE9URXlOVFUzRWdabmFYUm9kV0kiLCJhdWQiOiJleGFtcGxlLWFwcCIsImV4cCI6MTU1MTA5NzkwNiwiaWF0IjoxNTUwNzM3OTA2LCJlbWFpbCI6ImZodGpvYkBob3RtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJncm91cHMiOlsiZGV2Il0sIm5hbWUiOiJmYW51eCJ9.ZqKn461UW0aGtyjyqu2Dc5tiUzC-6eYLag542d3AvklUdZuw8i9XwyaUg_f1OAj0ZsEcOybOe9_PeGMaUYzU0OvlKPY-q2zbQVC-m6u6sQw6ZXx8pi0W8k4wQSJnMaOLddCfurlYufmr8kScDBQlnKapSR0F9mJzvpKkHD-XNshQKWhX3n03g7OfFgb4RuhLjKDNQnoGn7DfBNntibHlF9sPo0jC5JjqTZaGvoGmiRE4PAXwxA-RJifsWDNf_jW8lrDiY4NSO_3O081cia4N1GKht51q9W3eaNMvFDD9hje7abDdZoz9KPi2vc3zvgH7cNv0ExVHKaA0-dwAZgTx4g
 ```
@@ -40,6 +40,8 @@ kubectl config set-credentials fanux --token=eyJhbGciOiJSUzI1NiIsImtpZCI6IkNnYzR
 kubectl config set-context fanux --cluster=kubernetes --user=fanux
 
 kubectl config use-context fanux
+
+kubectl config set-cluster kubernetes --server=https://127.0.0.1:6443 --insecure-skip-tls-verify=true
 ```
 
 ```
@@ -57,7 +59,7 @@ metadata:
   name: read-secrets-global
 subjects:
 - kind: User
-  name: "https://fist.sealyun.svc.cluster.local:8443#fanux" # Name is case sensitive
+  name: "fanux" # Name is case sensitive
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
@@ -73,3 +75,16 @@ No resources found.
 ```
 
 
+## test shell
+
+```
+## rbac visit k8s apiserver
+curl -H "Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IkNnYzRPVEV5TlRVM0VnWm5hWFJvZFdJIn0.eyJpc3MiOiJodHRwczovL2RleC5leGFtcGxlLmNvbTo4MDgwIiwic3ViIjoiQ2djNE9URXlOVFUzRWdabmFYUm9kV0kiLCJhdWQiOiJleGFtcGxlLWFwcCIsImV4cCI6MTU1MTA5NzkwNiwiaWF0IjoxNTUwNzM3OTA2LCJlbWFpbCI6ImZodGpvYkBob3RtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJncm91cHMiOlsiZGV2Il0sIm5hbWUiOiJmYW51eCJ9.ZqKn461UW0aGtyjyqu2Dc5tiUzC-6eYLag542d3AvklUdZuw8i9XwyaUg_f1OAj0ZsEcOybOe9_PeGMaUYzU0OvlKPY-q2zbQVC-m6u6sQw6ZXx8pi0W8k4wQSJnMaOLddCfurlYufmr8kScDBQlnKapSR0F9mJzvpKkHD-XNshQKWhX3n03g7OfFgb4RuhLjKDNQnoGn7DfBNntibHlF9sPo0jC5JjqTZaGvoGmiRE4PAXwxA-RJifsWDNf_jW8lrDiY4NSO_3O081cia4N1GKht51q9W3eaNMvFDD9hje7abDdZoz9KPi2vc3zvgH7cNv0ExVHKaA0-dwAZgTx4g" \
+ -k https://172.31.12.61:6443/api/v1/namespaces/default/pods
+## auth token
+curl  http://fist.sealyun.svc.cluster.local:8080/token?user=fanux&group=dev&group=test
+## auth well
+curl https://fist.sealyun.svc.cluster.local:8443/.well-known/openid-configuration --cacert ca.pem
+## auth keys
+curl -v https://fist.sealyun.svc.cluster.local:8443/keys --cacert ca.pem
+```

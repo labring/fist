@@ -22,6 +22,7 @@
 # Install
 ```
 cd deploy
+sh init.sh
 sh install.sh
 ```
 
