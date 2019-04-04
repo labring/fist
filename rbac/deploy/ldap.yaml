@@ -14,7 +14,7 @@ spec:
   selector:
     app: ldap
 
---- 
+---
 
 apiVersion: extensions/v1beta1
 kind: Deployment
