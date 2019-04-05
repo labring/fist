@@ -214,9 +214,3 @@ func CreateTTYcontainer(t *Terminal) error {
 	}
 	return nil
 }
-
-//LoadTerminalID is
-func LoadTerminalID() error {
-	//TODO
-	return nil
-}
