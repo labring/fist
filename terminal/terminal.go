@@ -27,6 +27,7 @@ const (
 //vars
 var (
 	DefaultTTYDeployReplicas = int32(1)
+	labelsMap                map[string]string
 )
 
 //Terminal is
@@ -42,6 +43,15 @@ type Terminal struct {
 	//output append field
 	TerminalID string `json:"terminalID,omitempty"`
 	EndPoint   string `json:"endPoint,omitempty"`
+	//
+	CookieUserName string `json:"cookieUserName,omitempty"`
+}
+
+//Query is query param
+type Query struct {
+	CookieUserName string `json:"cookieUserName,omitempty"`
+	TerminalID     string `json:"terminalID,omitempty"`
+	Namespace      string `json:"namespace,omitempty"`
 }
 
 func newTerminal() *Terminal {
@@ -54,15 +64,28 @@ func newTerminal() *Terminal {
 }
 
 //Create a terminal
-func (t *Terminal) Create() error {
-	t.TerminalID = DefaultPrefix + tools.NewUUID()
+func (t *Terminal) Query(query *Query) error {
 
-	//create tty deployment and service
-	return CreateTTYcontainer(t)
+	return nil
 }
 
-//CreateTTYdeploy create deployment
-func CreateTTYdeploy(t *Terminal) error {
+//Create a terminal
+func (t *Terminal) Create() error {
+	t.TerminalID = DefaultPrefix + tools.NewUUID()
+	//label
+	labelsMap = map[string]string{
+		"TerminalID": t.TerminalID,
+		"TerminalNS": t.Namespace,
+	}
+	if t.CookieUserName != "" {
+		labelsMap["TerminalUN"] = t.CookieUserName
+	}
+	//create tty deployment and service
+	return createTTYcontainer(t)
+}
+
+//createTTYdeploy create deployment
+func createTTYdeploy(t *Terminal) error {
 	clientset := tools.GetK8sClient()
 	//get deploy deployClient
 	deployClient := clientset.AppsV1().Deployments(DefaultTTYnameapace)
@@ -79,14 +102,10 @@ func CreateTTYdeploy(t *Terminal) error {
 		Name: t.TerminalID,
 	}
 	selector = &metav1.LabelSelector{
-		MatchLabels: map[string]string{
-			"TerminalID": t.TerminalID,
-		},
+		MatchLabels: labelsMap,
 	}
 	templateObjMeta = metav1.ObjectMeta{
-		Labels: map[string]string{
-			"TerminalID": t.TerminalID,
-		},
+		Labels: labelsMap,
 	}
 	ports = []apiv1.ContainerPort{
 		{
@@ -128,18 +147,16 @@ func CreateTTYdeploy(t *Terminal) error {
 	return nil
 }
 
-//CreateTTYservice tty service
-func CreateTTYservice(t *Terminal) error {
+//createTTYservice tty service
+func createTTYservice(t *Terminal) error {
 	clientset := tools.GetK8sClient()
 	service, err := clientset.CoreV1().Services(DefaultTTYnameapace).Create(&apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: t.TerminalID,
 		},
 		Spec: apiv1.ServiceSpec{
-			Selector: map[string]string{
-				"TerminalID": t.TerminalID,
-			},
-			Type: "NodePort",
+			Selector: labelsMap,
+			Type:     "NodePort",
 			Ports: []apiv1.ServicePort{
 				{Name: "tty", Port: 8080, TargetPort: intstr.FromInt(8080), Protocol: apiv1.Protocol("TCP")},
 			},
@@ -190,8 +207,8 @@ func withoutToken(t *Terminal) error {
 	return nil
 }
 
-//CreateTTYcontainer is
-func CreateTTYcontainer(t *Terminal) error {
+//createTTYcontainer is
+func createTTYcontainer(t *Terminal) error {
 	//process without token
 	err := withoutToken(t)
 	if err != nil {
@@ -203,12 +220,12 @@ func CreateTTYcontainer(t *Terminal) error {
 		return err
 	}
 	//create deploy
-	err = CreateTTYdeploy(t)
+	err = createTTYdeploy(t)
 	if err != nil {
 		return err
 	}
 	//create service
-	err = CreateTTYservice(t)
+	err = createTTYservice(t)
 	if err != nil {
 		return err
 	}

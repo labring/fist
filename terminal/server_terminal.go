@@ -31,11 +31,16 @@ func Register(container *restful.Container) {
 func createTerminal(request *restful.Request, response *restful.Response) {
 	t := newTerminal()
 	err := request.ReadEntity(t)
+	//get cookie user info
+	terminalUserName := ""
+	if RbacEnable {
+		terminalUserName = rbac.FistCookieGetUserInfo(request).Username
+	}
+	t.CookieUserName = terminalUserName
 	if err != nil {
 		tools.ResponseSystemError(response, err)
 		return
 	}
-
 	err = t.Create()
 	if err != nil {
 		tools.ResponseSystemError(response, err)
