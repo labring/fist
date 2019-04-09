@@ -179,7 +179,7 @@ func withoutToken(t *Terminal) error {
 				return err
 			}
 			token := string(saTokenSecrets.Data["token"])
-			if err != nil {
+			if token == "" {
 				return tools.ErrServiceAccountEmpty
 			}
 			t.UserToken = token
