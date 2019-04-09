@@ -1,16 +1,10 @@
 package terminal
 
 import (
-	"log"
-	"time"
-
 	"github.com/fanux/fist/rbac"
 
-	"github.com/fanux/fist/tools"
-	"github.com/wonderivan/logger"
-
 	"github.com/emicklei/go-restful"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"github.com/fanux/fist/tools"
 )
 
 //Register is
@@ -57,41 +51,12 @@ func handleHeartbeat(request *restful.Request, response *restful.Response) {
 		tools.ResponseError(response, tools.ErrParamTidEmpty)
 		return
 	}
-	namespace := request.QueryParameter("namespace")
-	if namespace == "" {
-		namespace = DefaultTTYnameapace
-	}
 	var hbInterface Heartbeater
-	hbInterface = NewHeartbeater(tid, namespace)
+	hbInterface = NewHeartbeater(tid, DefaultTTYnameapace)
 	err := hbInterface.UpdateTimestamp()
 	if err != nil {
 		tools.ResponseSystemError(response, err)
 		return
 	}
 	tools.ResponseSuccess(response, nil)
-}
-
-func cleanTerminal(namespace string) {
-	clientSet := tools.GetK8sClient()
-	deploymentsClient := clientSet.AppsV1().Deployments(namespace)
-	t := time.NewTicker(600 * time.Second) //every 10min check heartbeat
-	defer t.Stop()
-	for {
-		select {
-		case <-t.C:
-			logger.Info("timer running for cleanTerminal.")
-			list, err := deploymentsClient.List(metav1.ListOptions{})
-			if err != nil {
-				log.Fatal(err)
-			}
-			for _, d := range list.Items {
-				var hbInterface Heartbeater
-				hbInterface = NewHeartbeater(d.Name, namespace)
-				err := hbInterface.CleanTerminalJob()
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
-		}
-	}
 }
