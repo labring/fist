@@ -27,7 +27,9 @@ spec:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: MY_SA_NAME
-            value: "admin"
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.serviceAccountName
 ---
 kind: Service
 apiVersion: v1
