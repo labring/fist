@@ -16,13 +16,20 @@ import (
 //Register is
 func Register(container *restful.Container) {
 	terminal := new(restful.WebService)
+	var filter restful.FilterFunction
+	if RbacEnable {
+		filter = rbac.CookieFilter
+	} else {
+		filter = func(*restful.Request, *restful.Response, *restful.FilterChain) {}
+	}
 	terminal.
 		Path("/").
+		Filter(filter).
 		Consumes(restful.MIME_XML, restful.MIME_JSON).
 		Produces(restful.MIME_JSON, restful.MIME_XML) // you can specify this per route as well
 
-	terminal.Route(terminal.POST("/terminal").Filter(rbac.CookieFilter).To(createTerminal))
-	terminal.Route(terminal.GET("/heartbeat").Filter(rbac.CookieFilter).To(handleHeartbeat))
+	terminal.Route(terminal.POST("/terminal").To(createTerminal))
+	terminal.Route(terminal.GET("/heartbeat").To(handleHeartbeat))
 
 	container.Add(terminal)
 }
