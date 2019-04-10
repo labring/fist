@@ -2,6 +2,7 @@ package terminal
 
 import (
 	"fmt"
+	"github.com/wonderivan/logger"
 	"os"
 
 	"github.com/fanux/fist/tools"
@@ -30,7 +31,33 @@ var (
 	labelsMap                map[string]string
 )
 
-//Terminal is
+func (t *Terminal) buildLabelsMap() {
+	//label
+	labelsMap = map[string]string{
+		"TerminalID": t.TerminalID,
+		"TerminalNS": t.Namespace,
+	}
+	if t.CookieUserName != "" {
+		labelsMap["TerminalUN"] = t.CookieUserName
+	}
+}
+
+func (q *ListQuery) fetchLabelsMap() map[string]string {
+	//append map
+	selectMap := map[string]string{}
+	if q.CookieUserName != "" {
+		selectMap["TerminalUN"] = q.CookieUserName
+	}
+	if q.TerminalID != "" {
+		selectMap["TerminalID"] = q.TerminalID
+	}
+	if q.Namespace != "" {
+		selectMap["TerminalNS"] = q.Namespace
+	}
+	return selectMap
+}
+
+//Terminal is return obj
 type Terminal struct {
 	//input field
 	User         string `json:"user,omitempty"`
@@ -47,9 +74,9 @@ type Terminal struct {
 	CookieUserName string `json:"cookieUserName,omitempty"`
 }
 
-//Query is query param
-type Query struct {
-	CookieUserName string `json:"cookieUserName,omitempty"`
+//ListQuery is query param
+type ListQuery struct {
+	CookieUserName string `json:"userName,omitempty"`
 	TerminalID     string `json:"terminalID,omitempty"`
 	Namespace      string `json:"namespace,omitempty"`
 }
@@ -63,23 +90,46 @@ func newTerminal() *Terminal {
 	}
 }
 
-//Create a terminal
-func (t *Terminal) Query(query *Query) error {
-
-	return nil
+//Query a terminal
+func (q *ListQuery) Query() ([]*Terminal, error) {
+	//append map
+	selectMap := q.fetchLabelsMap()
+	clientset := tools.GetK8sClient()
+	//get deploy deployClient
+	deployClient := clientset.AppsV1().Deployments(DefaultTTYnameapace)
+	logger.Info(tools.MapToString(selectMap))
+	deployList, err := deployClient.List(metav1.ListOptions{
+		LabelSelector: tools.MapToString(selectMap),
+	})
+	if err != nil {
+		return nil, err
+	}
+	terminalArr := make([]*Terminal, len(deployList.Items))
+	for index, deploy := range deployList.Items {
+		container := deploy.Spec.Template.Spec.Containers[0]
+		terminal := &Terminal{
+			Apiserver:      container.Env[0].Value,
+			UserToken:      container.Env[1].Value,
+			Namespace:      container.Env[2].Value,
+			User:           container.Env[3].Value,
+			TerminalID:     container.Env[4].Value,
+			TTYKubeImage:   container.Image,
+			CookieUserName: deploy.Spec.Template.Labels["TerminalUN"],
+		}
+		service, err := clientset.CoreV1().Services(DefaultTTYnameapace).Get(terminal.TerminalID, metav1.GetOptions{})
+		if err != nil {
+			return nil, err
+		}
+		terminal.EndPoint = fmt.Sprintf("%d", service.Spec.Ports[0].NodePort)
+		terminalArr[index] = terminal
+	}
+	return terminalArr, nil
 }
 
 //Create a terminal
 func (t *Terminal) Create() error {
 	t.TerminalID = DefaultPrefix + tools.NewUUID()
-	//label
-	labelsMap = map[string]string{
-		"TerminalID": t.TerminalID,
-		"TerminalNS": t.Namespace,
-	}
-	if t.CookieUserName != "" {
-		labelsMap["TerminalUN"] = t.CookieUserName
-	}
+	t.buildLabelsMap()
 	//create tty deployment and service
 	return createTTYcontainer(t)
 }
@@ -99,7 +149,8 @@ func createTTYdeploy(t *Terminal) error {
 	)
 	//init
 	objMeta = metav1.ObjectMeta{
-		Name: t.TerminalID,
+		Name:   t.TerminalID,
+		Labels: labelsMap,
 	}
 	selector = &metav1.LabelSelector{
 		MatchLabels: labelsMap,
@@ -152,7 +203,8 @@ func createTTYservice(t *Terminal) error {
 	clientset := tools.GetK8sClient()
 	service, err := clientset.CoreV1().Services(DefaultTTYnameapace).Create(&apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: t.TerminalID,
+			Name:   t.TerminalID,
+			Labels: labelsMap,
 		},
 		Spec: apiv1.ServiceSpec{
 			Selector: labelsMap,
