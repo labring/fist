@@ -27,6 +27,8 @@ var (
 
 	//authHTTPSPortString is string of AuthHTTPSPort
 	authHTTPSPortString string
+	//authHTTPPortString is string of AuthHTTPPort
+	authHTTPPortString string
 )
 
 //Serve start a auth server
@@ -77,9 +79,9 @@ func httpServer() {
 	//cors
 	tools.Cors(wsContainer)
 	//process port for command
-	httpPort := ":" + strconv.FormatUint(uint64(AuthHTTPPort), 10)
-	logger.Info("start listening on localhost", httpPort)
-	server := &http.Server{Addr: httpPort, Handler: wsContainer}
+	authHTTPPortString = ":" + strconv.FormatUint(uint64(AuthHTTPPort), 10)
+	logger.Info("start listening on localhost", authHTTPPortString)
+	server := &http.Server{Addr: authHTTPPortString, Handler: wsContainer}
 
 	log.Fatal(server.ListenAndServe())
 }
