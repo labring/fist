@@ -23,9 +23,25 @@ func Register(container *restful.Container) {
 		Produces(restful.MIME_JSON, restful.MIME_XML) // you can specify this per route as well
 
 	terminal.Route(terminal.POST("/terminal").To(createTerminal))
+	terminal.Route(terminal.GET("/terminal").To(queryTerminal))
 	terminal.Route(terminal.GET("/heartbeat").To(handleHeartbeat))
 
 	container.Add(terminal)
+}
+
+func queryTerminal(request *restful.Request, response *restful.Response) {
+	t := newListQuery()
+	err := request.ReadEntity(t)
+	if err != nil {
+		tools.ResponseSystemError(response, err)
+		return
+	}
+	terminalList, err := t.Query()
+	if err != nil {
+		tools.ResponseSystemError(response, err)
+		return
+	}
+	tools.ResponseSuccess(response, terminalList)
 }
 
 func createTerminal(request *restful.Request, response *restful.Response) {

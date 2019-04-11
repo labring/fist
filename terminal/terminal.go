@@ -77,7 +77,7 @@ type Terminal struct {
 
 //ListQuery is query param
 type ListQuery struct {
-	CookieUserName string `json:"userName,omitempty"`
+	CookieUserName string `json:"cookieUserName,omitempty"`
 	TerminalID     string `json:"terminalID,omitempty"`
 	Namespace      string `json:"namespace,omitempty"`
 }
@@ -89,6 +89,9 @@ func newTerminal() *Terminal {
 		Apiserver:    DefaultApiserver,
 		TTYKubeImage: DefaultKubeTTYimage,
 	}
+}
+func newListQuery() *ListQuery {
+	return &ListQuery{}
 }
 
 //Query a terminal
