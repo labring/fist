@@ -42,7 +42,7 @@ func discoveryHandler(request *restful.Request, response *restful.Response) {
 	dis := &discovery{
 		Issuer:      "https://fist.sealyun.svc.cluster.local" + authHTTPSPortString,
 		Auth:        "https://fist.sealyun.svc.cluster.local" + authHTTPSPortString + "/auth",
-		Token:       "http://fist.sealyun.svc.cluster.local" + authHTTPPortString + "/token",
+		Token:       "https://fist.sealyun.svc.cluster.local" + authHTTPSPortString + "/token",
 		Keys:        "https://fist.sealyun.svc.cluster.local" + authHTTPSPortString + "/keys",
 		Subjects:    []string{"public"},
 		IDTokenAlgs: []string{string(jose.RS256)},

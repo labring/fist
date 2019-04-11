@@ -2,8 +2,9 @@ package terminal
 
 import (
 	"fmt"
-	"github.com/wonderivan/logger"
 	"os"
+
+	"github.com/wonderivan/logger"
 
 	"github.com/fanux/fist/tools"
 	appsv1 "k8s.io/api/apps/v1"
