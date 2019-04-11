@@ -11,6 +11,8 @@ echo "wait for auth service sleep 15s... "
 sleep 15
 
 echo '  [WARN] edit kube-apiserver.yaml and add oidc config, if auth service not ready, apiserver may start failed!'
+sed '/- kube-apiserver/a\    - --oidc-username-prefix=-' -i /etc/kubernetes/manifests/kube-apiserver.yaml
+sed '/- kube-apiserver/a\    - --oidc-groups-prefix=-' -i /etc/kubernetes/manifests/kube-apiserver.yaml
 sed '/- kube-apiserver/a\    - --oidc-groups-claim=groups' -i /etc/kubernetes/manifests/kube-apiserver.yaml
 sed '/- kube-apiserver/a\    - --oidc-username-claim=name' -i /etc/kubernetes/manifests/kube-apiserver.yaml
 sed '/- kube-apiserver/a\    - --oidc-ca-file=/etc/kubernetes/pki/fist/ca.pem' -i /etc/kubernetes/manifests/kube-apiserver.yaml
