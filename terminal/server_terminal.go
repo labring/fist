@@ -1,8 +1,6 @@
 package terminal
 
 import (
-	"github.com/fanux/fist/rbac"
-
 	"github.com/emicklei/go-restful"
 	"github.com/fanux/fist/tools"
 )
@@ -10,15 +8,8 @@ import (
 //Register is
 func Register(container *restful.Container) {
 	terminal := new(restful.WebService)
-	var filter restful.FilterFunction
-	if RbacEnable {
-		filter = rbac.CookieFilter
-	} else {
-		filter = func(*restful.Request, *restful.Response, *restful.FilterChain) {}
-	}
 	terminal.
 		Path("/").
-		Filter(filter).
 		Consumes(restful.MIME_XML, restful.MIME_JSON).
 		Produces(restful.MIME_JSON, restful.MIME_XML) // you can specify this per route as well
 
@@ -47,12 +38,6 @@ func queryTerminal(request *restful.Request, response *restful.Response) {
 func createTerminal(request *restful.Request, response *restful.Response) {
 	t := newTerminal()
 	err := request.ReadEntity(t)
-	//get cookie user info
-	terminalUserName := ""
-	if RbacEnable {
-		terminalUserName = rbac.FistCookieGetUserInfo(request).Username
-	}
-	t.CookieUserName = terminalUserName
 	if err != nil {
 		tools.ResponseSystemError(response, err)
 		return
