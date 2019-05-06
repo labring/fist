@@ -15,8 +15,6 @@ import (
 var (
 	//TerminalPort is cmd port param
 	TerminalPort uint16
-	//RbacEnable is rbac enable
-	RbacEnable bool
 )
 
 //Serve start a terminal server
