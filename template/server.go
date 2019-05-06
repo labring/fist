@@ -1,13 +1,14 @@
-package rbac
+package template
 
 import (
+	"log"
+	"net/http"
+	"strconv"
+
 	"github.com/emicklei/go-restful"
 	"github.com/fanux/fist/tools"
 	"github.com/spf13/cobra"
 	"github.com/wonderivan/logger"
-	"log"
-	"net/http"
-	"strconv"
 )
 
 //Serve start a auth server
