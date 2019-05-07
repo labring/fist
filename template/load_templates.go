@@ -6,7 +6,10 @@ import (
 )
 
 //Templates is
-var Templates map[string]string
+var (
+	Templates          map[string]string
+	defaultTemplateDir = "/etc/fist/templates"
+)
 
 //LoadTemplates is
 func LoadTemplates(dir string) error {
@@ -14,7 +17,7 @@ func LoadTemplates(dir string) error {
 		Templates = make(map[string]string)
 	}
 	if dir == "" {
-		dir = "/etc/fist/templates"
+		dir = defaultTemplateDir
 	}
 
 	files, err := ioutil.ReadDir(dir)
