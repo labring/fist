@@ -74,3 +74,26 @@ POST /fist/template
 所以可以创建很多模板，value里面的值也是随意调整的，但是一定要与模板对应上。
 
 如此就能解决大家写yaml不方便的问题了
+
+> 获取templates列表
+GET /fist/templates
+```
+[
+    {
+	    "name": {
+            "Key":"fist-deploy.yaml.tmpl",  
+            "FormName": "Deployment",                # 用于前端表单渲染
+            "Describe": "用户渲染deployment"
+        }
+        "value": [                       # 这里可用于动态渲染前端模板, value有层级嵌套动态表单暂不太好处理
+            {
+                "Key": "Name",
+                "DefaultValue": "fist",
+                "FormName": "应用名称",
+                "Describe": "deployment名称"
+            },
+        ]
+    },
+]
+```
+此内容可直接存在文件(/etc/fist/templates/templates.metadata.json)中作为templates的元数据
