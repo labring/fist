@@ -55,7 +55,7 @@ spec:
         ports:
         - containerPort: {{.Port}}
 */
-func Render(value []byte, template string) (result string) {
+func Render(value []byte) (result string) {
 	v := &Value{}
 	err := json.Unmarshal(value, v)
 	if err != nil {
@@ -68,6 +68,15 @@ func Render(value []byte, template string) (result string) {
 		log.Fatal("Template not found")
 	}
 
+	return Template(v.Value, t)
+}
+
+//RenderValue is
+func RenderValue(v Value) (result string) {
+	t, ok := Templates[v.Name]
+	if !ok {
+		log.Fatal("Template not found")
+	}
 	return Template(v.Value, t)
 }
 

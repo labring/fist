@@ -11,17 +11,42 @@ import (
 	"github.com/wonderivan/logger"
 )
 
-//Serve start a auth server
+//Register is
+func Register(container *restful.Container) {
+	template := new(restful.WebService)
+	template.
+		Path("/").
+		Consumes(restful.MIME_XML, restful.MIME_JSON).
+		Produces(restful.MIME_JSON, restful.MIME_XML) // you can specify this per route as well
+
+	template.Route(template.POST("/templates").To(createTemplate))
+	container.Add(template)
+}
+
+func createTemplates(request *restful.Request, response *restful.Response) {
+	tps := new([]Value)
+
+	//TODO mack sure all data readed
+	request.Request.ReadEntity(tps)
+
+	res := new([]string)
+	for _, t := range tps {
+		tempres := RenderValue(t)
+		if tempres != "" {
+			res = append(res, tempres)
+		}
+	}
+
+	response.WriteEntity(res)
+}
+
+//Serve start a template server
 func Serve(cmd *cobra.Command) {
 	wsContainer := restful.NewContainer()
 	wsContainer.Router(restful.CurlyRouter{})
-	auth := new(restful.WebService)
-	//registry  fist auth
-	FistRegister(auth)
-	wsContainer.Add(auth)
+	Register(wsContainer)
 	//cors
 	tools.Cors(wsContainer)
-
 	//process port for command
 	port, _ := cmd.Flags().GetUint16("port")
 	sPort := ":" + strconv.FormatUint(uint64(port), 10)

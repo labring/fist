@@ -15,8 +15,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/fanux/fist/terminal"
 	"github.com/spf13/cobra"
 )
 
@@ -31,7 +30,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("template called")
+		terminal.Serve(cmd)
 	},
 }
 
@@ -43,6 +42,7 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// templateCmd.PersistentFlags().String("foo", "", "A help for foo")
+	templateCmd.Flags().Uint16P("port", "P", 8080, "start  listening port")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:

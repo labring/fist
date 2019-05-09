@@ -54,3 +54,12 @@ steps:
   - sleep 15
   - kubectl create -f rbac/deploy/secret.yaml  || true
   - kubectl create -f rbac/deploy/deploy.yaml  || true
+
+- name: deploy-template
+  image: lachlanevenson/k8s-kubectl
+  commands:
+  - mkdir ~/.kube
+  - cp deploy/config ~/.kube/config
+  - kubectl delete -f template/deploy/deploy.yaml  || true
+  - sleep 15
+  - kubectl create -f template/deploy/secret.yaml  || true
