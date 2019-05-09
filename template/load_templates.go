@@ -11,11 +11,39 @@ var (
 	defaultTemplateDir = "/etc/fist/templates"
 )
 
+func loadDefault() {
+	Templates["Deployment"] = `
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Name }}
+  namespace: {{ .Namespace }}
+spec:
+  replicas: {{ .Replicas }}
+  selector:
+    matchLabels:
+      name: {{ .Name }}
+  template:
+    metadata:
+      labels:
+        name: {{ .Name }}
+    spec:
+      containers:
+      - name: {{ .Name }}
+        image: {{ .Image }}
+        command: {{ .Command }}
+        imagePullPolicy: {{ .ImagePolicy }}
+        ports:
+        - containerPort: {{.Port}}
+	`
+}
+
 //LoadTemplates is
 func LoadTemplates(dir string) error {
 	if Templates == nil {
 		Templates = make(map[string]string)
 	}
+	loadDefault()
 	if dir == "" {
 		dir = defaultTemplateDir
 	}

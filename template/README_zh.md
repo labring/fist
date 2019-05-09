@@ -56,8 +56,9 @@ spec:
 
 > 渲染请求
 
-POST /fist/template
+POST /templates
 ```
+[
 {
 	"name":"fist-deploy.yaml.tmpl",   # 模板名
 	"value": {                        # 渲染值，key与模板里一一对应
@@ -70,6 +71,7 @@ POST /fist/template
 		"Port":9090
 	}
 }
+]
 ```
 所以可以创建很多模板，value里面的值也是随意调整的，但是一定要与模板对应上。
 
