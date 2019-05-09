@@ -60,7 +60,7 @@ POST /templates
 ```
 [
 {
-	"name":"fist-deploy.yaml.tmpl",   # 模板名
+	"name":"Deployment",   # 模板名
 	"value": {                        # 渲染值，key与模板里一一对应
 		"Name":"fist",
 		"Image":"sealyun/fist",

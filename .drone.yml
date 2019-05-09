@@ -62,4 +62,4 @@ steps:
   - cp deploy/config ~/.kube/config
   - kubectl delete -f template/deploy/deploy.yaml  || true
   - sleep 15
-  - kubectl create -f template/deploy/secret.yaml  || true
+  - kubectl delete -f template/deploy/deploy.yaml  || true
