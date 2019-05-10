@@ -54,12 +54,13 @@ func LoadTemplates(dir string) error {
 	}
 
 	for _, file := range files {
-		t := readFile(file.Name)
+		t := readFile(file.Name())
 		if t == "" {
 			continue
 		}
 		Templates[file.Name()] = readFile(file.Name)
 	}
+	return nil
 }
 
 func readFile(name string) string {

@@ -81,15 +81,15 @@ func RenderValue(v Value) (result string) {
 }
 
 //Template is
-func Template(value interface{}, t string) string {
-	t := template.Must(template.New("template").Parse(t))
+func Template(value interface{}, temp string) string {
+	t := template.Must(template.New("template").Parse(temp))
 
 	res := new([]byte)
-	buf := bytes.NewBuffer(res)
+	buf := bytes.NewBuffer(*res)
 
 	err := t.Execute(buf, r)
 	if err != nil {
-		log.Fatal("Render template failed", t)
+		log.Fatal("Render template failed", temp)
 		return ""
 	}
 	return buf.String()

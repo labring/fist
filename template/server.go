@@ -19,7 +19,7 @@ func Register(container *restful.Container) {
 		Consumes(restful.MIME_XML, restful.MIME_JSON).
 		Produces(restful.MIME_JSON, restful.MIME_XML) // you can specify this per route as well
 
-	template.Route(template.POST("/templates").To(createTemplate))
+	template.Route(template.POST("/templates").To(createTemplates))
 	container.Add(template)
 }
 
@@ -27,13 +27,13 @@ func createTemplates(request *restful.Request, response *restful.Response) {
 	tps := new([]Value)
 
 	//TODO mack sure all data readed
-	request.Request.ReadEntity(tps)
+	request.ReadEntity(tps)
 
 	res := new([]string)
-	for _, t := range tps {
+	for _, t := range *tps {
 		tempres := RenderValue(t)
 		if tempres != "" {
-			res = append(res, tempres)
+			*res = append(*res, tempres)
 		}
 	}
 
