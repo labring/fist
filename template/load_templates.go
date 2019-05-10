@@ -58,7 +58,7 @@ func LoadTemplates(dir string) error {
 		if t == "" {
 			continue
 		}
-		Templates[file.Name()] = readFile(file.Name)
+		Templates[file.Name()] = readFile(file.Name())
 	}
 	return nil
 }

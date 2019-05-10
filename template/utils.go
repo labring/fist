@@ -87,7 +87,7 @@ func Template(value interface{}, temp string) string {
 	res := new([]byte)
 	buf := bytes.NewBuffer(*res)
 
-	err := t.Execute(buf, r)
+	err := t.Execute(buf, value)
 	if err != nil {
 		log.Fatal("Render template failed", temp)
 		return ""
