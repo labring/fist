@@ -60,13 +60,13 @@ POST /templates
 ```
 [
 {
-	"name":"Deployment",   # 模板名
-	"value": {                        # 渲染值，key与模板里一一对应
+	"name":"Deployment",  
+	"value": {                       
 		"Name":"fist",
 		"Image":"sealyun/fist",
 		"Replicas":3,
 		"Namespace":"sealyun",
-		"Command": "["./fist", "serve"]",
+		"Command": "['./fist', 'serve']",
 		"ImagePolicy":"IfnotPresent",
 		"Port":9090
 	}

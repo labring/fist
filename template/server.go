@@ -1,6 +1,7 @@
 package template
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
@@ -13,6 +14,7 @@ import (
 
 //Register is
 func Register(container *restful.Container) {
+	LoadTemplates("")
 	template := new(restful.WebService)
 	template.
 		Path("/").
@@ -26,8 +28,7 @@ func Register(container *restful.Container) {
 func createTemplates(request *restful.Request, response *restful.Response) {
 	tps := new([]Value)
 
-	//TODO mack sure all data readed
-	request.ReadEntity(tps)
+	json.NewDecoder(request.Request.Body).Decode(tps)
 
 	res := new([]string)
 	for _, t := range *tps {
