@@ -56,9 +56,8 @@ spec:
 
 > 渲染请求
 
-POST /templates
-```
-[
+```shell
+curl http://localhost:8080/templates?type=text -H "Content-Type:application/json" -d '[
 {
 	"name":"Deployment",  
 	"value": {                       
@@ -68,11 +67,11 @@ POST /templates
 		"Namespace":"sealyun",
 		"Command": "['./fist', 'serve']",
 		"ImagePolicy":"IfnotPresent",
-		"Port":9090
-	}
+		"Port":9090}
 }
-]
+]'
 ```
+
 所以可以创建很多模板，value里面的值也是随意调整的，但是一定要与模板对应上。
 
 如此就能解决大家写yaml不方便的问题了

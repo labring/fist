@@ -2,6 +2,7 @@ package template
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -19,16 +20,19 @@ func Register(container *restful.Container) {
 	template.
 		Path("/").
 		Consumes(restful.MIME_XML, restful.MIME_JSON).
-		Produces(restful.MIME_JSON, restful.MIME_XML) // you can specify this per route as well
+		Produces(restful.MIME_JSON)
 
 	template.Route(template.POST("/templates").To(createTemplates))
 	container.Add(template)
 }
 
 func createTemplates(request *restful.Request, response *restful.Response) {
+	t := request.QueryParameter("type")
 	tps := new([]Value)
-
-	json.NewDecoder(request.Request.Body).Decode(tps)
+	err := json.NewDecoder(request.Request.Body).Decode(tps)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	res := new([]string)
 	for _, t := range *tps {
@@ -37,8 +41,18 @@ func createTemplates(request *restful.Request, response *restful.Response) {
 			*res = append(*res, tempres)
 		}
 	}
+	if t == "text" {
+		response.AddHeader("Content-type", "text/plain")
+		var ss string
+		for _, s := range *res {
+			ss = fmt.Sprintf("%s\n---\n%s", ss, s)
+		}
 
+		response.ResponseWriter.Write([]byte(ss))
+		return
+	}
 	response.WriteEntity(res)
+	return
 }
 
 //Serve start a template server

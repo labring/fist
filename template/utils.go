@@ -84,8 +84,8 @@ func RenderValue(v Value) (result string) {
 func Template(value interface{}, temp string) string {
 	t := template.Must(template.New("template").Parse(temp))
 
-	res := new([]byte)
-	buf := bytes.NewBuffer(*res)
+	var res []byte
+	buf := bytes.NewBuffer(res)
 
 	err := t.Execute(buf, value)
 	if err != nil {

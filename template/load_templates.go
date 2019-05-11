@@ -12,8 +12,7 @@ var (
 )
 
 func loadDefault() {
-	Templates["Deployment"] = `
-apiVersion: apps/v1
+	Templates["Deployment"] = `apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Name }}
@@ -34,8 +33,7 @@ spec:
         command: {{ .Command }}
         imagePullPolicy: {{ .ImagePolicy }}
         ports:
-        - containerPort: {{.Port}}
-	`
+        - containerPort: {{.Port}}`
 }
 
 //LoadTemplates is
