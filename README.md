@@ -17,7 +17,7 @@
 - [x] A powerful webterminal
 - [x] Ldap support
 - [ ] Muti tencent namespace manager
-- [ ] Web yaml render
+- [x] Web yaml render
 
 # Install
 ```
