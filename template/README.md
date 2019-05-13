@@ -23,7 +23,7 @@ kubectl create -f deploy
 > Or ship on docker
 
 ```
-docker run -d -p 8080:8080 lameleg/fist:latest ./fist template
+docker run -d -p 8080:8080 -v /etc/fist/templates:/etc/fist/templates lameleg/fist:latest ./fist template
 ```
 
 # Render a default Deployment
@@ -92,6 +92,15 @@ curl http://localhost:8080/templates?type=text -H "Content-Type:application/json
         "Value": "Hello everyone!"}
 }
 ]'
+```
+
+Result:
+
+```
+---
+This is my hello world template
+SealYun
+Hello everyone
 ```
 
 # API
