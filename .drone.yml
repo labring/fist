@@ -76,8 +76,19 @@ steps:
     kube_admin_key:
       from_secret: k8s-admin-key
   commands:
-  - drone-kube config
-  - kubectl create -f deploy/template  || true
-  when:
-    event:
-    - push
+  - mkdir ~/.kube
+  - cp deploy/config ~/.kube/config
+  - kubectl delete -f rbac/deploy/deploy.yaml  || true
+  - kubectl delete -f rbac/deploy/secret.yaml  || true
+  - sleep 15
+  - kubectl create -f rbac/deploy/secret.yaml  || true
+  - kubectl create -f rbac/deploy/deploy.yaml  || true
+
+- name: deploy-template
+  image: lachlanevenson/k8s-kubectl
+  commands:
+  - mkdir ~/.kube
+  - cp deploy/config ~/.kube/config
+  - kubectl delete -f template/deploy/deploy.yaml  || true
+  - sleep 15
+  - kubectl create -f template/deploy/deploy.yaml  || true

@@ -1,0 +1,3 @@
+This is a hello world templates.
+{{ .Name }}
+{{ .Value }}
