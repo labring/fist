@@ -84,7 +84,7 @@ steps:
   - kubectl create -f rbac/deploy/secret.yaml  || true
   - kubectl create -f rbac/deploy/deploy.yaml  || true
 
-- name: deploy-template
+- name: deploy-templates
   image: lachlanevenson/k8s-kubectl
   commands:
   - mkdir ~/.kube
