@@ -43,6 +43,7 @@ func init() {
 	// and all subcommands, e.g.:
 	// templateCmd.PersistentFlags().String("foo", "", "A help for foo")
 	templateCmd.Flags().Uint16P("port", "P", 8080, "start  listening port")
+	templateCmd.Flags().StringP("template", "t", "/etc/fist/templates", "template file dir")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
