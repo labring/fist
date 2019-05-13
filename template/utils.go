@@ -3,8 +3,9 @@ package template
 import (
 	"bytes"
 	"encoding/json"
-	"log"
 	"text/template"
+
+	"github.com/wonderivan/logger"
 )
 
 //Value is
@@ -59,13 +60,13 @@ func Render(value []byte) (result string) {
 	v := &Value{}
 	err := json.Unmarshal(value, v)
 	if err != nil {
-		log.Fatal(err)
+		logger.Error(err)
 		return ""
 	}
 
 	t, ok := Templates[v.Name]
 	if !ok {
-		log.Fatal("Template not found")
+		logger.Error("Template not found")
 	}
 
 	return Template(v.Value, t)
@@ -75,7 +76,7 @@ func Render(value []byte) (result string) {
 func RenderValue(v Value) (result string) {
 	t, ok := Templates[v.Name]
 	if !ok {
-		log.Fatal("Template not found")
+		logger.Error("Template not found")
 	}
 	return Template(v.Value, t)
 }
@@ -89,7 +90,7 @@ func Template(value interface{}, temp string) string {
 
 	err := t.Execute(buf, value)
 	if err != nil {
-		log.Fatal("Render template failed", temp)
+		logger.Error("Render template failed", temp)
 		return ""
 	}
 	return buf.String()
@@ -100,7 +101,7 @@ func Template(value interface{}, temp string) string {
 import (
 	"encoding/json"
 	"fmt"
-	"log"
+	"logger"
 	"os"
 	"text/template"
 )
@@ -136,7 +137,7 @@ Josie
 	// Execute the template for each recipient.
 	err = t.Execute(os.Stdout, r)
 	if err != nil {
-		log.Println("executing template:", err)
+		logger.Println("executing template:", err)
 	}
 }
 */

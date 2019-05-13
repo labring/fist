@@ -3,7 +3,6 @@ package template
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -15,7 +14,6 @@ import (
 
 //Register is
 func Register(container *restful.Container) {
-	LoadTemplates("")
 	template := new(restful.WebService)
 	template.
 		Path("/").
@@ -31,7 +29,7 @@ func createTemplates(request *restful.Request, response *restful.Response) {
 	tps := new([]Value)
 	err := json.NewDecoder(request.Request.Body).Decode(tps)
 	if err != nil {
-		log.Fatal(err)
+		logger.Error(err)
 	}
 
 	res := new([]string)
@@ -57,6 +55,11 @@ func createTemplates(request *restful.Request, response *restful.Response) {
 
 //Serve start a template server
 func Serve(cmd *cobra.Command) {
+	s, err := cmd.Flags().GetString("template")
+	if err != nil {
+		s = ""
+	}
+	LoadTemplates(s)
 	wsContainer := restful.NewContainer()
 	wsContainer.Router(restful.CurlyRouter{})
 	Register(wsContainer)
@@ -67,5 +70,5 @@ func Serve(cmd *cobra.Command) {
 	sPort := ":" + strconv.FormatUint(uint64(port), 10)
 	logger.Info("start listening on localhost", sPort)
 	server := &http.Server{Addr: sPort, Handler: wsContainer}
-	log.Fatal(server.ListenAndServe())
+	logger.Error(server.ListenAndServe())
 }

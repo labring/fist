@@ -2,7 +2,9 @@ package template
 
 import (
 	"io/ioutil"
-	"log"
+	"path"
+
+	"github.com/wonderivan/logger"
 )
 
 //Templates is
@@ -52,11 +54,11 @@ func LoadTemplates(dir string) error {
 	}
 
 	for _, file := range files {
-		t := readFile(file.Name())
+		t := readFile(path.Join(dir, file.Name()))
 		if t == "" {
 			continue
 		}
-		Templates[file.Name()] = readFile(file.Name())
+		Templates[file.Name()] = t
 	}
 	return nil
 }
@@ -64,7 +66,7 @@ func LoadTemplates(dir string) error {
 func readFile(name string) string {
 	content, err := ioutil.ReadFile(name)
 	if err != nil {
-		log.Fatal(err)
+		logger.Error(err)
 		return ""
 	}
 

@@ -23,37 +23,20 @@
     |               |                |
 ```
 
-## 快速使用
-> 创建template文件
-
-默认目录：`/etc/fist/templates`
+# 安装
+> 使用kubernetes
 
 ```
-# cat fist-deploy.yaml.tmpl
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ .Name }}
-  namespace: {{ .Namespace }}
-spec:
-  replicas: {{ .Replicas }}
-  selector:
-    matchLabels:
-      name: {{ .Name }}
-  template:
-    metadata:
-      labels:
-        name: {{ .Name }}
-    spec:
-      containers:
-      - name: {{ .Name }}
-        image: {{ .Image }}
-        command: {{ .Command }}
-        imagePullPolicy: {{ .ImagePolicy }}
-        ports:
-        - containerPort: {{.Port}}
+kubectl create -f deploy
 ```
 
+> 使用docker
+
+```
+docker run -d -p 8080:8080 lameleg/fist:latest ./fist template
+```
+
+## 渲染模板
 > 渲染请求
 
 ```shell
@@ -71,12 +54,65 @@ curl http://localhost:8080/templates?type=text -H "Content-Type:application/json
 }
 ]'
 ```
+这里的`Deployment` 是内建模板, 用户可以自定义模板
+
+type=text指定渲染结果格式，不指定会把渲染结果字符串放在数组中。
+
+渲染结果：
+```
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fist
+  namespace: sealyun
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: fist
+  template:
+    metadata:
+      labels:
+        name: fist
+    spec:
+      containers:
+      - name: fist
+        image: sealyun/fist
+        command: [./fist, serve]
+        imagePullPolicy: IfnotPresent
+        ports:
+        - containerPort: 9090
+```
+
+## 自定义模板
+> 创建template文件
+
+默认目录：`/etc/fist/templates` (进入容器内部，或者挂载此文件夹)
+
+```
+# cat /etc/fist/templates/Hello-world 
+This is my hello world template
+{{ .Name }}
+{{ .Value }}
+```
+
+```shell
+curl http://localhost:8080/templates?type=text -H "Content-Type:application/json" -d '[
+{
+	"name":"Hello-world",  
+	"value": {                       
+		"Name": "Sealyun",
+        "Value": "Hello everyone!"}
+}
+]'
+```
 
 所以可以创建很多模板，value里面的值也是随意调整的，但是一定要与模板对应上。
 
 如此就能解决大家写yaml不方便的问题了
 
-> 获取templates列表
+# 获取templates列表
 GET /fist/templates
 ```
 [
