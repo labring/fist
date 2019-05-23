@@ -18,9 +18,9 @@ steps:
 - name: tryrun-fist
   image: golang:1.10.8
   commands:
-    - fist auth -h
-    - fist terminal -h
-    - fist rbac -h
+    - ./fist auth -h
+    - ./fist terminal -h
+    - ./fist rbac -h
 
 - name: publish-fist
   image: plugins/docker
