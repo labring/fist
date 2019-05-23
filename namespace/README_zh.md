@@ -1,0 +1,2 @@
+# Namespace管理模块
+namespace在多租户管理系统中扮演重要角色
