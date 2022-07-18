@@ -125,3 +125,12 @@ docker run -d --net=host -v /root/.kube/config:/root/.kube/config fanux/kube-tty
 * Ctrl h   swith window  (Ctrl h     Ctrl J   Ctrl K  Ctrl L)
 * ,dt      go to defination
 
+
+# Terminal crd
+
+```
+type: Terminal
+...
+```
+
+kubectl apply terminal.yaml
