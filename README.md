@@ -16,7 +16,7 @@
 - [x] A lightweight JWT User token creater. RBAC and PSP manager.
 - [x] A powerful webterminal
 - [x] Ldap support
-- [ ] Muti tencent namespace manager
+- [ ] Muti tenant namespace manager
 - [x] Web yaml render
 
 # Install
